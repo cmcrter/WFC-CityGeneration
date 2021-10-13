@@ -11,6 +11,7 @@ using System;
 
 namespace WFC.Rand
 {
+    [Serializable]
     //This will be the default class I use to return numbers
     public class Rand
     {
@@ -92,7 +93,20 @@ namespace WFC.Rand
         UInt32[] State = new UInt32[Size];
         int next;
 
-        Mersenne_Twister(int seed)
+        public Mersenne_Twister()
+        {
+            State[0] = (UInt32)seed;
+            for(int i = 1; i < Size; i++)
+            {
+                UInt32 v = (uint)(1812433253UL * (State[i - 1] ^ (State[i - 1] >> MaskSize)));
+                State[i] = (uint)(v + i);
+            }
+
+            //Starting the chain
+            Twist();
+        }
+
+        public Mersenne_Twister(int seed)
         {
             State[0] = (UInt32)seed;
             for (int i = 1; i < Size; i++)
@@ -129,7 +143,7 @@ namespace WFC.Rand
         //Computing the states again
         private void Twist()
         {
-            int i;
+            int i = 0;
             UInt32 current;
 
             for (i = 0; i < diff; i++)
@@ -139,11 +153,13 @@ namespace WFC.Rand
             }
 
             // remaining words (except the very last one)
-            for (; i < Size - 1; i++)
+            for (int j = i; j < Size - 1; j++)
             {
-                current = (State[i] & 0x80000000) | (State[i + 1] & 0x7fffffff);
-                State[i] = (State [i - diff] ^ ( current >> 1 ) ^ ( ( current & 1 ) * BitMask));
+                current = (State[j] & 0x80000000) | (State[j + 1] & 0x7fffffff);
+                State[j] = (State [j - diff] ^ ( current >> 1 ) ^ ( ( current & 1 ) * BitMask));
             }
+
+            i = State.Length - 1;
 
             // last word is computed pretty much the same way, but i + 1 must wrap around to 0
             current = (State[i] & 0x80000000) | (State[0] & 0x7fffffff);
@@ -163,13 +179,35 @@ namespace WFC.Rand
         int w = 88675123;
         int t;
 
+        public XORShift()
+        {
+            
+        }
+
         //The mathematical function to return the random number
         protected override int Noise()
         {
             //This is an XORShift in it's most basic form with a period of 2^128 -1
             t = x ^ ( x << 11 );
             x = y; y = z; z = w;
-            return w = w ^ ( w >> 19 ) ^ ( t ^ ( t >> 8 ) );
+            
+            return w = w ^ (w >> 19) ^ (t ^ (t >> 8));
         }
     }
+
+    //A simple Linear Congruential Generator
+    public class LCG : Rand
+    {
+        public LCG(int newSeed)
+        {
+            seed = newSeed;
+        }
+
+        protected override int Noise()
+        {
+            //This is the Microsoft way of doing the LCG
+            seed = ((seed = 214013 * seed + 2531011) & int.MaxValue) >> 16;
+            return seed;
+        }
+    } 
 }
