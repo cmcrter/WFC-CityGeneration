@@ -26,6 +26,12 @@ namespace WFC.Rand
 
         [Header("Visualisation Variables")]
         [SerializeField]
+        private TextMeshProUGUI RNGTitle;
+        [SerializeField]
+        private TextMeshProUGUI CapText;
+        [SerializeField]
+        private TextMeshProUGUI SeedText;
+        [SerializeField]
         private List<TextMeshProUGUI> CounterTexts = new List<TextMeshProUGUI>();
         [SerializeField]
         private GameObject cameraObj;
@@ -38,6 +44,7 @@ namespace WFC.Rand
         private Coroutine CoLCG;
         private Coroutine CoMT;
         private Coroutine CoXOR;
+        private Coroutine CoUnity;
 
         private int biggestCounter = 0;
         
@@ -55,12 +62,18 @@ namespace WFC.Rand
             CounterInts = new int[CounterTexts.Count];
             ResetCounters();
             cameraObj.transform.position = new Vector3(0, LatestCounterPlacements[0].transform.position.y, 5.5f);
+
+            CapText.text = MaxNumberAmount.ToString();
+            SeedText.text = seed.ToString();
         }
 
         #endregion
 
         #region Public Methods
 
+        /// <summary>
+        /// Methods that specifically call each different RNG method
+        /// </summary>
         public void RunLCG()
         {
             ResetCounters();
@@ -77,6 +90,12 @@ namespace WFC.Rand
         {
             ResetCounters();
             CoXOR = StartCoroutine(Co_RunXOR());
+        }
+
+        public void RunUnity()
+        {
+            ResetCounters();
+            CoUnity = StartCoroutine(Co_RunUnity());
         }
 
         #endregion
@@ -98,6 +117,11 @@ namespace WFC.Rand
             if(CoXOR != null)
             {
                 StopCoroutine(CoXOR);
+            }
+
+            if (CoUnity != null)
+            {
+                StopCoroutine(CoUnity);
             }
 
             for(int i = 0; i < InitialCounterPlacementParents.Count; ++i)
@@ -124,6 +148,9 @@ namespace WFC.Rand
             }
         }
 
+        /// <summary>
+        /// The visualisation is the same for every method
+        /// </summary>
         private void IncrementCounter(int counterToIncrement)
         {
             counterToIncrement = Mathf.Abs(counterToIncrement);
@@ -139,17 +166,14 @@ namespace WFC.Rand
                 go.name = CounterInts[counterToIncrement].ToString();
                 LatestCounterPlacements[counterToIncrement] = go;
 
-                if (Time.frameCount % 5 == 0)
+                //Putting the camera in a good position to see the top towers
+                int checkVal = CounterInts[0];
+                for(int i = 0; i < LatestCounterPlacements.Count; ++i)
                 {
-                    //Putting the camera in a good position to see the top towers
-                    int checkVal = CounterInts[0];
-                    for(int i = 0; i < LatestCounterPlacements.Count; ++i)
+                    if(CounterInts[i] > checkVal)
                     {
-                        if(CounterInts[i] > checkVal)
-                        {
-                            checkVal = CounterInts[i];
-                            biggestCounter = i;
-                        }
+                        checkVal = CounterInts[i];
+                        biggestCounter = i;
                     }
                 }
 
@@ -165,6 +189,7 @@ namespace WFC.Rand
         {
             LCG lcg = new LCG(seed);
             bool isRunning = true;
+            RNGTitle.text = "Linear Congruential Generator";
 
             while(isRunning)
             {
@@ -188,8 +213,9 @@ namespace WFC.Rand
         {
             Mersenne_Twister MT = new Mersenne_Twister(seed);
             bool isRunning = true;
+            RNGTitle.text = "Mersenne Twister";
 
-            while (isRunning)
+            while(isRunning)
             {
                 int counterToIncrement = MT.ReturnRandom(10);
                 counterToIncrement = Mathf.Abs(counterToIncrement);
@@ -212,6 +238,7 @@ namespace WFC.Rand
             //This version of XOR doesn't really need a seed
             XORShift XOR = new XORShift();
             bool isRunning = true;
+            RNGTitle.text = "XORShift";
 
             while(isRunning)
             {
@@ -228,6 +255,31 @@ namespace WFC.Rand
             }
 
             CoXOR = null;
+            yield return true;
+        }
+
+        private IEnumerator Co_RunUnity()
+        {
+            //This version of XOR doesn't really need a seed
+            bool isRunning = true;
+            RNGTitle.text = "Unity.Random";
+            Random.InitState(seed);
+
+            while(isRunning)
+            {
+                int counterToIncrement = Random.Range(0, 11);
+                counterToIncrement = Mathf.Abs(counterToIncrement);
+                IncrementCounter(counterToIncrement);
+
+                if(CounterInts[biggestCounter] == MaxNumberAmount)
+                {
+                    isRunning = false;
+                }
+
+                yield return null;
+            }
+
+            CoUnity = null;
             yield return true;
         }
 
