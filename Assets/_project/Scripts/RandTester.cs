@@ -47,7 +47,8 @@ namespace WFC.Rand
         private Coroutine CoUnity;
 
         private int biggestCounter = 0;
-        
+        private Vector3 initialCameraPos;
+
         #endregion
 
         #region Unity Methods
@@ -60,8 +61,7 @@ namespace WFC.Rand
         void Start()
         {
             CounterInts = new int[CounterTexts.Count];
-            ResetCounters();
-            cameraObj.transform.position = new Vector3(0, LatestCounterPlacements[0].transform.position.y, 5.5f);
+            initialCameraPos = cameraObj.transform.position;
 
             CapText.text = MaxNumberAmount.ToString();
             SeedText.text = seed.ToString();
@@ -146,6 +146,8 @@ namespace WFC.Rand
                 CounterInts[i] = 0;
                 CounterTexts[i].text = "0";
             }
+
+            cameraObj.transform.position = initialCameraPos;
         }
 
         /// <summary>
@@ -162,7 +164,7 @@ namespace WFC.Rand
 
                 //Adjusting height of tower
                 GameObject go = Instantiate(LatestCounterPlacements[counterToIncrement], InitialCounterPlacementParents[counterToIncrement]);
-                go.transform.position = LatestCounterPlacements[counterToIncrement].transform.position + new Vector3(0, LatestCounterPlacements[counterToIncrement].transform.localScale.y, 0);
+                go.transform.position = LatestCounterPlacements[counterToIncrement].transform.position + new Vector3(0, LatestCounterPlacements[counterToIncrement].transform.localScale.z * 2f, 0);
                 go.name = CounterInts[counterToIncrement].ToString();
                 LatestCounterPlacements[counterToIncrement] = go;
 
@@ -177,7 +179,10 @@ namespace WFC.Rand
                     }
                 }
 
-                cameraObj.transform.position = new Vector3(cameraObj.transform.position.x, LatestCounterPlacements[biggestCounter].transform.position.y, cameraObj.transform.position.z);
+                if (LatestCounterPlacements[biggestCounter].transform.position.y >= cameraObj.transform.position.y)
+                {
+                    cameraObj.transform.position = new Vector3(initialCameraPos.x, LatestCounterPlacements[biggestCounter].transform.position.y, initialCameraPos.z);
+                }
             }
             else if(Debug.isDebugBuild)
             {
