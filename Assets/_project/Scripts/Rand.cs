@@ -95,6 +95,7 @@ namespace WFC.Rand
 
         public Mersenne_Twister()
         {
+            //Setting the values up for the first states
             State[0] = (UInt32)seed;
             for(int i = 1; i < Size; i++)
             {
@@ -146,13 +147,14 @@ namespace WFC.Rand
             int i = 0;
             UInt32 current;
 
+            //The first half of states
             for (i = 0; i < diff; i++)
             {
                 current = ((State [i] & 0x80000000) | (State[i + 1] & 0x7fffffff));
                 State[i] = (State[i + Period] ^ (current >> 1) ^ ((current & 1) * BitMask));
             }
 
-            // remaining words (except the very last one)
+            //Remaining States
             for (int j = i; j < Size - 1; j++)
             {
                 current = (State[j] & 0x80000000) | (State[j + 1] & 0x7fffffff);
@@ -161,11 +163,11 @@ namespace WFC.Rand
 
             i = State.Length - 1;
 
-            // last word is computed pretty much the same way, but i + 1 must wrap around to 0
+            //The last state is done seperately which will wrap around
             current = (State[i] & 0x80000000) | (State[0] & 0x7fffffff);
             State [i] = (State[Period - 1] ^ (current >> 1) ^ ((current & 1) * BitMask));
 
-            // word used for next random number
+            //Starting the cycle again
             next = 0;
         }
     }
