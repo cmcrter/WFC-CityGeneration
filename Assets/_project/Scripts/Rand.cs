@@ -208,8 +208,7 @@ namespace WFC.Rand
         protected override int Noise()
         {
             //This is the Microsoft way of doing the LCG
-            seed = ((seed = 214013 * seed + 2531011) & int.MaxValue) >> 16;
-            return seed;
+            return ((seed = 214013 * seed + 2531011) & int.MaxValue) >> 16;
         }
     } 
 }
