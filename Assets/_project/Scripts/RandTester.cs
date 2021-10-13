@@ -267,7 +267,7 @@ namespace WFC.Rand
 
             while(isRunning)
             {
-                int counterToIncrement = Random.Range(0, 11);
+                int counterToIncrement = Random.Range(0, 10);
                 counterToIncrement = Mathf.Abs(counterToIncrement);
                 IncrementCounter(counterToIncrement);
 
