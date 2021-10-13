@@ -21,6 +21,8 @@ namespace WFC.Rand
         [Header("Randomness Customization")]
         [SerializeField]
         private int seed;
+        [SerializeField]
+        private int MaxNumberAmount = 1000;
 
         [Header("Visualisation Variables")]
         [SerializeField]
@@ -38,7 +40,7 @@ namespace WFC.Rand
         private Coroutine CoXOR;
 
         private int biggestCounter = 0;
-
+        
         #endregion
 
         #region Unity Methods
@@ -132,23 +134,26 @@ namespace WFC.Rand
                 CounterTexts[counterToIncrement].text = CounterInts[counterToIncrement].ToString();
 
                 //Adjusting height of tower
-                GameObject go = GameObject.Instantiate(LatestCounterPlacements[counterToIncrement], InitialCounterPlacementParents[counterToIncrement]);
+                GameObject go = Instantiate(LatestCounterPlacements[counterToIncrement], InitialCounterPlacementParents[counterToIncrement]);
                 go.transform.position = LatestCounterPlacements[counterToIncrement].transform.position + new Vector3(0, LatestCounterPlacements[counterToIncrement].transform.localScale.y, 0);
                 go.name = CounterInts[counterToIncrement].ToString();
                 LatestCounterPlacements[counterToIncrement] = go;
 
-                //Putting the camera in a good position to see the top towers
-                int checkVal = CounterInts[0];
-                for (int i = 0; i < LatestCounterPlacements.Count; ++i)
+                if (Time.frameCount % 5 == 0)
                 {
-                    if (CounterInts[i] > checkVal)
+                    //Putting the camera in a good position to see the top towers
+                    int checkVal = CounterInts[0];
+                    for(int i = 0; i < LatestCounterPlacements.Count; ++i)
                     {
-                        checkVal = CounterInts[i];
-                        biggestCounter = i;
+                        if(CounterInts[i] > checkVal)
+                        {
+                            checkVal = CounterInts[i];
+                            biggestCounter = i;
+                        }
                     }
                 }
 
-                cameraObj.transform.position = new Vector3(0, LatestCounterPlacements[biggestCounter].transform.position.y, 5.5f);
+                cameraObj.transform.position = new Vector3(cameraObj.transform.position.x, LatestCounterPlacements[biggestCounter].transform.position.y, cameraObj.transform.position.z);
             }
             else if(Debug.isDebugBuild)
             {
@@ -159,12 +164,19 @@ namespace WFC.Rand
         private IEnumerator Co_RunLCG()
         {
             LCG lcg = new LCG(seed);
+            bool isRunning = true;
 
-            while(Time.timeScale == 1)
+            while(isRunning)
             {
                 int counterToIncrement = lcg.ReturnRandom(10);
                 counterToIncrement = Mathf.Abs(counterToIncrement);
                 IncrementCounter(counterToIncrement);
+
+                if(CounterInts[biggestCounter] == MaxNumberAmount)
+                {
+                    isRunning = false;
+                }
+
                 yield return null;
             }
 
@@ -175,12 +187,19 @@ namespace WFC.Rand
         private IEnumerator Co_RunMT()
         {
             Mersenne_Twister MT = new Mersenne_Twister(seed);
+            bool isRunning = true;
 
-            while (Time.timeScale == 1)
+            while (isRunning)
             {
                 int counterToIncrement = MT.ReturnRandom(10);
                 counterToIncrement = Mathf.Abs(counterToIncrement);
                 IncrementCounter(counterToIncrement);
+
+                if (CounterInts[biggestCounter] == MaxNumberAmount)
+                {
+                    isRunning = false;
+                }
+
                 yield return null;
             }
 
@@ -192,12 +211,19 @@ namespace WFC.Rand
         {
             //This version of XOR doesn't really need a seed
             XORShift XOR = new XORShift();
+            bool isRunning = true;
 
-            while(Time.timeScale == 1)
+            while(isRunning)
             {
                 int counterToIncrement = XOR.ReturnRandom(10);
                 counterToIncrement = Mathf.Abs(counterToIncrement);
                 IncrementCounter(counterToIncrement);
+
+                if(CounterInts[biggestCounter] == MaxNumberAmount)
+                {
+                    isRunning = false;
+                }
+
                 yield return null;
             }
 
