@@ -37,10 +37,17 @@ namespace WFC.Editor
         public void GetTiles()
         {
             tiles = new List<Cell>();
-            size = (int)Mathf.Sqrt(transform.childCount);
+            
+            //Making sure the size is set correctly if not set in the inspector
+            if(size == 0)
+            {
+                size = (int)Mathf.Sqrt(transform.childCount);
+            }
 
+            //Looping through the hierarchy and getting the cells
             for(int i = 0; i < transform.childCount; ++i)
             {
+                //All of these children should have the cell component on them
                 if(transform.GetChild(i).TryGetComponent(out Cell cell))
                 {
                     tiles.Add(cell);
@@ -51,8 +58,14 @@ namespace WFC.Editor
         [ContextMenu("Input Model Generation")]
         public void GeneratedInputModelGrid()
         {
+            if(size == 0) 
+            {
+                return;
+            }
+
             Grid newGrid = new Grid(size, size);
 
+            //Going through the grid and setting it to the tiles in the transform's list
             for(int x = 0; x < size; ++x)
             {
                 for(int y = 0; y < size; ++y) 

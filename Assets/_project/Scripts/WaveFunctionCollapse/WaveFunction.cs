@@ -9,6 +9,7 @@
 
 using System.Collections;
 using UnityEngine;
+using WFC.Editor;
 using WFC.Rand;
 
 namespace WFC
@@ -20,27 +21,25 @@ namespace WFC
         //The grid that this outputs
         [SerializeField]
         private Grid OutputGrid;
+        
+        //The input model creator and the input model it creates
+        [SerializeField]
+        private InputModelEditor InputModelEditor;
         [SerializeField]
         private InputModel InputModel;
 
-        //The grids' dimensions
+        //The grids' dimensions used
         [SerializeField]
-        int width;
+        private int width;
         [SerializeField]
-        int height;
+        private int height;
 
-        //This is the size of chunks to take from the input grid to create the rules (A value of 2 would mean 2 by 2 on the grid)
-        [SerializeField]
-        private int N;
         //The seed which generates each choice the algorithm will pick
         [SerializeField]
         private int seed;
         //How many times the algorithm will try
         [SerializeField]
         private int iterationLimit;
-        //Whether the algorithm will consider rotations of tiles to be possible tiles
-        [SerializeField]
-        private bool includeRotations = false;
         //Will generate over time instead of instantly
         [SerializeField]
         private bool incremental = false;
@@ -49,6 +48,8 @@ namespace WFC
 
         //The overarching coroutine the algorithm will be running in
         private Coroutine CoGenerating;
+        //Keeping a reference of the cell to most recently collapse
+        Cell mostRecentlyCollapsed = null;
 
         //The random number generator
         Mersenne_Twister MTNumberGenerator;
@@ -59,13 +60,18 @@ namespace WFC
 
         private void Awake()
         {
-
-        }
-
-        private void Start()
-        {
-            //Getting patterns from InputGrid
-            InputModel.GeneratePatterns(N);
+            if(InputModelEditor)
+            {
+                InputModel = InputModelEditor.modelGenerated;
+            }
+            else
+            {
+                if(Debug.isDebugBuild) 
+                {
+                    Debug.Log("No input model selected");
+                }
+                enabled = false;
+            }
         }
 
         #endregion
@@ -102,7 +108,7 @@ namespace WFC
             yield return StartCoroutine(Co_CollapseRandom());
 
             //Propagation through the grid (return when it's a success)
-            yield return StartCoroutine(Co_GridPropogation());
+            yield return StartCoroutine(Co_GridPropagation());
 
             CoGenerating = null;
             yield return true;
@@ -122,26 +128,48 @@ namespace WFC
 
             //Collapsing it
             OutputGrid.GridCells[RandWidth, RandHeight].CollapseCell(MTNumberGenerator.ReturnRandom());
+
+            //Updating the grid constraints before the general propagation begins
+            UpdateGridConstraints();
+
             yield return true;
         }
 
         //This is the bulk of the algorithm since it's the iteration loop it goes through
-        private IEnumerator Co_GridPropogation()
+        private IEnumerator Co_GridPropagation()
         {
+            int currentIterationCount = 0;
+
             //While not all cells are collapsed
             while (!isGridFullyCollapsed())
             {
-                //Update the constraints (this is the actual propagation step)
-                UpdateGridConstraints();
+                //Pick new cell to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
+                yield return SearchForCellToCollapse();
 
-                //Pick new cells to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
                 //Collapse them
-                CollapsingNextCells();
+                CollapsingNextCell(mostRecentlyCollapsed);
+
+                //Update the constraints (this is the actual propagation step)
+                yield return UpdateGridConstraints();
 
                 //Does this work? If yes, repeat, if no, backtrack
-                if (!isMapPossible())
+                if(!isMapPossible())
                 {
-                    Backtrack();
+                    if(currentIterationCount <= iterationLimit)
+                    {
+                        Backtrack();
+                        currentIterationCount++;
+                    }
+                    else
+                    {
+                        yield return false;
+                    }
+                }
+            
+
+                if(incremental)
+                {
+                    yield return new WaitForSeconds(generationSpeed);
                 }
 
                 yield return null;
@@ -155,27 +183,65 @@ namespace WFC
         /// </summary>
         private bool isGridFullyCollapsed()
         {
-            return false;
+            for(int x = 0; x < OutputGrid.width; ++x)
+            {
+                for(int y = 0; y < OutputGrid.height; ++y)
+                {
+                    if(OutputGrid.GridCells[x, y].tileUsed == null) 
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
-        private void UpdateGridConstraints()
+        private IEnumerator UpdateGridConstraints()
         {
-            
+            //Looking at neighbours (using the Moore neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, essentially this is the actual propagation function
+            //If this causes the neighbours of these neighbours to change, remove impossible tiles from them, creating a cascade of applying constraints
+            yield return true;
         }
 
-        private void CollapsingNextCells()
+        //Assuming there's no cells with zero entropy
+        private IEnumerator SearchForCellToCollapse()
         {
-            
+            //Look for cells with lowest entropy
+
+            //Returning out of the coroutine
+            mostRecentlyCollapsed = null;
+            yield return true;
+        }
+
+        private void CollapsingNextCell(Cell givenCell)
+        {
+            //Collapse given cell
+            givenCell.CollapseCell(MTNumberGenerator.ReturnRandom());
         }
 
         private bool isMapPossible()
         {
+            //Checking to see if it's a failure (there's no possible values for the cells left)
+            for(int x = 0; x < OutputGrid.width; ++x)
+            {
+                for(int y = 0; y < OutputGrid.height; ++y)
+                {
+                    if(OutputGrid.GridCells[x, y].possibleTiles.Count == 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+
+            //The map could still be made
             return true;
         }
 
         private void Backtrack()
         {
-
+            //Going through the history (previous times of searching for a cell to collapse?)
         }
 
         #endregion

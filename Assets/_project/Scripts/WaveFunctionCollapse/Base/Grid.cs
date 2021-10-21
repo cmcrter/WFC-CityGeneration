@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 14/10/21
+// Date Last Edited: 21/10/21
 // Brief: A representation of a grid of values
 //////////////////////////////////////////////////////////// 
 
@@ -18,6 +18,8 @@ namespace WFC
 
         //A 2D Array of cells that make up the grid
         public Cell[,] GridCells;
+
+        //The dimensions of the grid
         public int width, height;
 
         #endregion

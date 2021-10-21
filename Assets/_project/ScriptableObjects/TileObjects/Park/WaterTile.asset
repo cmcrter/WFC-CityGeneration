@@ -10,6 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d023ed0343adfc14fae9c195d36e0d45, type: 3}
-  m_Name: Grass
+  m_Name: WaterTile
   m_EditorClassIdentifier: 
   Prefab: {fileID: 0}
+  sockets:
+  - serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  - serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  - serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  - serializedVersion: 2
+    Hash: 00000000000000000000000000000000
