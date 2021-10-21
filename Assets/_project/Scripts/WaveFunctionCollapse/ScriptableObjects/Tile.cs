@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace WFC
 {
+    [SerializeField]
     [CreateAssetMenu(fileName = "Tile", menuName = "ScriptableObjects/TileObject", order = 1)]
     public class Tile : ScriptableObject
     {

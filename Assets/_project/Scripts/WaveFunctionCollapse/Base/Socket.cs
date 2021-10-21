@@ -7,12 +7,14 @@
 // Brief: A value which can be used to slot tiles together
 //////////////////////////////////////////////////////////// 
 
+using System;
+
 namespace WFC
 {
+    [Serializable]
     public class Socket
     {
         //Each socket will have an ID and know if it's been used
         public int SocketValue;
-        public bool isSocketUsed;
     }
 }

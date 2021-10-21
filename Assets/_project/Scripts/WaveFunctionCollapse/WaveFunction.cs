@@ -20,6 +20,8 @@ namespace WFC
         //The grid that this outputs
         [SerializeField]
         private Grid OutputGrid;
+        [SerializeField]
+        private InputModel InputModel;
 
         //The grids' dimensions
         [SerializeField]
@@ -51,7 +53,6 @@ namespace WFC
         //The random number generator
         Mersenne_Twister MTNumberGenerator;
 
-
         #endregion
 
         #region Unity Methods
@@ -64,7 +65,7 @@ namespace WFC
         private void Start()
         {
             //Getting patterns from InputGrid
-            InputModel.Input.GeneratePatterns(N);
+            InputModel.GeneratePatterns(N);
         }
 
         #endregion
@@ -120,7 +121,7 @@ namespace WFC
             int RandHeight = MTNumberGenerator.ReturnRandom(height);
 
             //Collapsing it
-            OutputGrid.GridCells[RandWidth, RandHeight].CollapseCell();
+            OutputGrid.GridCells[RandWidth, RandHeight].CollapseCell(MTNumberGenerator.ReturnRandom());
             yield return true;
         }
 
@@ -128,16 +129,53 @@ namespace WFC
         private IEnumerator Co_GridPropogation()
         {
             //While not all cells are collapsed
+            while (!isGridFullyCollapsed())
+            {
+                //Update the constraints (this is the actual propagation step)
+                UpdateGridConstraints();
 
-            //Update the constraints (this is the actual propagation step)
+                //Pick new cells to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
+                //Collapse them
+                CollapsingNextCells();
 
-            //Pick new cells to collapse (based on cells with lowest possibilities left or guess and record which parts it guessed) 
+                //Does this work? If yes, repeat, if no, backtrack
+                if (!isMapPossible())
+                {
+                    Backtrack();
+                }
 
-            //Collapse them
-
-            //Does this work? If yes, repeat, if no, backtrack
+                yield return null;
+            }
 
             yield return true;
+        }
+
+        /// <summary>
+        /// Some of the functions that fill in the coroutines
+        /// </summary>
+        private bool isGridFullyCollapsed()
+        {
+            return false;
+        }
+
+        private void UpdateGridConstraints()
+        {
+            
+        }
+
+        private void CollapsingNextCells()
+        {
+            
+        }
+
+        private bool isMapPossible()
+        {
+            return true;
+        }
+
+        private void Backtrack()
+        {
+
         }
 
         #endregion
