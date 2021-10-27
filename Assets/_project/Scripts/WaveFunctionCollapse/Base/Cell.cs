@@ -38,10 +38,8 @@ namespace WFC
 
         #region Public Methods
 
-        public Cell(int X, int Y)
+        public Cell()
         {
-            CellX = X;
-            CellY = Y;
         }
 
         public bool isCollapsed()

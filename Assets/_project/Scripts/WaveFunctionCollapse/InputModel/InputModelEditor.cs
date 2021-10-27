@@ -53,6 +53,16 @@ namespace WFC.Editor
                     tiles.Add(cell.thisCell);
                 }
             }
+
+            //Setting the tiles' coords correct
+            for(int x = 0; x < size; ++x)
+            {
+                for(int y = 0; y < size; ++y)
+                {
+                    tiles[(x * size) + y].CellX = x;
+                    tiles[(x * size) + y].CellY = y;
+                }
+            }
         }
 
         [ContextMenu("Input Model Generation")]

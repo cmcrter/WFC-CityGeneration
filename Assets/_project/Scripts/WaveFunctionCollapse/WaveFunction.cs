@@ -122,7 +122,14 @@ namespace WFC
         {
             OutputGrid = new Grid(width, height);
 
-            
+            for(int x = 0; x < OutputGrid.width; ++x)
+            {
+                for(int y = 0; y < OutputGrid.height; ++y)
+                {
+                    OutputGrid.GridCells[x, y].CellX = x;
+                    OutputGrid.GridCells[x, y].CellY = y;
+                }
+            }
 
             yield return true;
         }

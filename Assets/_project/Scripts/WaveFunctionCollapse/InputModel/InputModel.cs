@@ -38,6 +38,7 @@ namespace WFC
 
         public void GenerateAdjacencyRules()
         {         
+            //Going through and seeing what tiles are next to what based on the input model
             for(int x = 0; x < Model.height; ++x)
             {
                 for(int y = 0; y < Model.width; ++y) 
