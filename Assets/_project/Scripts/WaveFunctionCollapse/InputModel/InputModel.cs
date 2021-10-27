@@ -9,7 +9,6 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace WFC
 {
@@ -19,8 +18,16 @@ namespace WFC
         #region Variables
 
         public Grid Model;
+        public List<Tile> tilesUsed = new List<Tile>();
+
+        //Linked Dictionaries
+        public Dictionary<Tile, int> FrequenciesOfTiles = new Dictionary<Tile, int>();
+        public Dictionary<int, Tile> Frequencies = new Dictionary<int, Tile>();
+
+        public Dictionary<Tile, List<Tile>> AdjacencyRules = new Dictionary<Tile, List<Tile>>();
+
         private bool includeFlipping;
-        
+
         #endregion
 
         #region Public Methods
@@ -31,84 +38,93 @@ namespace WFC
             includeFlipping = flipping;
         }
 
-        //This essentially records each cells' neighbours and makes patterns out of them (N being the size of the chunks)
-        public List<Pattern> GeneratePatterns(int N)
+        public void GenerateAdjacencyRules()
         {
-            int chunks_x = Model.width / N;
-            int chunks_y = Model.height / N;
-            List<Pattern> patterns = new List<Pattern>();
-
-            for (int i = 0; i < chunks_y; ++i)
+            for(int x = 0; x < Model.height; ++x)
             {
-                for(int j = 0; j < chunks_x; ++j)
+                for(int y = 0; y < Model.width; ++y) 
                 {
-                    // Normal orientation
-                    Pattern pattern = new Pattern();
+                    Cell[] neighbours = Model.GetNeighbours(x, y);
 
-                    int start_x = j * N;
-                    int end_x = (j + 1) * N;
-                    int start_y = i * N;
-                    int end_y = (i + 1) * N;
-
-                    for (int y = start_y; y < end_y; ++y)
+                    if(!AdjacencyRules.ContainsKey(Model.GridCells[x, y].tileUsed))
                     {
-                        for(int x = start_x; x < end_x; ++x)
-                        {
-                            Cell idx = Model.GridCells[x, y];
-                            pattern.AddTile(idx.tileUsed);
-                        }
+                        AdjacencyRules.Add(Model.GridCells[x, y].tileUsed, new List<Tile>());
                     }
 
-                    patterns.Add(pattern);
-
-                    if (includeFlipping)
+                    for (int i = 0; i < neighbours.Length; ++i)
                     {
-                        // Flip horizontal
-                        pattern = new Pattern();
-
-                        for(int y = start_y; y < end_y; ++y)
+                        if(!AdjacencyRules[Model.GridCells[x, y].tileUsed].Contains(neighbours[i].tileUsed))
                         {
-                            for(int x = start_x; x < end_x; ++x)
-                            {
-                                Cell idx = Model.GridCells[end_x - (x + 1), y];
-                                pattern.AddTile(idx.tileUsed);
-                            }
+                            AdjacencyRules[Model.GridCells[x, y].tileUsed].Add(neighbours[i].tileUsed);
                         }
+                    }
+                }
+            }
+        }
 
-                        patterns.Add(pattern);
+        public bool IsAdjacentAllowed(Tile possibleTile, Tile otherTile, out List<Tile> tilesToRemove)
+        {
+            tilesToRemove = new List<Tile>();
+            bool bCanPlace = false;
 
-                        // Flip vertical
-                        pattern = new Pattern();
-
-                        for(int y = start_y; y < end_y; ++y)
-                        {
-                            for(int x = start_x; x < end_x; ++x)
-                            {
-                                Cell idx = Model.GridCells[x, end_y - (y + 1)];
-                                pattern.AddTile(idx.tileUsed);
-                            }
-                        }
-
-                        patterns.Add(pattern);
-
-                        // Flip both
-                        pattern = new Pattern();
-
-                        for(int y = start_y; y < end_y; ++y)
-                        {
-                            for(int x = start_x; x < end_x; ++x)
-                            {
-                                Cell idx = Model.GridCells[end_x - (x + 1), end_y - (y + 1)];
-                                pattern.AddTile(idx.tileUsed);
-                            }
-                        }
-
-                        patterns.Add(pattern);
+            if(AdjacencyRules.TryGetValue(possibleTile, out List<Tile> values))
+            {
+                for(int i = 0; i < AdjacencyRules[possibleTile].Count; ++i)
+                {
+                    if(AdjacencyRules[possibleTile].Contains(otherTile))
+                    {
+                        bCanPlace = true;
+                    }
+                    else
+                    {
+                        tilesToRemove.Add(AdjacencyRules[possibleTile][i]);
                     }
                 }
             }
 
-           return patterns;
+            return bCanPlace;
+        }
+
+
+        public void GenerateListOfPotentialTiles()
+        {
+            for(int x = 0; x < Model.height; ++x)
+            {
+                for(int y = 0; y < Model.width; ++y)
+                {
+                    if(!tilesUsed.Contains(Model.GridCells[x, y].tileUsed))
+                    {
+                        tilesUsed.Add(Model.GridCells[x, y].tileUsed);
+                        FrequenciesOfTiles.Add(Model.GridCells[x, y].tileUsed, 1);
+                        Frequencies.Add(1, Model.GridCells[x, y].tileUsed);
+                    }
+                }
+            }
+        }
+
+        public void CalculateRelativeFrequency()
+        {
+            for(int x = 0; x < Model.height; ++x)
+            {
+                for(int y = 0; y < Model.width; ++y)
+                {
+                    FrequenciesOfTiles.TryGetValue(Model.GridCells[x, y].tileUsed, out int currentFreq);
+                    currentFreq++;
+                    FrequenciesOfTiles[Model.GridCells[x, y].tileUsed] = currentFreq;
+                }
+            }
+        }
+
+        public int GetSumOfTileWeights(List<Tile> tilesToWeigh)
+        {
+            int totalWeight = 0;
+
+            for(int i = 0; i < tilesToWeigh.Count; ++i) 
+            {
+                totalWeight += FrequenciesOfTiles[Frequencies[i]];
+            }
+
+            return totalWeight;
         }
 
         #endregion

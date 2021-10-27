@@ -17,8 +17,5 @@ namespace WFC
     {
         //This is the actual model that can be put down as the tile
         public GameObject Prefab;
-
-        //Each tile will know the sockets that can go in or out of it based on an id
-        public Hash128[] sockets = new Hash128[4];
     }
 }

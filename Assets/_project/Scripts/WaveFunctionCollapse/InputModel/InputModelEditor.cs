@@ -48,9 +48,9 @@ namespace WFC.Editor
             for(int i = 0; i < transform.childCount; ++i)
             {
                 //All of these children should have the cell component on them
-                if(transform.GetChild(i).TryGetComponent(out Cell cell))
+                if(transform.GetChild(i).TryGetComponent(out CellVisualiser cell))
                 {
-                    tiles.Add(cell);
+                    tiles.Add(cell.thisCell);
                 }
             }
         }
@@ -78,7 +78,9 @@ namespace WFC.Editor
 
             //Formulating the input model based on the grid
             modelGenerated = new InputModel(newGrid, patternFlipping);
-            modelGenerated.GeneratePatterns(size);
+            modelGenerated.GenerateListOfPotentialTiles();
+            modelGenerated.CalculateRelativeFrequency();
+            modelGenerated.GenerateAdjacencyRules();
         }
 
         #endregion

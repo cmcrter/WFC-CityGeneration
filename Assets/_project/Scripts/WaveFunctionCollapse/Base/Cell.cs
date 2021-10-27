@@ -13,16 +13,23 @@ using UnityEngine;
 
 namespace WFC
 {
-    //This is a monobehaviour so it can be easily referred to by editor/inspector scripts
-    public class Cell : MonoBehaviour
+    [Serializable]
+    //This is a class which will hold the data for each cell
+    public class Cell
     {
         #region Public Fields
 
         //The tile used (and also whether the tile has collapsed or not)
         public Tile tileUsed;
 
+        //Each cell will know the possible tiles that could've be instantiated there from the start
+        public List<Tile> AllpossibleTiles = new List<Tile>();
         //Each cell will know the possible tiles that could be instantiated there
         public List<Tile> possibleTiles = new List<Tile>();
+
+        public float currentEntropy = 1f;
+        public int CellX;
+        public int CellY;
 
         #endregion
 
@@ -31,37 +38,124 @@ namespace WFC
 
         #region Public Methods
 
+        public Cell(int X, int Y)
+        {
+            CellX = X;
+            CellY = Y;
+        }
+
         public bool isCollapsed()
         {
             return (tileUsed != null);
         }
 
-        public int calculateEntropyValue()
+        public float calculateEntropyValue(InputModel model)
         {
-            return possibleTiles.Count;
+            int sum_of_weights = 0;
+            float sum_of_weight_log_weights = 0;
+            
+            for(int i = 0; i < possibleTiles.Count; ++i)
+            {
+                int weight = model.FrequenciesOfTiles[possibleTiles[i]];
+                sum_of_weights += weight;
+                sum_of_weight_log_weights += weight * Mathf.Log(weight);
+            }
+
+            return Mathf.Log(sum_of_weights) - (sum_of_weight_log_weights / sum_of_weights);
         }
 
         //Collapsing the cell by selecting a random tile out of the options to use
-        public void CollapseCell(int randNumber)
+        public void CollapseCell(int randNumber, InputModel model)
         {
             //Using relative frequencies to get number to random from and what to do with random number
+            //Some of options appear more than other, so increasing the amount of choices for the random to hit those options by the frequency 
+            int newRand = randNumber % model.GetSumOfTileWeights(possibleTiles);
 
-            int newRand = randNumber % possibleTiles.Count;
+            foreach (Tile tile in possibleTiles)
+            {
+                //Using how often they appear next to the other tiles in the pattern
+                int weight = model.FrequenciesOfTiles[tile];
 
-            tileUsed = possibleTiles[newRand];
+                if(newRand >= weight)
+                {
+                    newRand -= weight;
+                }
+                else
+                {
+                    tileUsed = possibleTiles[possibleTiles.Count];
+                }
+            }
         }
 
-        //Assuming that cell is not collapsed yet
-        public bool isCompatibleWith(Cell otherCell)
+        public void UpdateConstraints(Cell[] neighbours, InputModel model, out List<Tile> CellConstrainedTiles)
         {
- 
+            CellConstrainedTiles = new List<Tile>();
 
-            return false;
+            //Go through the neighbours
+            for(int i = 0; i < neighbours.Length; ++i)
+            {
+                if(i == 0 || i == 2 || i == 5 || i == 7)
+                {
+                    continue;
+                }
+
+                //If a certain tile of the possible tiles never appears next to them in the pattern
+                //Remove that possible tile from possible tiles
+                if(neighbours[i].tileUsed)
+                {
+                    for(int j = 0; j < possibleTiles.Count; ++j)
+                    {
+                        if(neighbours[i].tileUsed)
+                        {
+                            if(model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed, out List<Tile> ConstrainedTiles))
+                            {
+                                CellConstrainedTiles = ConstrainedTiles;
+
+                                if(ConstrainedTiles.Count > 0)
+                                {
+                                    UpdatePossibleTiles(ConstrainedTiles);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for(int k = 0; k < neighbours[i].possibleTiles.Count; ++k)
+                            {
+                                if(model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].possibleTiles[k], out List<Tile> ConstrainedTiles))
+                                {
+                                    CellConstrainedTiles = ConstrainedTiles;
+
+                                    if(ConstrainedTiles.Count > 0)
+                                    {
+                                        UpdatePossibleTiles(ConstrainedTiles);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            currentEntropy = calculateEntropyValue(model);
+        }
+
+        public void ApplyConstraintsBasedOnPotential()
+        {
+
         }
 
         #endregion
 
         #region Private Methods
+
+        private void UpdatePossibleTiles(List<Tile> tilesToRemove)
+        {
+            foreach(Tile tile in tilesToRemove)
+            {
+                possibleTiles.Remove(tile);
+            }
+        }
+
         #endregion
     }
 

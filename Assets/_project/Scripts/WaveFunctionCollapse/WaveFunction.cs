@@ -8,6 +8,8 @@
 //////////////////////////////////////////////////////////// 
 
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using WFC.Editor;
 using WFC.Rand;
@@ -26,7 +28,7 @@ namespace WFC
         [SerializeField]
         private InputModelEditor InputModelEditor;
         [SerializeField]
-        private InputModel InputModel;
+        private InputModel IModel;
 
         //The grids' dimensions used
         [SerializeField]
@@ -50,6 +52,7 @@ namespace WFC
         private Coroutine CoGenerating;
         //Keeping a reference of the cell to most recently collapse
         Cell mostRecentlyCollapsed = null;
+        int mostRecentX, mostRecentY;
 
         //The random number generator
         Mersenne_Twister MTNumberGenerator;
@@ -62,7 +65,7 @@ namespace WFC
         {
             if(InputModelEditor)
             {
-                InputModel = InputModelEditor.modelGenerated;
+                IModel = InputModelEditor.modelGenerated;
             }
             else
             {
@@ -117,17 +120,20 @@ namespace WFC
         private IEnumerator Co_CreateGrid()
         {
             OutputGrid = new Grid(width, height);
+
+            
+
             yield return true;
         }
 
         private IEnumerator Co_CollapseRandom()
         {
             //Getting a random cell
-            int RandWidth = MTNumberGenerator.ReturnRandom(width);
-            int RandHeight = MTNumberGenerator.ReturnRandom(height);
+            mostRecentX = MTNumberGenerator.ReturnRandom(width);
+            mostRecentY = MTNumberGenerator.ReturnRandom(height);
 
             //Collapsing it
-            OutputGrid.GridCells[RandWidth, RandHeight].CollapseCell(MTNumberGenerator.ReturnRandom());
+            OutputGrid.GridCells[mostRecentX, mostRecentY].CollapseCell(MTNumberGenerator.ReturnRandom(), IModel);
 
             //Updating the grid constraints before the general propagation begins
             UpdateGridConstraints();
@@ -162,10 +168,10 @@ namespace WFC
                     }
                     else
                     {
+                        //Start again completely?
                         yield return false;
                     }
                 }
-            
 
                 if(incremental)
                 {
@@ -199,8 +205,36 @@ namespace WFC
 
         private IEnumerator UpdateGridConstraints()
         {
-            //Looking at neighbours (using the Moore neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, essentially this is the actual propagation function
+            //Looking at neighbours (using the von Neumann neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, essentially this is the actual propagation function
             //If this causes the neighbours of these neighbours to change, remove impossible tiles from them, creating a cascade of applying constraints
+            bool propagating = true;
+            Cell[] firstNeighbours = OutputGrid.GetNeighbours(mostRecentX, mostRecentY);
+            List<Cell> Neighbours = firstNeighbours.ToList();
+            List<Cell> alreadyPropagated = new List<Cell>();
+
+            alreadyPropagated.Add(mostRecentlyCollapsed);
+            OutputGrid.GridCells[mostRecentX, mostRecentY].UpdateConstraints(firstNeighbours, IModel, out List<Tile> initialConstrainedTiles);
+
+            if(initialConstrainedTiles.Count == 0 )
+            {
+                yield return true;
+            }
+
+            while(propagating)
+            {
+                //if there are neighbours to look at, look at them and propagate
+                if(Neighbours.Count > 0)
+                {
+                    for(int i = 0; i < Neighbours.Count; ++i)
+                    {
+                        Neighbours[i].UpdateConstraints(OutputGrid.GetNeighbours(mostRecentX, mostRecentY), IModel, out List<Tile> ConstrainedTiles);
+                    }
+                }
+                //Look through these neighbours
+                //If they propagate, add their neighbours to list and break out
+                //Else, back out
+            }
+            
             yield return true;
         }
 
@@ -208,16 +242,40 @@ namespace WFC
         private IEnumerator SearchForCellToCollapse()
         {
             //Look for cells with lowest entropy
+            Cell currentCellWithLowestEntropy = null;
 
+            for(int x = 0; x < OutputGrid.width; ++x)
+            {
+                for(int y = 0; y < OutputGrid.height; ++y)
+                {
+                    if(OutputGrid.GridCells[x, y].tileUsed == null) 
+                    {
+                        if(currentCellWithLowestEntropy == null)
+{
+                            currentCellWithLowestEntropy = OutputGrid.GridCells[x, y];
+                            mostRecentX = x;
+                            mostRecentY = y;
+                        }
+
+                        if(OutputGrid.GridCells[x, y].currentEntropy < currentCellWithLowestEntropy.currentEntropy)
+                        {
+                            currentCellWithLowestEntropy = OutputGrid.GridCells[x, y];
+                            mostRecentX = x;
+                            mostRecentY = y;
+                        }
+                    }
+                }
+            }
             //Returning out of the coroutine
-            mostRecentlyCollapsed = null;
+            mostRecentlyCollapsed = currentCellWithLowestEntropy;
+
             yield return true;
         }
 
         private void CollapsingNextCell(Cell givenCell)
         {
             //Collapse given cell
-            givenCell.CollapseCell(MTNumberGenerator.ReturnRandom());
+            givenCell.CollapseCell(MTNumberGenerator.ReturnRandom(), IModel);
         }
 
         private bool isMapPossible()
@@ -233,7 +291,6 @@ namespace WFC
                     }
                 }
             }
-
 
             //The map could still be made
             return true;

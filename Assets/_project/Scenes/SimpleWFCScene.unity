@@ -185,26 +185,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2439821203569739689, guid: bd0ca4ee6eb436f46a7a69cd8409bb7b, type: 3}
   m_PrefabInstance: {fileID: 14918316}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &14918318 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3067000659452484883, guid: bd0ca4ee6eb436f46a7a69cd8409bb7b, type: 3}
-  m_PrefabInstance: {fileID: 14918316}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &14918319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 14918318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
 --- !u!1 &31710367
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,12 +291,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 33200065}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 0}
-  possibleTiles:
-  - {fileID: 0}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &34327747
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -379,26 +363,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2149099462098172996, guid: ea4037f1290c7ef44811bb947a0bc870, type: 3}
   m_PrefabInstance: {fileID: 34327747}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &34327749 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1628317620172777214, guid: ea4037f1290c7ef44811bb947a0bc870, type: 3}
-  m_PrefabInstance: {fileID: 34327747}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &34327750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 34327749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
 --- !u!1001 &60291228
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -461,26 +425,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1003388726473138489, guid: 46a61d58fbd92ca42b0249f7e1d8a0d4, type: 3}
   m_PrefabInstance: {fileID: 60291228}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &60291230 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 479369578986634115, guid: 46a61d58fbd92ca42b0249f7e1d8a0d4, type: 3}
-  m_PrefabInstance: {fileID: 60291228}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &60291231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 60291230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
 --- !u!1 &67971361
 GameObject:
   m_ObjectHideFlags: 0
@@ -549,37 +493,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f873f7dde36d2443a1bec15afa59dab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiles:
-  - {fileID: 1350895422}
-  - {fileID: 223002710}
-  - {fileID: 1477613581}
-  - {fileID: 33200066}
-  - {fileID: 1881890290}
-  - {fileID: 1720910114}
-  - {fileID: 725401713}
-  - {fileID: 1044411163}
-  - {fileID: 996847133}
-  - {fileID: 1138861336}
-  - {fileID: 955672582}
-  - {fileID: 1195100711}
-  - {fileID: 556215940}
-  - {fileID: 1937450309}
-  - {fileID: 387428706}
-  - {fileID: 1633446092}
-  - {fileID: 189236619}
-  - {fileID: 1710923804}
-  - {fileID: 215249930}
-  - {fileID: 781544364}
-  - {fileID: 693997501}
-  - {fileID: 1505850511}
-  - {fileID: 1042366094}
-  - {fileID: 885075837}
-  - {fileID: 791535434}
+  tiles: []
   size: 5
   modelGenerated:
     Model:
       width: 5
       height: 5
+    tilesUsed: []
   lastGeneratedGrid:
     width: 5
     height: 5
@@ -631,10 +551,11 @@ MonoBehaviour:
     width: 15
     height: 15
   InputModelEditor: {fileID: 1899769047}
-  InputModel:
+  IModel:
     Model:
       width: 0
       height: 0
+    tilesUsed: []
   width: 15
   height: 15
   seed: 7919
@@ -717,12 +638,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 189236618}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &215249927
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -799,12 +724,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 215249929}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &221902706
 GameObject:
   m_ObjectHideFlags: 0
@@ -915,12 +844,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 223002709}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 0}
-  possibleTiles:
-  - {fileID: 0}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &315046143
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,12 +964,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 387428705}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &463286016
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,12 +1082,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 556215939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &649942757
 GameObject:
   m_ObjectHideFlags: 0
@@ -1243,26 +1184,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2149099462098172996, guid: ea4037f1290c7ef44811bb947a0bc870, type: 3}
   m_PrefabInstance: {fileID: 673460728}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &673460730 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1628317620172777214, guid: ea4037f1290c7ef44811bb947a0bc870, type: 3}
-  m_PrefabInstance: {fileID: 673460728}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &673460731
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 673460730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
 --- !u!1001 &693997498
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1339,12 +1260,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 693997500}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &725401710
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1421,12 +1346,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 725401712}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &753879373
 GameObject:
   m_ObjectHideFlags: 0
@@ -1600,12 +1529,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 781544363}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &791535431
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1682,12 +1615,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 791535433}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &885075834
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1764,12 +1701,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 885075836}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &895752038
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1832,26 +1773,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 234719691535129556, guid: acc23732b7f5a4c4a9736b7370d7e273, type: 3}
   m_PrefabInstance: {fileID: 895752038}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &895752040 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 579333760098353518, guid: acc23732b7f5a4c4a9736b7370d7e273, type: 3}
-  m_PrefabInstance: {fileID: 895752038}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &895752041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 895752040}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
 --- !u!1001 &955672579
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1928,12 +1849,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 955672581}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &958119908
 GameObject:
   m_ObjectHideFlags: 0
@@ -2040,12 +1965,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 996847132}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 0}
-  possibleTiles:
-  - {fileID: 0}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &1006148349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2108,26 +2037,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2149099462098172996, guid: ea4037f1290c7ef44811bb947a0bc870, type: 3}
   m_PrefabInstance: {fileID: 1006148349}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1006148351 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1628317620172777214, guid: ea4037f1290c7ef44811bb947a0bc870, type: 3}
-  m_PrefabInstance: {fileID: 1006148349}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1006148352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1006148351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
 --- !u!1 &1022346239
 GameObject:
   m_ObjectHideFlags: 0
@@ -2270,12 +2179,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1042366093}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &1044411160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2352,12 +2265,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1044411162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 0}
-  possibleTiles:
-  - {fileID: 0}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &1080090140
 GameObject:
   m_ObjectHideFlags: 0
@@ -2580,12 +2497,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1138861335}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 0}
-  possibleTiles:
-  - {fileID: 0}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &1195100708
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2662,12 +2583,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1195100710}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &1213771793
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2730,26 +2655,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 234719691535129556, guid: acc23732b7f5a4c4a9736b7370d7e273, type: 3}
   m_PrefabInstance: {fileID: 1213771793}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1213771795 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 579333760098353518, guid: acc23732b7f5a4c4a9736b7370d7e273, type: 3}
-  m_PrefabInstance: {fileID: 1213771793}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1213771796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1213771795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
 --- !u!1 &1274775970
 GameObject:
   m_ObjectHideFlags: 0
@@ -2856,12 +2761,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1350895421}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 0}
-  possibleTiles:
-  - {fileID: 0}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &1477613578
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2938,12 +2847,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1477613580}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 0}
-  possibleTiles:
-  - {fileID: 0}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &1505850508
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3020,12 +2933,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1505850510}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &1531077823
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3088,26 +3005,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2439821203569739689, guid: bd0ca4ee6eb436f46a7a69cd8409bb7b, type: 3}
   m_PrefabInstance: {fileID: 1531077823}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1531077825 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3067000659452484883, guid: bd0ca4ee6eb436f46a7a69cd8409bb7b, type: 3}
-  m_PrefabInstance: {fileID: 1531077823}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1531077826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1531077825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
 --- !u!1 &1571593336
 GameObject:
   m_ObjectHideFlags: 0
@@ -3283,12 +3180,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1633446091}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &1710923801
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3365,12 +3266,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1710923803}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1001 &1715989466
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3433,26 +3338,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1003388726473138489, guid: 46a61d58fbd92ca42b0249f7e1d8a0d4, type: 3}
   m_PrefabInstance: {fileID: 1715989466}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1715989468 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 479369578986634115, guid: 46a61d58fbd92ca42b0249f7e1d8a0d4, type: 3}
-  m_PrefabInstance: {fileID: 1715989466}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1715989469
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1715989468}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
 --- !u!1001 &1720910111
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3529,12 +3414,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1720910113}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 0}
-  possibleTiles:
-  - {fileID: 0}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &1862801521
 GameObject:
   m_ObjectHideFlags: 0
@@ -3704,12 +3593,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1881890289}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 0}
-  possibleTiles:
-  - {fileID: 0}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &1899769045
 GameObject:
   m_ObjectHideFlags: 0
@@ -3768,6 +3661,7 @@ MonoBehaviour:
     Model:
       width: 0
       height: 0
+    tilesUsed: []
   lastGeneratedGrid:
     width: 0
     height: 0
@@ -3878,12 +3772,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1937450308}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 050e580cb481309419a3601b2890a6b6, type: 3}
+  m_Script: {fileID: 11500000, guid: b43a692a6d01dc545ad3738f0d2f2389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  possibleTiles:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  thisCell:
+    tileUsed: {fileID: 0}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
 --- !u!1 &2055362017
 GameObject:
   m_ObjectHideFlags: 0

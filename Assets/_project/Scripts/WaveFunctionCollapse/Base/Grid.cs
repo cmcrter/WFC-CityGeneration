@@ -34,6 +34,40 @@ namespace WFC
             GridCells = new Cell[width, height];
         }
 
+        //To be used in conjunction with the DIRECTION enum
+        public Cell[] GetNeighbours(int CellX, int CellY)
+        {
+            //Getting the moore neighbourhood
+            Cell[] neighbours = new Cell[4];
+            int neighbourCount = 0;
+
+            for(int i = -1; i <= 1; i++)
+            {
+                for(int j = -1; j <= 1; j++)
+                {
+                    // skip center cell
+                    if(i == j)
+                        continue;
+
+                    // skip rows out of range.
+                    if((i + CellX) < 0 || (i + CellX >= height))
+                        continue;
+                    // skip columns out of range.
+                    if((j + CellY) < 0 || (j + CellY >= width))
+                        continue;
+
+                    if(GridCells[i + CellX, j + CellY] == null)
+                        continue;
+
+                    // add to sum.
+                    neighbours[neighbourCount] = GridCells[i + CellX, j + CellY];
+                    neighbourCount++;
+                }
+            }
+
+            return neighbours;
+        }
+
         #endregion
 
         #region Private Methods
