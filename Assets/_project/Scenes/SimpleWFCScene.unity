@@ -3655,16 +3655,73 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f873f7dde36d2443a1bec15afa59dab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiles: []
+  tiles:
+  - tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
+  - tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
+  - tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
+  - tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
+  - tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
+  - tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
+  - tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
+  - tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
+  - tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
+    AllpossibleTiles: []
+    possibleTiles: []
+    currentEntropy: 0
+    CellX: 0
+    CellY: 0
   size: 3
   modelGenerated:
     Model:
-      width: 0
-      height: 0
-    tilesUsed: []
+      width: 3
+      height: 3
+    tilesUsed:
+    - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+    - {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
+    - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
   lastGeneratedGrid:
-    width: 0
-    height: 0
+    width: 3
+    height: 3
   patternFlipping: 0
 --- !u!1 &1920863104
 GameObject:

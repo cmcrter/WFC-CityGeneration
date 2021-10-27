@@ -3,11 +3,12 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 21/10/21
+// Date Last Edited: 27/10/21
 // Brief: A representation of a grid of values
 //////////////////////////////////////////////////////////// 
 
 using System;
+using UnityEngine;
 
 namespace WFC
 {
@@ -52,16 +53,17 @@ namespace WFC
                     // skip rows out of range.
                     if((i + CellX) < 0 || (i + CellX >= height))
                         continue;
+
                     // skip columns out of range.
                     if((j + CellY) < 0 || (j + CellY >= width))
                         continue;
 
-                    if(GridCells[i + CellX, j + CellY] == null)
-                        continue;
-
-                    // add to sum.
-                    neighbours[neighbourCount] = GridCells[i + CellX, j + CellY];
-                    neighbourCount++;
+                    //This is a viable neighbour
+                    if(neighbourCount != neighbours.Length) 
+                    {
+                        neighbours[neighbourCount] = GridCells[i + CellX, j + CellY];
+                        neighbourCount++;
+                    }
                 }
             }
 

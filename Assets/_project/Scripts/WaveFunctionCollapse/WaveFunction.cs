@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 14/10/21
+// Date Last Edited: 27/10/21
 // Brief: A script to run through the wave function collapse algorithm
 //////////////////////////////////////////////////////////// 
 
@@ -81,6 +81,7 @@ namespace WFC
 
         #region Public Methods
 
+        [ContextMenu("Run WFC")]
         public void RunAlgorithm()
         {
             if (CoGenerating != null)

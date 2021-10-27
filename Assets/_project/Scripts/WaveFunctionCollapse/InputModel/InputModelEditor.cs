@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 21/10/21   
 // Last Edited By: Charles Carter
-// Date Last Edited: 21/10/21
+// Date Last Edited: 27/10/21
 // Brief: A script to create an input model from using a transform in a scene
 //////////////////////////////////////////////////////////// 
 
@@ -70,7 +70,7 @@ namespace WFC.Editor
             {
                 for(int y = 0; y < size; ++y) 
                 {
-                    newGrid.GridCells[x, y] = tiles[x + y];
+                    newGrid.GridCells[x, y] = tiles[(x * size) + y];
                 }
             }
 

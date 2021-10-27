@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 21/10/21
+// Date Last Edited: 27/10/21
 // Brief: The script which holds information about the input model and can generate the patterns
 //////////////////////////////////////////////////////////// 
 
@@ -22,8 +22,6 @@ namespace WFC
 
         //Linked Dictionaries
         public Dictionary<Tile, int> FrequenciesOfTiles = new Dictionary<Tile, int>();
-        public Dictionary<int, Tile> Frequencies = new Dictionary<int, Tile>();
-
         public Dictionary<Tile, List<Tile>> AdjacencyRules = new Dictionary<Tile, List<Tile>>();
 
         private bool includeFlipping;
@@ -39,7 +37,7 @@ namespace WFC
         }
 
         public void GenerateAdjacencyRules()
-        {
+        {         
             for(int x = 0; x < Model.height; ++x)
             {
                 for(int y = 0; y < Model.width; ++y) 
@@ -53,12 +51,21 @@ namespace WFC
 
                     for (int i = 0; i < neighbours.Length; ++i)
                     {
-                        if(!AdjacencyRules[Model.GridCells[x, y].tileUsed].Contains(neighbours[i].tileUsed))
+                        if(neighbours[i] != null)
                         {
-                            AdjacencyRules[Model.GridCells[x, y].tileUsed].Add(neighbours[i].tileUsed);
+                            if(!AdjacencyRules[Model.GridCells[x, y].tileUsed].Contains(neighbours[i].tileUsed))
+                            {
+                                AdjacencyRules[Model.GridCells[x, y].tileUsed].Add(neighbours[i].tileUsed);
+                            }
                         }
                     }
                 }
+            }
+
+            //A way for me to see the adjacency rules
+            for(int i = 0; i < tilesUsed.Count; ++i)
+            {
+                tilesUsed[i].CanGoNextTo = AdjacencyRules[tilesUsed[i]];
             }
         }
 
@@ -85,18 +92,16 @@ namespace WFC
             return bCanPlace;
         }
 
-
         public void GenerateListOfPotentialTiles()
         {
-            for(int x = 0; x < Model.height; ++x)
+            for(int x = 0; x < Model.height; x++)
             {
-                for(int y = 0; y < Model.width; ++y)
+                for(int y = 0; y < Model.width; y++)
                 {
                     if(!tilesUsed.Contains(Model.GridCells[x, y].tileUsed))
                     {
                         tilesUsed.Add(Model.GridCells[x, y].tileUsed);
                         FrequenciesOfTiles.Add(Model.GridCells[x, y].tileUsed, 1);
-                        Frequencies.Add(1, Model.GridCells[x, y].tileUsed);
                     }
                 }
             }
@@ -121,7 +126,7 @@ namespace WFC
 
             for(int i = 0; i < tilesToWeigh.Count; ++i) 
             {
-                totalWeight += FrequenciesOfTiles[Frequencies[i]];
+                totalWeight += FrequenciesOfTiles[tilesToWeigh[i]];
             }
 
             return totalWeight;

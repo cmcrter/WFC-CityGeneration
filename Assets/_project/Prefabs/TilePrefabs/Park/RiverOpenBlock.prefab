@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thisCell:
-    tileUsed: {fileID: 0}
+    tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
     AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 0
