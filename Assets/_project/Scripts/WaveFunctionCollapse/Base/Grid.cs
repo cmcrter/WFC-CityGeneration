@@ -46,17 +46,12 @@ namespace WFC
             {
                 for(int j = -1; j <= 1; j++)
                 {
-                    // skip center cell
-                    if(i == j)
+                    //A guard clause for several conditions wherein it's not a valid neighbour
+                    // skip center cell, skip rows out of range, skip columns out of range
+                    if(i == j || (i + CellX) < 0 || (i + CellX >= height) || (j + CellY) < 0 || (j + CellY >= width))
+                    {
                         continue;
-
-                    // skip rows out of range.
-                    if((i + CellX) < 0 || (i + CellX >= height))
-                        continue;
-
-                    // skip columns out of range.
-                    if((j + CellY) < 0 || (j + CellY >= width))
-                        continue;
+                    }
 
                     //This is a viable neighbour
                     if(neighbourCount != neighbours.Length) 

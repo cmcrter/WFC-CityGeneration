@@ -20,7 +20,7 @@ namespace WFC
         public Grid Model;
         public List<Tile> tilesUsed = new List<Tile>();
 
-        //Linked Dictionaries
+        //Linked Dictionaries for the adjacency rule and the frenquencies of tiles in the input model
         public Dictionary<Tile, int> FrequenciesOfTiles = new Dictionary<Tile, int>();
         public Dictionary<Tile, List<Tile>> AdjacencyRules = new Dictionary<Tile, List<Tile>>();
 
@@ -138,5 +138,4 @@ namespace WFC
         #region Private Methods
         #endregion
     }
-
 }

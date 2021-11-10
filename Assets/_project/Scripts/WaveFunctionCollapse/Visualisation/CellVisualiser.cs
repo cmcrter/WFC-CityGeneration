@@ -15,5 +15,10 @@ namespace WFC.Editor
     public class CellVisualiser : MonoBehaviour
     {
         public Cell thisCell;
+
+        public void UpdateVisuals()
+        {
+            
+        }
     }
 }

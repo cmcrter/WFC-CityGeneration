@@ -20,6 +20,7 @@ namespace WFC
     {
         #region Variables
 
+        [Header("Base Algorithm Variables")]
         //The grid that this outputs
         [SerializeField]
         private Grid OutputGrid;
@@ -36,6 +37,7 @@ namespace WFC
         [SerializeField]
         private int height;
 
+        [Header("Algorithm Generation Customization")]
         //The seed which generates each choice the algorithm will pick
         [SerializeField]
         private int seed;
@@ -48,14 +50,18 @@ namespace WFC
         [SerializeField]
         private float generationSpeed = 0.1f;
 
+        //ToDo: Link the hierarchy to the visualization objects
+        [SerializeField]
+        private Transform gridParent;
+
         //The overarching coroutine the algorithm will be running in
         private Coroutine CoGenerating;
         //Keeping a reference of the cell to most recently collapse
-        Cell mostRecentlyCollapsed = null;
-        int mostRecentX, mostRecentY;
+        private Cell mostRecentlyCollapsed = null;
+        private int mostRecentX, mostRecentY;
 
         //The random number generator
-        Mersenne_Twister MTNumberGenerator;
+        private Mersenne_Twister MTNumberGenerator;
 
         #endregion
 
@@ -75,6 +81,8 @@ namespace WFC
                 }
                 enabled = false;
             }
+
+            gridParent = gridParent ?? transform;
         }
 
         #endregion
@@ -113,6 +121,8 @@ namespace WFC
 
             //Propagation through the grid (return when it's a success)
             yield return StartCoroutine(Co_GridPropagation());
+
+            InstantiateGrid();
 
             CoGenerating = null;
             yield return true;
@@ -181,6 +191,7 @@ namespace WFC
                     }
                 }
 
+                //Waiting for a specific amount of time (may help with the visualisation aspect)
                 if(incremental)
                 {
                     yield return new WaitForSeconds(generationSpeed);
@@ -213,7 +224,7 @@ namespace WFC
 
         private IEnumerator UpdateGridConstraints()
         {
-            //Looking at neighbours (using the von Neumann neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, essentially this is the actual propagation function
+            //Looking at neighbours (using the von Neumann neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, this is the actual "propagation" in the propagation function
             //If this causes the neighbours of these neighbours to change, remove impossible tiles from them, creating a cascade of applying constraints
             bool propagating = true;
             Cell[] firstNeighbours = OutputGrid.GetNeighbours(mostRecentX, mostRecentY);
@@ -228,6 +239,7 @@ namespace WFC
                 yield return true;
             }
 
+            //Whilst it's propagating
             while(propagating)
             {
                 //if there are neighbours to look at, look at them and propagate
@@ -235,14 +247,39 @@ namespace WFC
                 {
                     for(int i = 0; i < Neighbours.Count; ++i)
                     {
+                        //Updating the constraints on the current neighbour
                         Neighbours[i].UpdateConstraints(OutputGrid.GetNeighbours(mostRecentX, mostRecentY), IModel, out List<Tile> ConstrainedTiles);
+                        alreadyPropagated.Add(Neighbours[i]);
+
+                        //Look through the neighbours of these neighbours
+                        Cell[] theseNeighbours = OutputGrid.GetNeighbours(Neighbours[i].CellX, Neighbours[i].CellY);
+
+                        for(int j = 0; i < theseNeighbours.Length; ++j)
+                        {
+                            //Don't propagate on already checked tiles
+                            if(alreadyPropagated.Contains(theseNeighbours[j]))
+                            {
+                                continue;
+                            }
+
+                            Neighbours.Add(theseNeighbours[i]);
+
+                            //If they propagate (?), add their neighbours to list
+                            //Else, continue
+                        }
+
+                        Neighbours.RemoveAt(i);
+                        --i;
                     }
                 }
-                //Look through these neighbours
-                //If they propagate, add their neighbours to list and break out
-                //Else, back out
+                else
+                {
+                    propagating = false;
+                }
             }
             
+            //TODO: Look at using a stack to do this?
+
             yield return true;
         }
 
@@ -256,15 +293,20 @@ namespace WFC
             {
                 for(int y = 0; y < OutputGrid.height; ++y)
                 {
+                    //There's no tile selected here
                     if(OutputGrid.GridCells[x, y].tileUsed == null) 
                     {
+                        //There's not a currently chosen cell
                         if(currentCellWithLowestEntropy == null)
 {
                             currentCellWithLowestEntropy = OutputGrid.GridCells[x, y];
                             mostRecentX = x;
                             mostRecentY = y;
+
+                            continue;
                         }
 
+                        //Seeing if the entropy is lower
                         if(OutputGrid.GridCells[x, y].currentEntropy < currentCellWithLowestEntropy.currentEntropy)
                         {
                             currentCellWithLowestEntropy = OutputGrid.GridCells[x, y];
@@ -274,7 +316,8 @@ namespace WFC
                     }
                 }
             }
-            //Returning out of the coroutine
+
+            //Returning out of the coroutine with the cell to use
             mostRecentlyCollapsed = currentCellWithLowestEntropy;
 
             yield return true;
@@ -293,6 +336,7 @@ namespace WFC
             {
                 for(int y = 0; y < OutputGrid.height; ++y)
                 {
+                    //Even if a tile is selected, the possible tiles will be 1 or above
                     if(OutputGrid.GridCells[x, y].possibleTiles.Count == 0)
                     {
                         return false;
@@ -302,6 +346,17 @@ namespace WFC
 
             //The map could still be made
             return true;
+        }
+
+        private void InstantiateGrid()
+        {
+            for(int x = 0; x < OutputGrid.width; ++x)
+            {
+                for(int y = 0; y < OutputGrid.height; ++y)
+                {
+                    Instantiate(OutputGrid.GridCells[x, y].tileUsed.Prefab, new Vector3(x, 0, y), Quaternion.identity, gridParent);
+                }
+            }
         }
 
         private void Backtrack()
