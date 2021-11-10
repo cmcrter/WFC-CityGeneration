@@ -54,7 +54,7 @@ namespace WFC
             
             for(int i = 0; i < possibleTiles.Count; ++i)
             {
-                int weight = model.FrequenciesOfTiles[possibleTiles[i]];
+                int weight = possibleTiles[i].Frequency;
                 sum_of_weights += weight;
                 sum_of_weight_log_weights += weight * Mathf.Log(weight);
             }
@@ -67,20 +67,33 @@ namespace WFC
         {
             //Using relative frequencies to get number to random from and what to do with random number
             //Some of options appear more than other, so increasing the amount of choices for the random to hit those options by the frequency 
-            int newRand = randNumber % model.GetSumOfTileWeights(possibleTiles);
+            if(possibleTiles.Count == 0)
+            {
+                Debug.Log("No possible tiles when collapsing");
+                return;
+            }
+
+            int allTileWeights = model.GetSumOfTileWeights(possibleTiles);
+            int newRand = randNumber % allTileWeights;
+            int tileIndex = 0;
 
             foreach (Tile tile in possibleTiles)
             {
                 //Using how often they appear next to the other tiles in the pattern
-                int weight = model.FrequenciesOfTiles[tile];
+                int weight = tile.Frequency;
 
                 if(newRand >= weight)
                 {
                     newRand -= weight;
+                    tileIndex++;
                 }
                 else
                 {
-                    tileUsed = possibleTiles[possibleTiles.Count];
+                    tileUsed = possibleTiles[tileIndex];
+
+                    possibleTiles.Clear();
+                    possibleTiles.Add(tileUsed);
+                    return;
                 }
             }
         }
@@ -99,7 +112,7 @@ namespace WFC
 
                 //If a certain tile of the possible tiles never appears next to them in the pattern
                 //Remove that possible tile from possible tiles
-                if(neighbours[i].tileUsed)
+                if(neighbours[i] != null)
                 {
                     for(int j = 0; j < possibleTiles.Count; ++j)
                     {

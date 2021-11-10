@@ -4,7 +4,7 @@
 // Date Created: 21/10/21   
 // Last Edited By: Charles Carter
 // Date Last Edited: 21/10/21
-// Brief: The script to show a cell on a gameobject
+// Brief: The script to show a cell on a GameObject
 //////////////////////////////////////////////////////////// 
 
 using UnityEngine;

@@ -16,6 +16,7 @@ namespace WFC.UI
     {
         #region Public Fields
 
+        [SerializeField]
         private WaveFunction waveFunction;
 
         #endregion
@@ -38,6 +39,19 @@ namespace WFC.UI
         }
 
         #endregion
+
+        #region Public Methods
+
+        public void RunProgram()
+        {
+            if(waveFunction)
+            {
+                waveFunction.RunAlgorithm();
+            }
+        }
+
+        #endregion
+
 
         #region Private Methods
 

@@ -21,8 +21,8 @@ namespace WFC
         public List<Tile> tilesUsed = new List<Tile>();
 
         //Linked Dictionaries for the adjacency rule and the frenquencies of tiles in the input model
-        public Dictionary<Tile, int> FrequenciesOfTiles = new Dictionary<Tile, int>();
-        public Dictionary<Tile, List<Tile>> AdjacencyRules = new Dictionary<Tile, List<Tile>>();
+        private Dictionary<Tile, int> FrequenciesOfTiles;
+        private Dictionary<Tile, List<Tile>> AdjacencyRules;
 
         private bool includeFlipping;
 
@@ -37,7 +37,9 @@ namespace WFC
         }
 
         public void GenerateAdjacencyRules()
-        {         
+        {
+            AdjacencyRules = new Dictionary<Tile, List<Tile>>();
+
             //Going through and seeing what tiles are next to what based on the input model
             for(int x = 0; x < Model.height; ++x)
             {
@@ -75,19 +77,9 @@ namespace WFC
             tilesToRemove = new List<Tile>();
             bool bCanPlace = false;
 
-            if(AdjacencyRules.TryGetValue(possibleTile, out List<Tile> values))
+            if(possibleTile.CanGoNextTo.Contains(otherTile))
             {
-                for(int i = 0; i < AdjacencyRules[possibleTile].Count; ++i)
-                {
-                    if(AdjacencyRules[possibleTile].Contains(otherTile))
-                    {
-                        bCanPlace = true;
-                    }
-                    else
-                    {
-                        tilesToRemove.Add(AdjacencyRules[possibleTile][i]);
-                    }
-                }
+                bCanPlace = true;
             }
 
             return bCanPlace;
@@ -95,6 +87,8 @@ namespace WFC
 
         public void GenerateListOfPotentialTiles()
         {
+            tilesUsed = new List<Tile>();
+
             for(int x = 0; x < Model.height; x++)
             {
                 for(int y = 0; y < Model.width; y++)
@@ -102,7 +96,6 @@ namespace WFC
                     if(!tilesUsed.Contains(Model.GridCells[x, y].tileUsed))
                     {
                         tilesUsed.Add(Model.GridCells[x, y].tileUsed);
-                        FrequenciesOfTiles.Add(Model.GridCells[x, y].tileUsed, 1);
                     }
                 }
             }
@@ -110,14 +103,26 @@ namespace WFC
 
         public void CalculateRelativeFrequency()
         {
+            FrequenciesOfTiles = new Dictionary<Tile, int>();
+
             for(int x = 0; x < Model.height; ++x)
             {
                 for(int y = 0; y < Model.width; ++y)
                 {
-                    FrequenciesOfTiles.TryGetValue(Model.GridCells[x, y].tileUsed, out int currentFreq);
-                    currentFreq++;
-                    FrequenciesOfTiles[Model.GridCells[x, y].tileUsed] = currentFreq;
+                    if(!FrequenciesOfTiles.ContainsKey(Model.GridCells[x, y].tileUsed))
+                    {
+                        FrequenciesOfTiles.Add(Model.GridCells[x, y].tileUsed, 1);
+                    }
+                    else
+                    {
+                        FrequenciesOfTiles[Model.GridCells[x, y].tileUsed]++;
+                    }
                 }
+            }
+
+            for(int i = 0; i < tilesUsed.Count; ++i)
+            {
+                tilesUsed[i].Frequency = FrequenciesOfTiles[tilesUsed[i]];
             }
         }
 
@@ -127,7 +132,10 @@ namespace WFC
 
             for(int i = 0; i < tilesToWeigh.Count; ++i) 
             {
-                totalWeight += FrequenciesOfTiles[tilesToWeigh[i]];
+                if(tilesToWeigh.Contains(tilesToWeigh[i]))
+                {
+                    totalWeight += tilesToWeigh[i].Frequency;
+                }
             }
 
             return totalWeight;

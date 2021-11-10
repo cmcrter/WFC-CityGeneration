@@ -28,8 +28,21 @@ namespace WFC.Editor
 
         [SerializeField]
         private bool patternFlipping = false;
+        [SerializeField]
+        private bool isInUse = true; 
 
         #endregion
+
+        private void Awake()
+        {
+            if(!isInUse)
+            {
+                return;
+            }
+
+            GetTiles();
+            GeneratedInputModelGrid();
+        }
 
         #region Public Methods
 
@@ -84,13 +97,13 @@ namespace WFC.Editor
                 }
             }
 
-            lastGeneratedGrid = newGrid;
-
             //Formulating the input model based on the grid
             modelGenerated = new InputModel(newGrid, patternFlipping);
             modelGenerated.GenerateListOfPotentialTiles();
             modelGenerated.CalculateRelativeFrequency();
             modelGenerated.GenerateAdjacencyRules();
+
+            lastGeneratedGrid = modelGenerated.Model;
         }
 
         #endregion

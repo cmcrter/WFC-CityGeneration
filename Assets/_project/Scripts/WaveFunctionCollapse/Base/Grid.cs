@@ -33,12 +33,21 @@ namespace WFC
             height = newHeight;
 
             GridCells = new Cell[width, height];
+
+            for(int x = 0; x < width; x++)
+            {
+                for(int y = 0; y < height; y++)
+                {
+                    GridCells[x, y] = new Cell();
+                }
+            }
+
         }
 
         //To be used in conjunction with the DIRECTION enum
         public Cell[] GetNeighbours(int CellX, int CellY)
         {
-            //Getting the moore neighbourhood
+            //Getting the van Neumann neighbourhood
             Cell[] neighbours = new Cell[4];
             int neighbourCount = 0;
 

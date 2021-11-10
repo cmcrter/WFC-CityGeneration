@@ -19,5 +19,6 @@ namespace WFC
         //This is the actual model that can be put down as the tile
         public GameObject Prefab;
         public List<Tile> CanGoNextTo;
+        public int Frequency;
     }
 }

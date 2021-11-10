@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 27/10/21
+// Date Last Edited: 10/11/21
 // Brief: A script to run through the wave function collapse algorithm
 //////////////////////////////////////////////////////////// 
 
@@ -69,6 +69,11 @@ namespace WFC
 
         private void Awake()
         {
+            gridParent = gridParent ?? transform;
+        }
+
+        private void Start()
+        {
             if(InputModelEditor)
             {
                 IModel = InputModelEditor.modelGenerated;
@@ -81,13 +86,18 @@ namespace WFC
                 }
                 enabled = false;
             }
-
-            gridParent = gridParent ?? transform;
         }
 
         #endregion
 
         #region Public Methods
+
+        [ContextMenu("Setup WFC")]
+        public void UseInputModel()
+        {
+            InputModelEditor.GetTiles();
+            InputModelEditor.GeneratedInputModelGrid();
+        }
 
         [ContextMenu("Run WFC")]
         public void RunAlgorithm()
@@ -122,7 +132,8 @@ namespace WFC
             //Propagation through the grid (return when it's a success)
             yield return StartCoroutine(Co_GridPropagation());
 
-            InstantiateGrid();
+            //InstantiateGrid();
+            Debug.Log("Algorithm Finished");
 
             CoGenerating = null;
             yield return true;
@@ -132,12 +143,16 @@ namespace WFC
         {
             OutputGrid = new Grid(width, height);
 
-            for(int x = 0; x < OutputGrid.width; ++x)
+            for(int x = 0; x < OutputGrid.width; x++)
             {
-                for(int y = 0; y < OutputGrid.height; ++y)
+                for(int y = 0; y < OutputGrid.height; y++)
                 {
+                    //Debug.Log("Cell: " + x + "," + y + " being set");
+
                     OutputGrid.GridCells[x, y].CellX = x;
                     OutputGrid.GridCells[x, y].CellY = y;
+
+                    OutputGrid.GridCells[x, y].possibleTiles = InputModelEditor.modelGenerated.tilesUsed;
                 }
             }
 
@@ -151,11 +166,9 @@ namespace WFC
             mostRecentY = MTNumberGenerator.ReturnRandom(height);
 
             //Collapsing it
-            OutputGrid.GridCells[mostRecentX, mostRecentY].CollapseCell(MTNumberGenerator.ReturnRandom(), IModel);
-
-            //Updating the grid constraints before the general propagation begins
+            CollapsingNextCell(OutputGrid.GridCells[mostRecentX, mostRecentY]);
+            mostRecentlyCollapsed = OutputGrid.GridCells[mostRecentX, mostRecentY];
             UpdateGridConstraints();
-
             yield return true;
         }
 
@@ -228,16 +241,11 @@ namespace WFC
             //If this causes the neighbours of these neighbours to change, remove impossible tiles from them, creating a cascade of applying constraints
             bool propagating = true;
             Cell[] firstNeighbours = OutputGrid.GetNeighbours(mostRecentX, mostRecentY);
-            List<Cell> Neighbours = firstNeighbours.ToList();
+            Stack<Cell> Neighbours = new Stack<Cell>();
             List<Cell> alreadyPropagated = new List<Cell>();
 
             alreadyPropagated.Add(mostRecentlyCollapsed);
             OutputGrid.GridCells[mostRecentX, mostRecentY].UpdateConstraints(firstNeighbours, IModel, out List<Tile> initialConstrainedTiles);
-
-            if(initialConstrainedTiles.Count == 0 )
-            {
-                yield return true;
-            }
 
             //Whilst it's propagating
             while(propagating)
@@ -245,31 +253,26 @@ namespace WFC
                 //if there are neighbours to look at, look at them and propagate
                 if(Neighbours.Count > 0)
                 {
-                    for(int i = 0; i < Neighbours.Count; ++i)
+                    //Updating the constraints on the current neighbour
+                    Neighbours.Last().UpdateConstraints(OutputGrid.GetNeighbours(mostRecentX, mostRecentY), IModel, out List<Tile> ConstrainedTiles);
+                    alreadyPropagated.Add(Neighbours.Last());
+                    Neighbours.Pop();
+
+                    //Look through the neighbours of these neighbours
+                    Cell[] theseNeighbours = OutputGrid.GetNeighbours(Neighbours.Last().CellX, Neighbours.Last().CellY);
+
+                    for(int j = 0; j < theseNeighbours.Length; ++j)
                     {
-                        //Updating the constraints on the current neighbour
-                        Neighbours[i].UpdateConstraints(OutputGrid.GetNeighbours(mostRecentX, mostRecentY), IModel, out List<Tile> ConstrainedTiles);
-                        alreadyPropagated.Add(Neighbours[i]);
-
-                        //Look through the neighbours of these neighbours
-                        Cell[] theseNeighbours = OutputGrid.GetNeighbours(Neighbours[i].CellX, Neighbours[i].CellY);
-
-                        for(int j = 0; i < theseNeighbours.Length; ++j)
+                        //Don't propagate on already checked tiles
+                        if(alreadyPropagated.Contains(theseNeighbours[j]))
                         {
-                            //Don't propagate on already checked tiles
-                            if(alreadyPropagated.Contains(theseNeighbours[j]))
-                            {
-                                continue;
-                            }
-
-                            Neighbours.Add(theseNeighbours[i]);
-
-                            //If they propagate (?), add their neighbours to list
-                            //Else, continue
+                            continue;
                         }
 
-                        Neighbours.RemoveAt(i);
-                        --i;
+                        Neighbours.Push(theseNeighbours[j]);
+
+                        //If they propagate (?), add their neighbours to list
+                        //Else, continue
                     }
                 }
                 else
@@ -277,8 +280,6 @@ namespace WFC
                     propagating = false;
                 }
             }
-            
-            //TODO: Look at using a stack to do this?
 
             yield return true;
         }
@@ -307,7 +308,7 @@ namespace WFC
                         }
 
                         //Seeing if the entropy is lower
-                        if(OutputGrid.GridCells[x, y].currentEntropy < currentCellWithLowestEntropy.currentEntropy)
+                        if(OutputGrid.GridCells[x, y].currentEntropy <= currentCellWithLowestEntropy.currentEntropy)
                         {
                             currentCellWithLowestEntropy = OutputGrid.GridCells[x, y];
                             mostRecentX = x;
@@ -326,7 +327,11 @@ namespace WFC
         private void CollapsingNextCell(Cell givenCell)
         {
             //Collapse given cell
-            givenCell.CollapseCell(MTNumberGenerator.ReturnRandom(), IModel);
+            int Random = Mathf.Abs(MTNumberGenerator.ReturnRandom(1000));
+            givenCell.CollapseCell(Random, IModel);
+
+            Debug.Log("Cell: " + givenCell.CellX + "," + givenCell.CellY + " being placed as: " + givenCell.tileUsed.name);
+            Instantiate(givenCell.tileUsed.Prefab, new Vector3(givenCell.CellX, 1, givenCell.CellY), Quaternion.identity, gridParent);
         }
 
         private bool isMapPossible()

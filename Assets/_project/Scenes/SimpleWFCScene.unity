@@ -504,6 +504,7 @@ MonoBehaviour:
     width: 5
     height: 5
   patternFlipping: 0
+  isInUse: 0
 --- !u!1 &93325628
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,9 +559,9 @@ MonoBehaviour:
     tilesUsed: []
   width: 15
   height: 15
-  seed: 7919
-  iterationLimit: 0
-  incremental: 1
+  seed: 29997
+  iterationLimit: 10
+  incremental: 0
   generationSpeed: 0.1
   gridParent: {fileID: 1472343368}
 --- !u!1001 &189236616
@@ -3686,61 +3687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f873f7dde36d2443a1bec15afa59dab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiles:
-  - tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
+  tiles: []
   size: 3
   modelGenerated:
     Model:
@@ -3748,12 +3695,11 @@ MonoBehaviour:
       height: 3
     tilesUsed:
     - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    - {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-    - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
   lastGeneratedGrid:
     width: 3
     height: 3
   patternFlipping: 0
+  isInUse: 1
 --- !u!1 &1920863104
 GameObject:
   m_ObjectHideFlags: 0

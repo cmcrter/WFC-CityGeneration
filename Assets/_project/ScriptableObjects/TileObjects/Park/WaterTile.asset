@@ -12,13 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d023ed0343adfc14fae9c195d36e0d45, type: 3}
   m_Name: WaterTile
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 0}
-  sockets:
-  - serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  - serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  - serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  - serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+  Prefab: {fileID: 3067000659452484883, guid: bd0ca4ee6eb436f46a7a69cd8409bb7b, type: 3}
+  CanGoNextTo:
+  - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
+  - {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
+  - {fileID: 11400000}
+  Frequency: 2

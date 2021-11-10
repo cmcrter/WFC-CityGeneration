@@ -12,13 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d023ed0343adfc14fae9c195d36e0d45, type: 3}
   m_Name: PuddleTile
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 0}
-  sockets:
-  - serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  - serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  - serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  - serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+  Prefab: {fileID: 479369578986634115, guid: 46a61d58fbd92ca42b0249f7e1d8a0d4, type: 3}
+  CanGoNextTo:
+  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
+  - {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
+  Frequency: 2
