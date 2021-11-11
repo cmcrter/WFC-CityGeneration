@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WFC.Rand;
 
 namespace WFC
 {
@@ -47,34 +48,37 @@ namespace WFC
             return (tileUsed != null);
         }
 
+        //Calculating Shannon's Entropy
         public float calculateEntropyValue(InputModel model)
         {
-            int sum_of_weights = 0;
+            float sum_of_weights = 0;
             float sum_of_weight_log_weights = 0;
-            
+            float weightSum = model.GetSumOfTileWeights(possibleTiles);
+
             for(int i = 0; i < possibleTiles.Count; ++i)
             {
-                int weight = possibleTiles[i].Frequency;
+                float weight = possibleTiles[i].Frequency / weightSum;
+
                 sum_of_weights += weight;
                 sum_of_weight_log_weights += weight * Mathf.Log(weight);
             }
 
-            return Mathf.Log(sum_of_weights) - (sum_of_weight_log_weights / sum_of_weights);
+            return (Mathf.Log(sum_of_weights) - (sum_of_weight_log_weights / sum_of_weights));
         }
 
-        //Collapsing the cell by selecting a random tile out of the options to use
-        public void CollapseCell(int randNumber, InputModel model)
+        //Collapsing the cell by selecting a random tile out of the options to use (passing through the number generator so there's more randomness)
+        public bool CollapseCell(Mersenne_Twister twister, InputModel model)
         {
             //Using relative frequencies to get number to random from and what to do with random number
             //Some of options appear more than other, so increasing the amount of choices for the random to hit those options by the frequency 
             if(possibleTiles.Count == 0)
             {
                 Debug.Log("No possible tiles when collapsing");
-                return;
+                return false;
             }
 
             int allTileWeights = model.GetSumOfTileWeights(possibleTiles);
-            int newRand = randNumber % allTileWeights;
+            int newRand = Mathf.Abs(twister.ReturnRandom()) % allTileWeights;
             int tileIndex = 0;
 
             foreach (Tile tile in possibleTiles)
@@ -93,16 +97,18 @@ namespace WFC
 
                     possibleTiles.Clear();
                     possibleTiles.Add(tileUsed);
-                    return;
+                    return true;
                 }
             }
+
+            return false;
         }
 
-        public void UpdateConstraints(Cell[] neighbours, InputModel model, out List<Tile> CellConstrainedTiles)
+        public void UpdateConstraints(Cell[] neighbours, InputModel model)
         {
-            CellConstrainedTiles = new List<Tile>();
+            List<Tile> CellConstrainedTiles = new List<Tile>();
 
-            //Go through the neighbours
+            //Go through the neighbours (this array doesn't include the current cell)
             for(int i = 0; i < neighbours.Length; ++i)
             {
                 if(i == 0 || i == 2 || i == 5 || i == 7)
@@ -118,28 +124,19 @@ namespace WFC
                     {
                         if(neighbours[i].tileUsed)
                         {
-                            if(model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed, out List<Tile> ConstrainedTiles))
+                            if(!model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed) && !CellConstrainedTiles.Contains(neighbours[i].tileUsed))
                             {
-                                CellConstrainedTiles = ConstrainedTiles;
-
-                                if(ConstrainedTiles.Count > 0)
-                                {
-                                    UpdatePossibleTiles(ConstrainedTiles);
-                                }
+                                CellConstrainedTiles.Add(neighbours[i].tileUsed);
                             }
                         }
                         else
                         {
+                            //Checking against the neighbours' possible tiles
                             for(int k = 0; k < neighbours[i].possibleTiles.Count; ++k)
                             {
-                                if(model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].possibleTiles[k], out List<Tile> ConstrainedTiles))
+                                if(!model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].possibleTiles[k]) && !CellConstrainedTiles.Contains(neighbours[i].possibleTiles[k]))
                                 {
-                                    CellConstrainedTiles = ConstrainedTiles;
-
-                                    if(ConstrainedTiles.Count > 0)
-                                    {
-                                        UpdatePossibleTiles(ConstrainedTiles);
-                                    }
+                                    CellConstrainedTiles.Add(neighbours[i].possibleTiles[k]);
                                 }
                             }
                         }
@@ -147,7 +144,16 @@ namespace WFC
                 }
             }
 
-            currentEntropy = calculateEntropyValue(model);
+            UpdatePossibleTiles(CellConstrainedTiles);
+
+            if(possibleTiles.Count > 0)
+            {
+                currentEntropy = calculateEntropyValue(model);
+            }
+            else
+            {
+                currentEntropy = 0;
+            }
         }
 
         public void ApplyConstraintsBasedOnPotential()
@@ -163,7 +169,10 @@ namespace WFC
         {
             foreach(Tile tile in tilesToRemove)
             {
-                possibleTiles.Remove(tile);
+                if(possibleTiles.Contains(tile))
+                {
+                    possibleTiles.Remove(tile);
+                }
             }
         }
 

@@ -3,12 +3,13 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 27/10/21
+// Date Last Edited: 11/11/21
 // Brief: The script which holds information about the input model and can generate the patterns
 //////////////////////////////////////////////////////////// 
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace WFC
 {
@@ -18,14 +19,15 @@ namespace WFC
         #region Variables
 
         public Grid Model;
-        public List<Tile> tilesUsed = new List<Tile>();
-
+        public List<Tile> tilesUsed;
+        
         //Linked Dictionaries for the adjacency rule and the frenquencies of tiles in the input model
         private Dictionary<Tile, int> FrequenciesOfTiles;
         private Dictionary<Tile, List<Tile>> AdjacencyRules;
 
         private bool includeFlipping;
 
+        public int AllTileWeights = 0;
         #endregion
 
         #region Public Methods
@@ -72,9 +74,8 @@ namespace WFC
             }
         }
 
-        public bool IsAdjacentAllowed(Tile possibleTile, Tile otherTile, out List<Tile> tilesToRemove)
+        public bool IsAdjacentAllowed(Tile possibleTile, Tile otherTile)
         {
-            tilesToRemove = new List<Tile>();
             bool bCanPlace = false;
 
             if(possibleTile.CanGoNextTo.Contains(otherTile))
@@ -132,10 +133,19 @@ namespace WFC
 
             for(int i = 0; i < tilesToWeigh.Count; ++i) 
             {
-                if(tilesToWeigh.Contains(tilesToWeigh[i]))
-                {
-                    totalWeight += tilesToWeigh[i].Frequency;
-                }
+                totalWeight += tilesToWeigh[i].Frequency;
+            }
+
+            return totalWeight;
+        }
+
+        public int GetSumOfAllTileWeights()
+        {
+            int totalWeight = 0;
+
+            for(int i = 0; i < tilesUsed.Count; ++i)
+            {
+                totalWeight += tilesUsed[i].Frequency;
             }
 
             return totalWeight;

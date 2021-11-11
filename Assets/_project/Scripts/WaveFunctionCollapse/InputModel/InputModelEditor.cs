@@ -9,6 +9,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using WFC.Editor;
 
 namespace WFC.Editor
 {
@@ -61,19 +62,9 @@ namespace WFC.Editor
             for(int i = 0; i < transform.childCount; ++i)
             {
                 //All of these children should have the cell component on them
-                if(transform.GetChild(i).TryGetComponent(out CellVisualiser cell))
+                if(transform.GetChild(i).TryGetComponent(out ModelCell cell))
                 {
-                    tiles.Add(cell.thisCell);
-                }
-            }
-
-            //Setting the tiles' coords correct
-            for(int x = 0; x < size; ++x)
-            {
-                for(int y = 0; y < size; ++y)
-                {
-                    tiles[(x * size) + y].CellX = x;
-                    tiles[(x * size) + y].CellY = y;
+                    tiles.Add(cell.modelTile);
                 }
             }
         }
