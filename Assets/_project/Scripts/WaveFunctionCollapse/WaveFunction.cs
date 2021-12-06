@@ -69,7 +69,10 @@ namespace WFC
 
         [SerializeField]
         private List<Cell> mostRecentNeighbours;
-        bool bConstraining = true;
+        private bool bConstraining = true;
+        //An option for propagation through a less efficient method
+        [SerializeField]
+        private bool bBruteForce = false;
 
         //The random number generator
         private Mersenne_Twister MTNumberGenerator;
@@ -207,6 +210,7 @@ namespace WFC
 
             //Collapsing it
             CollapsingNextCell(OutputGrid.GridCells[mostRecentX, mostRecentY]);
+
             mostRecentlyCollapsed = OutputGrid.GridCells[mostRecentX, mostRecentY];
             mostRecentNeighbours = OutputGrid.GetNeighbours(mostRecentX, mostRecentY);
 
@@ -218,7 +222,15 @@ namespace WFC
         {
             //Updating from the first collapsed cell
             int currentIterationCount = 0;
-            yield return UpdateGridConstraints();
+
+            if(bBruteForce)
+            {
+                yield return BruteForceUpdateGridConstraints();
+            }
+            else
+            {
+                yield return EfficientUpdateGridConstraints();
+            }
 
             //While not all cells are collapsed
             while(!isGridFullyCollapsed())
@@ -231,7 +243,14 @@ namespace WFC
                 CollapsingNextCell(mostRecentlyCollapsed);
 
                 //Update the constraints (this is the actual propagation step)
-                yield return UpdateGridConstraints();
+                if(bBruteForce)
+                {
+                    yield return BruteForceUpdateGridConstraints();
+                }
+                else
+                {
+                    yield return EfficientUpdateGridConstraints();
+                }
 
                 //Does this work? If yes, repeat, if no, backtrack
                 if(!isMapPossible())
@@ -279,10 +298,8 @@ namespace WFC
             return true;
         }
 
-        private IEnumerator UpdateGridConstraints()
+        private IEnumerator BruteForceUpdateGridConstraints()
         {         
-            //Looking at neighbours (using the von Neumann neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, this is the actual "propagation" in the propagation function
-            //If this causes the neighbours of these neighbours to change, remove impossible tiles from them, creating a cascade of applying constraints
             bConstraining = true;
 
             while(bConstraining)
@@ -294,6 +311,7 @@ namespace WFC
             yield return true;
         }
 
+        //A function to go through the grid until constraints are needed to be applied to a cell
         private void CheckingGridForConstraints()
         {
             for(int x = 0; x < OutputGrid.width; ++x)
@@ -308,6 +326,75 @@ namespace WFC
             }
 
             bConstraining = false;
+        }
+
+        private IEnumerator EfficientUpdateGridConstraints()
+        {
+            //Looking at neighbours (using the von Neumann neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, this is the actual "propagation" in the propagation function
+            //If this causes the neighbours of these neighbours to change, remove impossible tiles from them, creating a cascade of applying constraints
+            bConstraining = true;
+
+            Stack<Cell> Neighbours = new Stack<Cell>();
+            bool[,] propagatedCells = new bool[width, height];
+            propagatedCells[mostRecentlyCollapsed.CellX, mostRecentlyCollapsed.CellY] = true;
+
+            //Starting by adding the relevant initial cells to the stack
+            foreach(Cell cell in OutputGrid.GetNeighbours(mostRecentlyCollapsed.CellX, mostRecentlyCollapsed.CellY)) 
+            {
+                if(!cell.tileUsed)
+                {
+                    Neighbours.Push(cell);
+                }
+            }
+
+            while(bConstraining)
+            {
+                //if there are neighbours to look at, look at them and propagate
+                if(Neighbours.Count > 0)
+                {
+                    //Getting the top cell
+                    Cell currentCell = Neighbours.Peek();
+
+                    //If this cell isn't selected yet and not propagated to yet
+                    if(currentCell.tileUsed == null && propagatedCells[currentCell.CellX, currentCell.CellY] == false)
+                    {
+                        //Applying constraints to this cell
+                        if(currentCell.ApplyConstraintsBasedOnPotential(OutputGrid, IModel))
+                        {
+                            //Getting the neighbours of the cell just constrained
+                            List<Cell> currentNeighbours = OutputGrid.GetNeighbours(currentCell.CellX, currentCell.CellY);
+                            Neighbours.Pop();
+                            propagatedCells[currentCell.CellX, currentCell.CellY] = true;
+
+                            //Going through these neighbours and seeing if they needed to be added to the list
+                            foreach(Cell neighbour in currentNeighbours)
+                            {
+                                if(neighbour.tileUsed == null && propagatedCells[neighbour.CellX, neighbour.CellY] == false)
+                                {
+                                    Neighbours.Push(neighbour);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Neighbours.Pop();
+                        }
+                    }
+                    else
+                    {
+                        Neighbours.Pop();
+                        continue;
+                    }
+
+                    Debug.Log(Neighbours.Count);
+                }
+                else
+                {
+                    bConstraining = false;
+                }
+            }
+
+            yield return true;
         }
 
         //Assuming there's no cells with zero entropy
