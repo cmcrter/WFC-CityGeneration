@@ -77,10 +77,13 @@ namespace WFC
                 return false;
             }
 
+            //Going through and getting all the weights of the possible tiles
             int allTileWeights = model.GetSumOfTileWeights(possibleTiles);
+            //Getting a positive number between 0 and the sum of the weights
             int newRand = Mathf.Abs(twister.ReturnRandom()) % allTileWeights;
             int tileIndex = 0;
 
+            //Going through the possible tiles and removing the weights until the correct one is chosen
             foreach (Tile tile in possibleTiles)
             {
                 //Using how often they appear next to the other tiles in the pattern
@@ -93,6 +96,7 @@ namespace WFC
                 }
                 else
                 {
+                    //This is the tile currently used
                     tileUsed = possibleTiles[tileIndex];
 
                     possibleTiles.Clear();
@@ -156,9 +160,38 @@ namespace WFC
             }
         }
 
-        public void ApplyConstraintsBasedOnPotential()
+        public bool ApplyConstraintsBasedOnPotential(Grid gridCellisIn, InputModel model)
         {
+            List<Cell> neighbours = gridCellisIn.GetNeighbours(CellX, CellY);
+            List<Tile> impossibleTiles = new List<Tile>();
 
+            bool tileRemoved = false;            
+
+            //Go through the neighbours (this array doesn't include the current cell)
+            for(int i = 0; i < neighbours.Count; ++i)
+            {
+                //If a certain tile of the possible tiles never appears next to them in the pattern
+                //Remove that possible tile from possible tiles
+                if(neighbours[i] != null)
+                {
+                    for(int j = 0; j < possibleTiles.Count; ++j)
+                    {
+                        if(neighbours[i].tileUsed)
+                        {
+                            if(!model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed))
+                            {
+                                impossibleTiles.Add(possibleTiles[j]);
+                                tileRemoved = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            UpdatePossibleTiles(impossibleTiles);
+            currentEntropy = calculateEntropyValue(model);
+
+            return tileRemoved;
         }
 
         #endregion
@@ -173,6 +206,11 @@ namespace WFC
                 {
                     possibleTiles.Remove(tile);
                 }
+            }
+
+            if(tilesToRemove.Count > 2)
+            {
+                Debug.Log("More than 2 tiles being removed");
             }
         }
 

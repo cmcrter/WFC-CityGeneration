@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 11/11/21
+// Date Last Edited: 03/12/21
 // Brief: The script which holds information about the input model and can generate the patterns
 //////////////////////////////////////////////////////////// 
 
@@ -47,14 +47,14 @@ namespace WFC
             {
                 for(int y = 0; y < Model.width; ++y) 
                 {
-                    Cell[] neighbours = Model.GetNeighbours(x, y);
+                    List<Cell> neighbours = Model.GetNeighbours(x, y);
 
                     if(!AdjacencyRules.ContainsKey(Model.GridCells[x, y].tileUsed))
                     {
                         AdjacencyRules.Add(Model.GridCells[x, y].tileUsed, new List<Tile>());
                     }
 
-                    for (int i = 0; i < neighbours.Length; ++i)
+                    for (int i = 0; i < neighbours.Count; ++i)
                     {
                         if(neighbours[i] != null)
                         {
@@ -74,11 +74,12 @@ namespace WFC
             }
         }
 
+        //Checking the tiles to see if they are within eachothers' adjacency rules
         public bool IsAdjacentAllowed(Tile possibleTile, Tile otherTile)
         {
             bool bCanPlace = false;
 
-            if(possibleTile.CanGoNextTo.Contains(otherTile))
+            if(possibleTile.CanGoNextTo.Contains(otherTile) && otherTile.CanGoNextTo.Contains(possibleTile))
             {
                 bCanPlace = true;
             }
@@ -86,6 +87,7 @@ namespace WFC
             return bCanPlace;
         }
 
+        //Goes through the current grid and adds each unique tile type to the overall tiles used list
         public void GenerateListOfPotentialTiles()
         {
             tilesUsed = new List<Tile>();
@@ -102,6 +104,7 @@ namespace WFC
             }
         }
 
+        //Goes through the current grid and counts the amount of times each tile appears, then sets that tiles' scriptable object to reflect that
         public void CalculateRelativeFrequency()
         {
             FrequenciesOfTiles = new Dictionary<Tile, int>();
@@ -127,6 +130,7 @@ namespace WFC
             }
         }
 
+        //Going through and adding up each tiles' weights based on a given list
         public int GetSumOfTileWeights(List<Tile> tilesToWeigh)
         {
             int totalWeight = 0;
@@ -139,6 +143,7 @@ namespace WFC
             return totalWeight;
         }
 
+        //Getting all the tiles' weights to one int
         public int GetSumOfAllTileWeights()
         {
             int totalWeight = 0;

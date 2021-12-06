@@ -8,6 +8,7 @@
 //////////////////////////////////////////////////////////// 
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace WFC
@@ -44,12 +45,11 @@ namespace WFC
 
         }
 
-        //To be used in conjunction with the DIRECTION enum
-        public Cell[] GetNeighbours(int CellX, int CellY)
+        //To be used in conjunction with other functions
+        public List<Cell> GetNeighbours(int CellX, int CellY)
         {
             //Getting the van Neumann neighbourhood
-            Cell[] neighbours = new Cell[4];
-            int neighbourCount = 0;
+            List<Cell> neighbours = new List<Cell>();
 
             for(int i = -1; i <= 1; i++)
             {
@@ -62,12 +62,7 @@ namespace WFC
                         continue;
                     }
 
-                    //This is a viable neighbour
-                    if(neighbourCount != neighbours.Length) 
-                    {
-                        neighbours[neighbourCount] = GridCells[i + CellX, j + CellY];
-                        neighbourCount++;
-                    }
+                    neighbours.Add(GridCells[i + CellX, j + CellY]);
                 }
             }
 

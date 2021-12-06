@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 10/11/21
+// Date Last Edited: 06/12/21
 // Brief: A script to run through the wave function collapse algorithm
 //////////////////////////////////////////////////////////// 
 
@@ -68,7 +68,8 @@ namespace WFC
         private int mostRecentX, mostRecentY;
 
         [SerializeField]
-        private Cell[] mostRecentNeighbours;
+        private List<Cell> mostRecentNeighbours;
+        bool bConstraining = true;
 
         //The random number generator
         private Mersenne_Twister MTNumberGenerator;
@@ -151,6 +152,7 @@ namespace WFC
 
         private IEnumerator Co_CreateGrid()
         {
+            //Instancing the new grid and relevant lists
             OutputGrid = new Grid(width, height);
             cellTransforms = new List<Transform>();
             cellVisualisers = new List<CellVisualiser>();
@@ -161,6 +163,7 @@ namespace WFC
                 {
                     //Debug.Log("Cell: " + x + "," + y + " being set");
 
+                    //Setting up the cells' values
                     OutputGrid.GridCells[x, y].CellX = x;
                     OutputGrid.GridCells[x, y].CellY = y;
 
@@ -171,13 +174,16 @@ namespace WFC
                         OutputGrid.GridCells[x, y].possibleTiles.Add(tile);
                     }
 
+                    //Setting up the cells' objects in the Unity scene
                     GameObject cellGo = Instantiate(cellPrefab, new Vector3(x, 1, y), Quaternion.identity, gridParent);
                     Transform cellT = cellGo.transform;
                     cellTransforms.Add(cellT);
 
-                    CellVisualiser cVis = cellT.GetComponent<CellVisualiser>();
-                    cellVisualisers.Add(cVis);
-                    cVis.thisCell = OutputGrid.GridCells[x, y];
+                    if(cellT.TryGetComponent(out CellVisualiser cVis))
+                    {
+                        cellVisualisers.Add(cVis);
+                        cVis.thisCell = OutputGrid.GridCells[x, y];
+                    }
                 }
             }
 
@@ -186,7 +192,7 @@ namespace WFC
             {
                 for(int y = 0; y < OutputGrid.height; y++)
                 {
-                    OutputGrid.GridCells[x, y].calculateEntropyValue(IModel);
+                    OutputGrid.GridCells[x, y].currentEntropy = OutputGrid.GridCells[x, y].calculateEntropyValue(IModel);
                 }
             }
 
@@ -277,51 +283,31 @@ namespace WFC
         {         
             //Looking at neighbours (using the von Neumann neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, this is the actual "propagation" in the propagation function
             //If this causes the neighbours of these neighbours to change, remove impossible tiles from them, creating a cascade of applying constraints
-            mostRecentNeighbours = OutputGrid.GetNeighbours(mostRecentX, mostRecentY);
+            bConstraining = true;
 
-            Stack<Cell> propagationStack = new Stack<Cell>();
-            List<Cell> alreadyPropagated = new List<Cell>();
-            alreadyPropagated.Add(mostRecentlyCollapsed);
-
-            //Whilst it's propagating
-            foreach(Cell cell in mostRecentNeighbours)
+            while(bConstraining)
             {
-                if(cell == null || cell.tileUsed != null)
-                {
-                    continue;
-                }
-
-                propagationStack.Push(cell);
-            }
-
-            //There'll always be one popped at the beginning
-            while(propagationStack.Count > 0)
-            {
-                propagationStack.Peek().UpdateConstraints(OutputGrid.GetNeighbours(propagationStack.Peek().CellX, propagationStack.Peek().CellY), IModel);
-                alreadyPropagated.Add(propagationStack.Peek());
-                Cell recentCell = propagationStack.Pop();
-
-                //Updating the constraints on the current neighbours
-                List<Cell> currentNeighbours = OutputGrid.GetNeighbours(recentCell.CellX, recentCell.CellY).ToList();
-
-                for(int i = 0; i < currentNeighbours.Count; ++i)
-                {
-                    if(currentNeighbours[i] == null || currentNeighbours[i].isCollapsed() || alreadyPropagated.Contains(currentNeighbours[i]))
-                    {
-                        currentNeighbours.RemoveAt(i);
-                        --i;
-                    }
-
-                    if(i < 0)
-                    {
-                        break;
-                    }
-
-                    propagationStack.Push(currentNeighbours[i]);
-                }
+                //Going through the grid, as soon as a cell is constrained, go through the grid again...
+                CheckingGridForConstraints();
             }
 
             yield return true;
+        }
+
+        private void CheckingGridForConstraints()
+        {
+            for(int x = 0; x < OutputGrid.width; ++x)
+            {
+                for(int y = 0; y < OutputGrid.height; ++y)
+                {
+                    if(OutputGrid.GridCells[x, y].ApplyConstraintsBasedOnPotential(OutputGrid, IModel))
+                    {
+                        return;
+                    }
+                }
+            }
+
+            bConstraining = false;
         }
 
         //Assuming there's no cells with zero entropy
