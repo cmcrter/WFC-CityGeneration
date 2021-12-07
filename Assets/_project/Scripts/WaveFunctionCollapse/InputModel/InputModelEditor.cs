@@ -17,7 +17,6 @@ namespace WFC.Editor
     {
         #region Public Fields
 
-        [SerializeField]
         private List<Cell> tiles;
 
         //The width and height for these will be the same
@@ -27,13 +26,15 @@ namespace WFC.Editor
         public InputModel modelGenerated;
         public Grid lastGeneratedGrid;
 
+        [Header("Customization Variables")]
         [SerializeField]
         private bool patternFlipping = false;
         [SerializeField]
-        private bool isInUse = true; 
+        private bool isInUse = true;
 
         #endregion
 
+        //It's in awake, so any input model compiler can use the values in start
         private void Awake()
         {
             if(!isInUse)

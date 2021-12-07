@@ -13,9 +13,5 @@ MonoBehaviour:
   m_Name: PathTile
   m_EditorClassIdentifier: 
   Prefab: {fileID: 1628317620172777214, guid: ea4037f1290c7ef44811bb947a0bc870, type: 3}
-  CanGoNextTo:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  - {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-  - {fileID: 11400000}
-  - {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-  Frequency: 3
+  CanGoNextTo: []
+  Frequency: 0

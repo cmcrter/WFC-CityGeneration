@@ -23,8 +23,6 @@ namespace WFC
         //The tile used (and also whether the tile has collapsed or not)
         public Tile tileUsed;
 
-        //Each cell will know the possible tiles that could've be instantiated there from the start
-        public List<Tile> AllpossibleTiles = new List<Tile>();
         //Each cell will know the possible tiles that could be instantiated there
         public List<Tile> possibleTiles = new List<Tile>();
 
@@ -49,7 +47,7 @@ namespace WFC
         }
 
         //Calculating Shannon's Entropy
-        public float calculateEntropyValue(InputModel model)
+        public float calculateEntropyValue()
         {
             if(tileUsed)
             {
@@ -58,7 +56,7 @@ namespace WFC
 
             float sum_of_weights = 0;
             float sum_of_weight_log_weights = 0;
-            float weightSum = model.GetSumOfTileWeights(possibleTiles);
+            float weightSum = GetSumOfTileWeights(possibleTiles);
 
             for(int i = 0; i < possibleTiles.Count; ++i)
             {
@@ -72,7 +70,7 @@ namespace WFC
         }
 
         //Collapsing the cell by selecting a random tile out of the options to use (passing through the number generator so there's more randomness)
-        public bool CollapseCell(Mersenne_Twister twister, InputModel model)
+        public bool CollapseCell(Mersenne_Twister twister)
         {
             //Using relative frequencies to get number to random from and what to do with random number
             //Some of options appear more than other, so increasing the amount of choices for the random to hit those options by the frequency 
@@ -85,7 +83,7 @@ namespace WFC
             }
 
             //Going through and getting all the weights of the possible tiles
-            int allTileWeights = model.GetSumOfTileWeights(possibleTiles);
+            int allTileWeights = GetSumOfTileWeights(possibleTiles);
             //Getting a positive number between 0 and the sum of the weights
             int newRand = Mathf.Abs(twister.ReturnRandom()) % allTileWeights;
             int tileIndex = 0;
@@ -135,7 +133,7 @@ namespace WFC
                     {
                         if(neighbours[i].tileUsed)
                         {
-                            if(!model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed) && !CellConstrainedTiles.Contains(neighbours[i].tileUsed))
+                            if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed) && !CellConstrainedTiles.Contains(neighbours[i].tileUsed))
                             {
                                 CellConstrainedTiles.Add(neighbours[i].tileUsed);
                             }
@@ -145,7 +143,7 @@ namespace WFC
                             //Checking against the neighbours' possible tiles
                             for(int k = 0; k < neighbours[i].possibleTiles.Count; ++k)
                             {
-                                if(!model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].possibleTiles[k]) && !CellConstrainedTiles.Contains(neighbours[i].possibleTiles[k]))
+                                if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].possibleTiles[k]) && !CellConstrainedTiles.Contains(neighbours[i].possibleTiles[k]))
                                 {
                                     CellConstrainedTiles.Add(neighbours[i].possibleTiles[k]);
                                 }
@@ -159,7 +157,7 @@ namespace WFC
 
             if(possibleTiles.Count > 0)
             {
-                currentEntropy = calculateEntropyValue(model);
+                currentEntropy = calculateEntropyValue();
             }
             else
             {
@@ -167,7 +165,7 @@ namespace WFC
             }
         }
 
-        public bool ApplyConstraintsBasedOnPotential(Grid gridCellisIn, InputModel model)
+        public bool ApplyConstraintsBasedOnPotential(Grid gridCellisIn)
         {
             List<Cell> neighbours = gridCellisIn.GetNeighbours(CellX, CellY);
             List<Tile> impossibleTiles = new List<Tile>();
@@ -185,7 +183,7 @@ namespace WFC
                     {
                         if(neighbours[i].tileUsed)
                         {
-                            if(!model.IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed))
+                            if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed))
                             {
                                 impossibleTiles.Add(possibleTiles[j]);
                                 tileRemoved = true;
@@ -200,7 +198,7 @@ namespace WFC
             //Calculating the entropy again if needed
             if(possibleTiles.Count > 0)
             {
-                currentEntropy = calculateEntropyValue(model);
+                currentEntropy = calculateEntropyValue();
             }
             else
             {
@@ -228,6 +226,32 @@ namespace WFC
             {
                 Debug.Log("More than 2 tiles being removed");
             }
+        }
+
+        //Checking the tiles to see if they are within eachothers' adjacency rules
+        public static bool IsAdjacentAllowed(Tile possibleTile, Tile otherTile)
+        {
+            bool bCanPlace = false;
+
+            if(possibleTile.CanGoNextTo.Contains(otherTile) && otherTile.CanGoNextTo.Contains(possibleTile))
+            {
+                bCanPlace = true;
+            }
+
+            return bCanPlace;
+        }
+
+        //Going through and adding up each tiles' weights based on a given list
+        public static int GetSumOfTileWeights(List<Tile> tilesToWeigh)
+        {
+            int totalWeight = 0;
+
+            for(int i = 0; i < tilesToWeigh.Count; ++i)
+            {
+                totalWeight += tilesToWeigh[i].Frequency;
+            }
+
+            return totalWeight;
         }
 
         #endregion

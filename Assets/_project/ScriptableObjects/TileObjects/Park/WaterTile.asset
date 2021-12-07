@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: WaterTile
   m_EditorClassIdentifier: 
   Prefab: {fileID: 3067000659452484883, guid: bd0ca4ee6eb436f46a7a69cd8409bb7b, type: 3}
-  CanGoNextTo:
-  - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-  - {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-  - {fileID: 11400000}
-  Frequency: 2
+  CanGoNextTo: []
+  Frequency: 0

@@ -20,14 +20,16 @@ namespace WFC
 
         public Grid Model;
         public List<Tile> tilesUsed;
-        
+
         //Linked Dictionaries for the adjacency rule and the frenquencies of tiles in the input model
-        private Dictionary<Tile, int> FrequenciesOfTiles;
+        public Dictionary<Tile, int> FrequenciesOfTiles => TileFreq;
+        private Dictionary<Tile, int> TileFreq;
+
+        public Dictionary<Tile, List<Tile>> AllAdjacencyRules => AdjacencyRules;
         private Dictionary<Tile, List<Tile>> AdjacencyRules;
 
         private bool includeFlipping;
 
-        public int AllTileWeights = 0;
         #endregion
 
         #region Public Methods
@@ -67,24 +69,6 @@ namespace WFC
                 }
             }
 
-            //A way for me to see the adjacency rules
-            for(int i = 0; i < tilesUsed.Count; ++i)
-            {
-                tilesUsed[i].CanGoNextTo = AdjacencyRules[tilesUsed[i]];
-            }
-        }
-
-        //Checking the tiles to see if they are within eachothers' adjacency rules
-        public bool IsAdjacentAllowed(Tile possibleTile, Tile otherTile)
-        {
-            bool bCanPlace = false;
-
-            if(possibleTile.CanGoNextTo.Contains(otherTile) && otherTile.CanGoNextTo.Contains(possibleTile))
-            {
-                bCanPlace = true;
-            }
-
-            return bCanPlace;
         }
 
         //Goes through the current grid and adds each unique tile type to the overall tiles used list
@@ -107,7 +91,7 @@ namespace WFC
         //Goes through the current grid and counts the amount of times each tile appears, then sets that tiles' scriptable object to reflect that
         public void CalculateRelativeFrequency()
         {
-            FrequenciesOfTiles = new Dictionary<Tile, int>();
+            TileFreq = new Dictionary<Tile, int>();
 
             for(int x = 0; x < Model.height; ++x)
             {
@@ -115,45 +99,14 @@ namespace WFC
                 {
                     if(!FrequenciesOfTiles.ContainsKey(Model.GridCells[x, y].tileUsed))
                     {
-                        FrequenciesOfTiles.Add(Model.GridCells[x, y].tileUsed, 1);
+                        TileFreq.Add(Model.GridCells[x, y].tileUsed, 1);
                     }
                     else
                     {
-                        FrequenciesOfTiles[Model.GridCells[x, y].tileUsed]++;
+                        TileFreq[Model.GridCells[x, y].tileUsed]++;
                     }
                 }
             }
-
-            for(int i = 0; i < tilesUsed.Count; ++i)
-            {
-                tilesUsed[i].Frequency = FrequenciesOfTiles[tilesUsed[i]];
-            }
-        }
-
-        //Going through and adding up each tiles' weights based on a given list
-        public int GetSumOfTileWeights(List<Tile> tilesToWeigh)
-        {
-            int totalWeight = 0;
-
-            for(int i = 0; i < tilesToWeigh.Count; ++i) 
-            {
-                totalWeight += tilesToWeigh[i].Frequency;
-            }
-
-            return totalWeight;
-        }
-
-        //Getting all the tiles' weights to one int
-        public int GetSumOfAllTileWeights()
-        {
-            int totalWeight = 0;
-
-            for(int i = 0; i < tilesUsed.Count; ++i)
-            {
-                totalWeight += tilesUsed[i].Frequency;
-            }
-
-            return totalWeight;
         }
 
         #endregion

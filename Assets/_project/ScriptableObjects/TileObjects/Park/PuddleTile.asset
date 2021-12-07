@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: PuddleTile
   m_EditorClassIdentifier: 
   Prefab: {fileID: 479369578986634115, guid: 46a61d58fbd92ca42b0249f7e1d8a0d4, type: 3}
-  CanGoNextTo:
-  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-  - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-  - {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-  Frequency: 2
+  CanGoNextTo: []
+  Frequency: 0

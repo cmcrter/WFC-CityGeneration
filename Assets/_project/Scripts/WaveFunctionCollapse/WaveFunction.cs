@@ -24,11 +24,9 @@ namespace WFC
         [SerializeField]
         private Grid OutputGrid;
         
-        //The input model creator and the input model it creates
+        //The input model compiler, which is the sum of selected input models
         [SerializeField]
-        private InputModelEditor InputModelEditor;
-        [SerializeField]
-        private InputModel IModel;
+        private InputModelCompiler ModelCompiler;
 
         //The grids' dimensions used
         [SerializeField]
@@ -66,8 +64,6 @@ namespace WFC
         private Cell mostRecentlyCollapsed;
         private int mostRecentX, mostRecentY;
 
-        [SerializeField]
-        private List<Cell> mostRecentNeighbours;
         private bool bConstraining = true;
         //An option for propagation through a less efficient method
         [SerializeField]
@@ -87,30 +83,19 @@ namespace WFC
 
         private void Start()
         {
-            if(InputModelEditor)
-            {
-                IModel = InputModelEditor.modelGenerated;
-            }
-            else
-            {
-                if(Debug.isDebugBuild) 
-                {
-                    Debug.Log("No input model selected");
-                }
-                enabled = false;
-            }
+            ModelCompiler = InputModelCompiler.instance;
         }
 
         #endregion
 
         #region Public Methods
 
-        [ContextMenu("Setup WFC")]
-        public void UseInputModel()
-        {
-            InputModelEditor.GetTiles();
-            InputModelEditor.GeneratedInputModelGrid();
-        }
+        //[ContextMenu("ReSetup WFC")]
+        //public void UseInputModel()
+        //{
+        //    InputModelEditor.GetTiles();
+        //    InputModelEditor.GeneratedInputModelGrid();
+        //}
 
         [ContextMenu("Run WFC")]
         public void RunAlgorithm()
@@ -171,7 +156,7 @@ namespace WFC
 
                     OutputGrid.GridCells[x, y].possibleTiles = new List<Tile>();
 
-                    foreach(Tile tile in IModel.tilesUsed)
+                    foreach(Tile tile in ModelCompiler.allPossibleTiles)
                     {
                         OutputGrid.GridCells[x, y].possibleTiles.Add(tile);
                     }
@@ -194,7 +179,7 @@ namespace WFC
             {
                 for(int y = 0; y < OutputGrid.height; y++)
                 {
-                    OutputGrid.GridCells[x, y].currentEntropy = OutputGrid.GridCells[x, y].calculateEntropyValue(IModel);
+                    OutputGrid.GridCells[x, y].currentEntropy = OutputGrid.GridCells[x, y].calculateEntropyValue();
                 }
             }
 
@@ -213,7 +198,6 @@ namespace WFC
             CollapsingNextCell(OutputGrid.GridCells[mostRecentX, mostRecentY]);
 
             mostRecentlyCollapsed = OutputGrid.GridCells[mostRecentX, mostRecentY];
-            mostRecentNeighbours = OutputGrid.GetNeighbours(mostRecentX, mostRecentY);
 
             yield return true;
         }
@@ -331,7 +315,7 @@ namespace WFC
             {
                 for(int y = 0; y < OutputGrid.height; ++y)
                 {
-                    if(OutputGrid.GridCells[x, y].ApplyConstraintsBasedOnPotential(OutputGrid, IModel))
+                    if(OutputGrid.GridCells[x, y].ApplyConstraintsBasedOnPotential(OutputGrid))
                     {
                         return;
                     }
@@ -372,7 +356,7 @@ namespace WFC
                     if(currentCell.tileUsed == null && propagatedCells[currentCell.CellX, currentCell.CellY] == false)
                     {
                         //Applying constraints to this cell
-                        if(currentCell.ApplyConstraintsBasedOnPotential(OutputGrid, IModel))
+                        if(currentCell.ApplyConstraintsBasedOnPotential(OutputGrid))
                         {
                             //Getting the neighbours of the cell just constrained
                             List<Cell> currentNeighbours = OutputGrid.GetNeighbours(currentCell.CellX, currentCell.CellY);
@@ -451,7 +435,7 @@ namespace WFC
             }
 
             //Collapse given cell
-            if(givenCell.CollapseCell(MTNumberGenerator, IModel))
+            if(givenCell.CollapseCell(MTNumberGenerator))
             {
                 Instantiate(givenCell.tileUsed.Prefab, cellTransforms[(givenCell.CellX * width) + givenCell.CellY]);
             }

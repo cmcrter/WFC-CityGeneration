@@ -132,6 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 31710368}
+  - component: {fileID: 31710369}
   m_Layer: 0
   m_Name: InputModelHolder
   m_TagString: Untagged
@@ -153,6 +154,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &31710369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31710367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5286e6d5603ad4049bfceb3cdbd362e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waveFunction: {fileID: 93325630}
+  editorsUsed:
+  - {fileID: 1899769047}
+  allPossibleTiles: []
 --- !u!1 &67971361
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,157 +238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f873f7dde36d2443a1bec15afa59dab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiles:
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 0
-    CellX: 0
-    CellY: 0
   size: 5
   modelGenerated:
     Model:
@@ -379,7 +245,6 @@ MonoBehaviour:
       height: 5
     tilesUsed:
     - {fileID: 0}
-    AllTileWeights: 0
   lastGeneratedGrid:
     width: 5
     height: 5
@@ -431,13 +296,7 @@ MonoBehaviour:
   OutputGrid:
     width: 15
     height: 15
-  InputModelEditor: {fileID: 1899769047}
-  IModel:
-    Model:
-      width: 0
-      height: 0
-    tilesUsed: []
-    AllTileWeights: 0
+  ModelCompiler: {fileID: 31710369}
   width: 15
   height: 15
   seed: 7919
@@ -900,36 +759,10 @@ MonoBehaviour:
   - {fileID: 0}
   mostRecentlyCollapsed:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: NaN
     CellX: 14
     CellY: 2
-  mostRecentNeighbours:
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: NaN
-    CellX: 13
-    CellY: 2
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: NaN
-    CellX: 13
-    CellY: 3
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: NaN
-    CellX: 14
-    CellY: 1
-  - tileUsed: {fileID: 0}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: NaN
-    CellX: 14
-    CellY: 3
   bBruteForce: 0
 --- !u!1 &221902706
 GameObject:
@@ -1704,61 +1537,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f873f7dde36d2443a1bec15afa59dab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiles:
-  - tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 1
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 1
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 1
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 1
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 1
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 1
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 1
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 1
-    CellX: 0
-    CellY: 0
-  - tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-    AllpossibleTiles: []
-    possibleTiles: []
-    currentEntropy: 1
-    CellX: 0
-    CellY: 0
   size: 3
   modelGenerated:
     Model:
@@ -1769,7 +1547,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
     - {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
     - {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-    AllTileWeights: 0
   lastGeneratedGrid:
     width: 3
     height: 3
@@ -1953,7 +1730,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -1991,7 +1767,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2399,7 +2174,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2437,7 +2211,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2532,7 +2305,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2570,7 +2342,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2608,7 +2379,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2646,7 +2416,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2684,7 +2453,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2722,7 +2490,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2760,7 +2527,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2798,7 +2564,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2836,7 +2601,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2874,7 +2638,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2912,7 +2675,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2950,7 +2712,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -2988,7 +2749,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3026,7 +2786,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3064,7 +2823,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3102,7 +2860,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3140,7 +2897,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3178,7 +2934,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3216,7 +2971,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3254,7 +3008,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3292,7 +3045,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3330,7 +3082,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3368,7 +3119,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3406,7 +3156,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3444,7 +3193,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3738,7 +3486,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3776,7 +3523,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -3814,7 +3560,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 1a5016be34332b04dab251e999551abf, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -5234,7 +4979,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -5272,7 +5016,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelTile:
     tileUsed: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
