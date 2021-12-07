@@ -263,6 +263,8 @@ namespace WFC
                 yield return null;
             }
 
+            cellVisualisers[(mostRecentX * width) + mostRecentY].UpdateVisuals();
+
             yield return true;
         }
 
