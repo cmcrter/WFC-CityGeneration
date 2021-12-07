@@ -9,7 +9,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using WFC.Editor;
 using WFC.Rand;
@@ -199,6 +198,8 @@ namespace WFC
                 }
             }
 
+            yield return UpdatingAllVisuals();
+
             yield return true;
         }
 
@@ -235,6 +236,8 @@ namespace WFC
             //While not all cells are collapsed
             while(!isGridFullyCollapsed())
             {
+                yield return UpdatingAllVisuals();
+
                 //Pick new cell to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
                 //Also known as the observe step
                 yield return SearchForCellToCollapse();
@@ -296,6 +299,16 @@ namespace WFC
             }
 
             return true;
+        }
+
+        private IEnumerator UpdatingAllVisuals()
+        {
+            for(int x = 0; x < cellVisualisers.Count; ++x)
+            {
+                cellVisualisers[x].UpdateVisuals();
+            }
+
+            yield return true;
         }
 
         private IEnumerator BruteForceUpdateGridConstraints()
@@ -385,8 +398,6 @@ namespace WFC
                         Neighbours.Pop();
                         continue;
                     }
-
-                    Debug.Log(Neighbours.Count);
                 }
                 else
                 {

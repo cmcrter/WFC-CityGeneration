@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 27/10/21
+// Date Last Edited: 07/12/21
 // Brief: A representation of one spot on the 2D Grid
 //////////////////////////////////////////////////////////// 
 
@@ -51,6 +51,11 @@ namespace WFC
         //Calculating Shannon's Entropy
         public float calculateEntropyValue(InputModel model)
         {
+            if(tileUsed)
+            {
+                return 0f;
+            }
+
             float sum_of_weights = 0;
             float sum_of_weight_log_weights = 0;
             float weightSum = model.GetSumOfTileWeights(possibleTiles);
@@ -71,6 +76,8 @@ namespace WFC
         {
             //Using relative frequencies to get number to random from and what to do with random number
             //Some of options appear more than other, so increasing the amount of choices for the random to hit those options by the frequency 
+            currentEntropy = 0;
+
             if(possibleTiles.Count == 0)
             {
                 Debug.Log("No possible tiles when collapsing");
@@ -189,7 +196,16 @@ namespace WFC
             }
 
             UpdatePossibleTiles(impossibleTiles);
-            currentEntropy = calculateEntropyValue(model);
+
+            //Calculating the entropy again if needed
+            if(possibleTiles.Count > 0)
+            {
+                currentEntropy = calculateEntropyValue(model);
+            }
+            else
+            {
+                currentEntropy = 0;
+            }
 
             return tileRemoved;
         }
