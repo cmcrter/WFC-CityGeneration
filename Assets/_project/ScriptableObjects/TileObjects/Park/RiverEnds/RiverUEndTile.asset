@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d023ed0343adfc14fae9c195d36e0d45, type: 3}
   m_Name: RiverUEndTile
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 1938847381028583877, guid: 36379709a105d80448362df9b903c9f9, type: 3}
+  Prefab: {fileID: 426125680828337543, guid: 272aee6b078b55349b405483235b854c, type: 3}
   CanGoNextTo: []
   Frequency: 0

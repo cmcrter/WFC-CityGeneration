@@ -9360,7 +9360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelTile:
-    tileUsed: {fileID: 11400000, guid: eb116fc3571347048a73421a992c1d5f, type: 2}
+    tileUsed: {fileID: 11400000, guid: 89c09a7db5b13f04e8b17766f765ff82, type: 2}
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -10112,7 +10112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelTile:
-    tileUsed: {fileID: 0}
+    tileUsed: {fileID: 11400000, guid: 28462185f41f5f142af208aa1889c912, type: 2}
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
