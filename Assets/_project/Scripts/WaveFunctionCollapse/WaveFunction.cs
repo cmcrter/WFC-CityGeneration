@@ -183,7 +183,7 @@ namespace WFC
                 }
             }
 
-            yield return UpdatingAllVisuals();
+            yield return Co_UpdatingAllVisuals();
 
             yield return true;
         }
@@ -210,21 +210,21 @@ namespace WFC
 
             if(bBruteForce)
             {
-                yield return BruteForceUpdateGridConstraints();
+                yield return Co_BruteForceUpdateGridConstraints();
             }
             else
             {
-                yield return EfficientUpdateGridConstraints();
+                yield return Co_EfficientUpdateGridConstraints();
             }
 
             //While not all cells are collapsed
             while(!isGridFullyCollapsed())
             {
-                yield return UpdatingAllVisuals();
+                yield return Co_UpdatingAllVisuals();
 
                 //Pick new cell to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
                 //Also known as the observe step
-                yield return SearchForCellToCollapse();
+                yield return Co_SearchForCellToCollapse();
 
                 //Collapse them
                 CollapsingNextCell(mostRecentlyCollapsed);
@@ -232,11 +232,11 @@ namespace WFC
                 //Update the constraints (this is the actual propagation step)
                 if(bBruteForce)
                 {
-                    yield return BruteForceUpdateGridConstraints();
+                    yield return Co_BruteForceUpdateGridConstraints();
                 }
                 else
                 {
-                    yield return EfficientUpdateGridConstraints();
+                    yield return Co_EfficientUpdateGridConstraints();
                 }
 
                 //Does this work? If yes, repeat, if no, backtrack
@@ -285,7 +285,7 @@ namespace WFC
             return true;
         }
 
-        private IEnumerator UpdatingAllVisuals()
+        private IEnumerator Co_UpdatingAllVisuals()
         {
             for(int x = 0; x < cellVisualisers.Count; ++x)
             {
@@ -295,7 +295,7 @@ namespace WFC
             yield return true;
         }
 
-        private IEnumerator BruteForceUpdateGridConstraints()
+        private IEnumerator Co_BruteForceUpdateGridConstraints()
         {         
             bConstraining = true;
 
@@ -325,7 +325,7 @@ namespace WFC
             bConstraining = false;
         }
 
-        private IEnumerator EfficientUpdateGridConstraints()
+        private IEnumerator Co_EfficientUpdateGridConstraints()
         {
             //Looking at neighbours (using the von Neumann neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, this is the actual "propagation" in the propagation function
             //If this causes the neighbours of these neighbours to change, remove impossible tiles from them, creating a cascade of applying constraints
@@ -393,7 +393,7 @@ namespace WFC
         }
 
         //Assuming there's no cells with zero entropy
-        private IEnumerator SearchForCellToCollapse()
+        private IEnumerator Co_SearchForCellToCollapse()
         {
             //Look for cells with lowest entropy
             Cell currentCellWithLowestEntropy = null;

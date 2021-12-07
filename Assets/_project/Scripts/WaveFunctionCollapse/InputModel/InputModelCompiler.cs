@@ -44,6 +44,13 @@ namespace WFC.Editor
             {
                 instance = this;
             }
+
+            //Going through and preparing the input models
+            for(int i = 0; i < editorsUsed.Count; ++i)
+            {
+                editorsUsed[i].GetTiles();
+                editorsUsed[i].GeneratedInputModelGrid();
+            }
         }
 
         void Start()

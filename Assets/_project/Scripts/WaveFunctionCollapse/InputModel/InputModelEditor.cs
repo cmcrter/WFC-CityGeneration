@@ -29,22 +29,8 @@ namespace WFC.Editor
         [Header("Customization Variables")]
         [SerializeField]
         private bool patternFlipping = false;
-        [SerializeField]
-        private bool isInUse = true;
 
         #endregion
-
-        //It's in awake, so any input model compiler can use the values in start
-        private void Awake()
-        {
-            if(!isInUse)
-            {
-                return;
-            }
-
-            GetTiles();
-            GeneratedInputModelGrid();
-        }
 
         #region Public Methods
 
