@@ -20,9 +20,11 @@ namespace WFC.Editor
         [SerializeField]
         private List<ModelCell> cellsInModel = new List<ModelCell>();
 
-        //The width and height for these will be the same
+        //The width and height
         [SerializeField]
-        private int size;
+        private int modelwidth;
+        [SerializeField]
+        private int modelheight;
 
         public InputModel modelGenerated;
         public Grid lastGeneratedGrid;
@@ -37,9 +39,10 @@ namespace WFC.Editor
             cellsInModel.Clear();
 
             //Making sure the size is set correctly if not set in the inspector
-            if(size == 0)
+            if(modelwidth == 0 || modelheight == 0)
             {
-                size = (int)Mathf.Sqrt(transform.childCount);
+                Debug.LogError("Input model editor not set correctly", this);
+                return;
             }
 
             //Looping through the hierarchy and getting the cells
@@ -56,22 +59,27 @@ namespace WFC.Editor
         [ContextMenu("Input Model Generation")]
         public void GeneratedInputModelGrid()
         {
-            if(size == 0) 
+            if(modelwidth == 0 || modelheight == 0) 
             {
                 return;
             }
 
-            Grid newGrid = new Grid(size, size);
+            Grid newGrid = new Grid(modelwidth, modelheight);
 
             //Going through the grid and setting it to the tiles in the transform's list
-            for(int x = 0; x < size; ++x)
+            for(int y = 0; y < modelheight; y++)
             {
-                for(int y = 0; y < size; ++y) 
+                for(int x = 0; x < modelwidth; x++) 
                 {
-                    cellsInModel[(y * size) + x].modelTile.CellX = x;
-                    cellsInModel[(y * size) + x].modelTile.CellY = y;
+                    if(cellsInModel[(y * modelwidth) + x].modelTile == null)
+                    {
+                        Debug.LogError("Model Grid not correct: " + y + " " + x + " ");
+                    }
 
-                    newGrid.GridCells[x, y] = cellsInModel[(y * size) + x].modelTile;
+                    cellsInModel[(y * modelwidth) + x].modelTile.CellX = x;
+                    cellsInModel[(y * modelwidth) + x].modelTile.CellY = y;
+
+                    newGrid.GridCells[x, y] = cellsInModel[(y * modelwidth) + x].modelTile;
                 }
             }
 

@@ -39,12 +39,13 @@ namespace WFC
             AllAdjacencyRules = new Dictionary<Tile, List<AdjacencyRule>>();
 
             //Going through and seeing what tiles are next to what based on the input model
-            for(int x = 0; x < Model.height; ++x)
+            for(int y = 0; y < Model.height; ++y)
             {
-                for(int y = 0; y < Model.width; ++y) 
+                for(int x = 0; x < Model.width; ++x)
                 {
-                    List<Cell> neighbours = Model.GetNeighbours(x, y).Item1;
-                    List<Vector2> neighboursDirections = Model.GetNeighbours(x, y).Item2;
+                    Tuple<List<Cell>, List<Vector2>> Neighbourhood = Model.GetNeighbours(x, y);
+                    List<Cell> neighbours = Neighbourhood.Item1;
+                    List<Vector2> neighboursDirections = Neighbourhood.Item2;
 
                     for(int i = 0; i < neighbours.Count; ++i)
                     {
@@ -85,9 +86,9 @@ namespace WFC
         {
             tilesUsed = new List<Tile>();
 
-            for(int x = 0; x < Model.height; x++)
+            for(int y = 0; y < Model.height; y++)
             {
-                for(int y = 0; y < Model.width; y++)
+                for(int x = 0; x < Model.width; x++)
                 {
                     if(!tilesUsed.Contains(Model.GridCells[x, y].tileUsed))
                     {
@@ -102,9 +103,9 @@ namespace WFC
         {
             FrequenciesOfTiles = new Dictionary<Tile, int>();
 
-            for(int x = 0; x < Model.height; ++x)
+            for(int y = 0; y < Model.height; y++)
             {
-                for(int y = 0; y < Model.width; ++y)
+                for(int x = 0; x < Model.width; x++)
                 {
                     if(!FrequenciesOfTiles.ContainsKey(Model.GridCells[x, y].tileUsed))
                     {

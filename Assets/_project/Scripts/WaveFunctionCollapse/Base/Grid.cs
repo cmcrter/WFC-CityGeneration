@@ -62,10 +62,12 @@ namespace WFC
                 {
                     //A guard clause for several conditions wherein it's not a valid neighbour
                     // skip center cell, skip rows out of range, skip columns out of range
-                    if(i == j || (i + CellX) < 0 || (i + CellX >= height) || (j + CellY) < 0 || (j + CellY >= width) || (i != 0 && j != 0))
+                    if(i == j || (i + CellX) < 0 || (i + CellX >= width) || (j + CellY) < 0 || (j + CellY >= height) || (i != 0 && j != 0))
                     {
                         continue;
                     }
+
+                    Debug.Log(GridCells.Length + " " + CellX + CellY);
 
                     neighbours.Add(GridCells[i + CellX, j + CellY]);
                     localDir.Add(new Vector2(i, j));

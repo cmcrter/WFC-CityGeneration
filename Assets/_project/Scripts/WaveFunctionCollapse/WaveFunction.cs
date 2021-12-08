@@ -270,7 +270,7 @@ namespace WFC
             }
 
             cellVisualisers[(mostRecentX * width) + mostRecentY].UpdateVisuals();
-
+            GridStates.Add(OutputGrid);
             yield return true;
         }
 
