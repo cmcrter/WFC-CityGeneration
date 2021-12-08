@@ -12,6 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d023ed0343adfc14fae9c195d36e0d45, type: 3}
   m_Name: RiverBLCornorTile
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 0}
-  CanGoNextTo: []
-  Frequency: 0
+  Prefab: {fileID: 3317456305616747578, guid: 4c8442218b0133549ab9d95571e14ca3, type: 3}
+  CanGoNextTo:
+  - tile: {fileID: 11400000, guid: 8c6473c2c16a13643a3f4586bbab8bd2, type: 2}
+    direction: {x: -1, y: 0}
+  - tile: {fileID: 11400000, guid: 57f21a7d5b17c1b4d84e28a47cf8b906, type: 2}
+    direction: {x: 0, y: -1}
+  - tile: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
+    direction: {x: 0, y: 1}
+  - tile: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
+    direction: {x: 1, y: 0}
+  Frequency: 1

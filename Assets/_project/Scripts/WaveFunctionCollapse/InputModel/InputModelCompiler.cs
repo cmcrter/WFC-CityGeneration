@@ -7,6 +7,7 @@
 // Brief: A script to combine multiple InputModelEditors' input models into 1 generated input model
 //////////////////////////////////////////////////////////// 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -75,7 +76,7 @@ namespace WFC.Editor
             for(int i = 0; i < allPossibleTiles.Count; ++i)
             {
                 allPossibleTiles[i].Frequency = 0;
-                allPossibleTiles[i].CanGoNextTo.Clear();
+                allPossibleTiles[i].CanGoNextTo = new List<AdjacencyRule>();
             }
         }
 

@@ -106,6 +106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 950913539107304217}
   - component: {fileID: 950913539107304216}
+  - component: {fileID: 1936229827803491983}
   m_Layer: 0
   m_Name: Cell
   m_TagString: Untagged
@@ -142,7 +143,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisCell:
     tileUsed: {fileID: 0}
-    AllpossibleTiles: []
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
@@ -150,3 +150,16 @@ MonoBehaviour:
   EntropyText: {fileID: 2642001428479401175}
   goEntropyText: {fileID: 454707189572976982}
   goPotentialTilesParent: {fileID: 0}
+--- !u!65 &1936229827803491983
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950913539107304215}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.5, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

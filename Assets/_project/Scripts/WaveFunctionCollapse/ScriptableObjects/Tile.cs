@@ -7,18 +7,32 @@
 // Brief: A tile that can be placed down
 //////////////////////////////////////////////////////////// 
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace WFC
 {
+    [Serializable]
+    public struct AdjacencyRule
+    {
+        public AdjacencyRule(Tile newTile, Vector2 newDir)
+        {
+            tile = newTile;
+            direction = newDir;
+        }
+
+        public Tile tile;
+        public Vector2 direction;
+    }
+
     [SerializeField]
     [CreateAssetMenu(fileName = "Tile", menuName = "ScriptableObjects/TileObject", order = 1)]
     public class Tile : ScriptableObject
     {
         //This is the actual model that can be put down as the tile
         public GameObject Prefab;
-        public List<Tile> CanGoNextTo;
+        public List<AdjacencyRule> CanGoNextTo;
         public int Frequency;
     }
 }

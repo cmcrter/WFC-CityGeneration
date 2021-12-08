@@ -12,6 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d023ed0343adfc14fae9c195d36e0d45, type: 3}
   m_Name: RiverLRStraightTile
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 0}
-  CanGoNextTo: []
-  Frequency: 0
+  Prefab: {fileID: 7167751640845760881, guid: fe292a1908c658746975dc4f98527171, type: 3}
+  CanGoNextTo:
+  - tile: {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
+    direction: {x: -1, y: 0}
+  - tile: {fileID: 11400000, guid: 28462185f41f5f142af208aa1889c912, type: 2}
+    direction: {x: 0, y: -1}
+  - tile: {fileID: 11400000, guid: 41aaaae0b50664f42af55af7c2ca85f9, type: 2}
+    direction: {x: 0, y: 1}
+  - tile: {fileID: 11400000, guid: 3423cc07f6bf29249bd5f627ab588072, type: 2}
+    direction: {x: 1, y: 0}
+  Frequency: 1

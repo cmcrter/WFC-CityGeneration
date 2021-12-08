@@ -22,47 +22,56 @@ namespace WFC
         public List<Tile> tilesUsed;
 
         //Linked Dictionaries for the adjacency rule and the frenquencies of tiles in the input model
-        public Dictionary<Tile, int> FrequenciesOfTiles => TileFreq;
-        private Dictionary<Tile, int> TileFreq;
-
-        public Dictionary<Tile, List<Tile>> AllAdjacencyRules => AdjacencyRules;
-        private Dictionary<Tile, List<Tile>> AdjacencyRules;
-
-        private bool includeFlipping;
+        public Dictionary<Tile, int> FrequenciesOfTiles;
+        public Dictionary<Tile, List<AdjacencyRule>> AllAdjacencyRules;
 
         #endregion
 
         #region Public Methods
 
-        public InputModel(Grid modelGrid, bool flipping)
+        public InputModel(Grid modelGrid)
         {
             Model = modelGrid;
-            includeFlipping = flipping;
         }
 
         public void GenerateAdjacencyRules()
         {
-            AdjacencyRules = new Dictionary<Tile, List<Tile>>();
+            AllAdjacencyRules = new Dictionary<Tile, List<AdjacencyRule>>();
 
             //Going through and seeing what tiles are next to what based on the input model
             for(int x = 0; x < Model.height; ++x)
             {
                 for(int y = 0; y < Model.width; ++y) 
                 {
-                    List<Cell> neighbours = Model.GetNeighbours(x, y);
+                    List<Cell> neighbours = Model.GetNeighbours(x, y).Item1;
+                    List<Vector2> neighboursDirections = Model.GetNeighbours(x, y).Item2;
 
-                    if(!AdjacencyRules.ContainsKey(Model.GridCells[x, y].tileUsed))
+                    for(int i = 0; i < neighbours.Count; ++i)
                     {
-                        AdjacencyRules.Add(Model.GridCells[x, y].tileUsed, new List<Tile>());
-                    }
+                        Vector2 direction = neighboursDirections[i];
 
-                    for (int i = 0; i < neighbours.Count; ++i)
-                    {
+                        if(direction.x != 0 && direction.y != 0)
+                        {
+                            Debug.Log("Incorrect Rule");
+                            continue;
+                        }
+
                         if(neighbours[i] != null)
                         {
-                            if(!AdjacencyRules[Model.GridCells[x, y].tileUsed].Contains(neighbours[i].tileUsed))
+                            AdjacencyRule rule = new AdjacencyRule(neighbours[i].tileUsed, direction);
+
+                            if(!AllAdjacencyRules.ContainsKey(Model.GridCells[x, y].tileUsed))
                             {
-                                AdjacencyRules[Model.GridCells[x, y].tileUsed].Add(neighbours[i].tileUsed);
+                                List<AdjacencyRule> list = new List<AdjacencyRule>();
+                                list.Add(rule);
+                                AllAdjacencyRules.Add(Model.GridCells[x, y].tileUsed, list);
+                            }
+                            else
+                            {
+                                if(!AllAdjacencyRules[Model.GridCells[x, y].tileUsed].Contains(rule))
+                                {
+                                    AllAdjacencyRules[Model.GridCells[x, y].tileUsed].Add(rule);
+                                }
                             }
                         }
                     }
@@ -91,7 +100,7 @@ namespace WFC
         //Goes through the current grid and counts the amount of times each tile appears, then sets that tiles' scriptable object to reflect that
         public void CalculateRelativeFrequency()
         {
-            TileFreq = new Dictionary<Tile, int>();
+            FrequenciesOfTiles = new Dictionary<Tile, int>();
 
             for(int x = 0; x < Model.height; ++x)
             {
@@ -99,11 +108,11 @@ namespace WFC
                 {
                     if(!FrequenciesOfTiles.ContainsKey(Model.GridCells[x, y].tileUsed))
                     {
-                        TileFreq.Add(Model.GridCells[x, y].tileUsed, 1);
+                        FrequenciesOfTiles.Add(Model.GridCells[x, y].tileUsed, 1);
                     }
                     else
                     {
-                        TileFreq[Model.GridCells[x, y].tileUsed]++;
+                        FrequenciesOfTiles[Model.GridCells[x, y].tileUsed]++;
                     }
                 }
             }

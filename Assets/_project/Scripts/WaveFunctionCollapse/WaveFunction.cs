@@ -23,7 +23,7 @@ namespace WFC
         //The grid that this outputs
         [SerializeField]
         private Grid OutputGrid;
-        
+
         //The input model compiler, which is the sum of selected input models
         [SerializeField]
         private InputModelCompiler ModelCompiler;
@@ -33,6 +33,13 @@ namespace WFC
         private int width;
         [SerializeField]
         private int height;
+
+        [Header("Backtracking Variables")]
+        //Storing some states for backtracking
+        [SerializeField]
+        private List<Grid> GridStates;
+        [SerializeField]
+        private Tile LastSelectedTile;
 
         [Header("Algorithm Generation Customization")]
         //The seed which generates each choice the algorithm will pick
@@ -47,7 +54,6 @@ namespace WFC
         [SerializeField]
         private float generationSpeed = 0.1f;
 
-        //ToDo: Link the hierarchy to the visualization objects
         [SerializeField]
         private Transform gridParent;
         [SerializeField]
@@ -144,25 +150,19 @@ namespace WFC
             cellTransforms = new List<Transform>();
             cellVisualisers = new List<CellVisualiser>();
 
-            for(int x = 0; x < OutputGrid.width; x++)
+            for(int y = 0; y < height; y++)
             {
-                for(int y = 0; y < OutputGrid.height; y++)
+                for(int x = 0; x < width; x++)
                 {
                     //Debug.Log("Cell: " + x + "," + y + " being set");
 
-                    //Setting up the cells' values
-                    OutputGrid.GridCells[x, y].CellX = x;
-                    OutputGrid.GridCells[x, y].CellY = y;
-
-                    OutputGrid.GridCells[x, y].possibleTiles = new List<Tile>();
-
-                    foreach(Tile tile in ModelCompiler.allPossibleTiles)
+                    foreach (Tile tile in ModelCompiler.allPossibleTiles)
                     {
                         OutputGrid.GridCells[x, y].possibleTiles.Add(tile);
-                    }
+                    }                    
 
                     //Setting up the cells' objects in the Unity scene
-                    GameObject cellGo = Instantiate(cellPrefab, new Vector3(x, 1, y), Quaternion.identity, gridParent);
+                    GameObject cellGo = Instantiate(cellPrefab, new Vector3(x, 1, -y), Quaternion.identity, gridParent);
                     Transform cellT = cellGo.transform;
                     cellTransforms.Add(cellT);
 
@@ -175,9 +175,9 @@ namespace WFC
             }
 
             //Now all the cells are set up, calculate the based entropy value
-            for(int x = 0; x < OutputGrid.width; x++)
+            for(int y = 0; y < height; y++)
             {
-                for(int y = 0; y < OutputGrid.height; y++)
+                for(int x = 0; x < width; x++)
                 {
                     OutputGrid.GridCells[x, y].currentEntropy = OutputGrid.GridCells[x, y].calculateEntropyValue();
                 }
@@ -273,9 +273,9 @@ namespace WFC
         /// </summary>
         private bool isGridFullyCollapsed()
         {
-            for(int x = 0; x < OutputGrid.width; ++x)
+            for(int y = 0; y < height; y++)
             {
-                for(int y = 0; y < OutputGrid.height; ++y)
+                for(int x = 0; x < width; x++)
                 {
                     if(OutputGrid.GridCells[x, y].tileUsed == null) 
                     {
@@ -289,9 +289,9 @@ namespace WFC
 
         private IEnumerator Co_UpdatingAllVisuals()
         {
-            for(int x = 0; x < cellVisualisers.Count; ++x)
+            for(int i = 0; i < cellVisualisers.Count; ++i)
             {
-                cellVisualisers[x].UpdateVisuals();
+                cellVisualisers[i].UpdateVisuals();
             }
 
             yield return true;
@@ -313,9 +313,9 @@ namespace WFC
         //A function to go through the grid until constraints are needed to be applied to a cell
         private void CheckingGridForConstraints()
         {
-            for(int x = 0; x < OutputGrid.width; ++x)
+            for(int y = 0; y < height; y++)
             {
-                for(int y = 0; y < OutputGrid.height; ++y)
+                for(int x = 0; x < width; x++)
                 {
                     if(OutputGrid.GridCells[x, y].ApplyConstraintsBasedOnPotential(OutputGrid))
                     {
@@ -338,7 +338,7 @@ namespace WFC
             propagatedCells[mostRecentlyCollapsed.CellX, mostRecentlyCollapsed.CellY] = true;
 
             //Starting by adding the relevant initial cells to the stack
-            foreach(Cell cell in OutputGrid.GetNeighbours(mostRecentlyCollapsed.CellX, mostRecentlyCollapsed.CellY)) 
+            foreach(Cell cell in OutputGrid.GetNeighbours(mostRecentlyCollapsed.CellX, mostRecentlyCollapsed.CellY).Item1) 
             {
                 if(!cell.tileUsed)
                 {
@@ -361,7 +361,7 @@ namespace WFC
                         if(currentCell.ApplyConstraintsBasedOnPotential(OutputGrid))
                         {
                             //Getting the neighbours of the cell just constrained
-                            List<Cell> currentNeighbours = OutputGrid.GetNeighbours(currentCell.CellX, currentCell.CellY);
+                            List<Cell> currentNeighbours = OutputGrid.GetNeighbours(currentCell.CellX, currentCell.CellY).Item1;
                             Neighbours.Pop();
                             propagatedCells[currentCell.CellX, currentCell.CellY] = true;
 
@@ -400,9 +400,9 @@ namespace WFC
             //Look for cells with lowest entropy
             Cell currentCellWithLowestEntropy = null;
 
-            for(int x = 0; x < OutputGrid.width; ++x)
+            for(int y = 0; y < height; y++)
             {
-                for(int y = 0; y < OutputGrid.height; ++y)
+                for(int x = 0; x < width; x++)
                 {
                     //There's no tile selected here
                     if(!OutputGrid.GridCells[x, y].isCollapsed()) 
@@ -439,16 +439,16 @@ namespace WFC
             //Collapse given cell
             if(givenCell.CollapseCell(MTNumberGenerator))
             {
-                Instantiate(givenCell.tileUsed.Prefab, cellTransforms[(givenCell.CellX * width) + givenCell.CellY]);
+                Instantiate(givenCell.tileUsed.Prefab, cellTransforms[(givenCell.CellY * width) + givenCell.CellX]);
             }
         }
 
         private bool isMapPossible()
         {
             //Checking to see if it's a failure (there's no possible values for the cells left)
-            for(int x = 0; x < OutputGrid.width; ++x)
+            for(int y = 0; y < height; y++)
             {
-                for(int y = 0; y < OutputGrid.height; ++y)
+                for(int x = 0; x < width; x++)
                 {
                     //Even if a tile is selected, the possible tiles will be 1 or above
                     if(OutputGrid.GridCells[x, y].possibleTiles.Count == 0)
@@ -464,9 +464,9 @@ namespace WFC
 
         private void InstantiateGrid()
         {
-            for(int x = 0; x < OutputGrid.width; ++x)
+            for(int y = 0; y < height; y++)
             {
-                for(int y = 0; y < OutputGrid.height; ++y)
+                for(int x = 0; x < width; x++)
                 {
                     Instantiate(OutputGrid.GridCells[x, y].tileUsed.Prefab, cellTransforms[(x * width) + y]);
                 }

@@ -49,6 +49,7 @@ namespace WFC
         //Calculating Shannon's Entropy
         public float calculateEntropyValue()
         {
+            //If the tile is selected, there's no chance of it changing in the program, so it's entropy is 0
             if(tileUsed)
             {
                 return 0f;
@@ -58,6 +59,7 @@ namespace WFC
             float sum_of_weight_log_weights = 0;
             float weightSum = GetSumOfTileWeights(possibleTiles);
 
+            //Going through this cells' possible tiles and calculating the possibilities' weight values
             for(int i = 0; i < possibleTiles.Count; ++i)
             {
                 float weight = possibleTiles[i].Frequency / weightSum;
@@ -129,11 +131,13 @@ namespace WFC
                 //Remove that possible tile from possible tiles
                 if(neighbours[i] != null)
                 {
+                    Vector2 difference = new Vector2(CellX - neighbours[i].CellX, CellY - neighbours[i].CellY);
+
                     for(int j = 0; j < possibleTiles.Count; ++j)
                     {
                         if(neighbours[i].tileUsed)
                         {
-                            if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed) && !CellConstrainedTiles.Contains(neighbours[i].tileUsed))
+                            if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed, difference) && !CellConstrainedTiles.Contains(neighbours[i].tileUsed))
                             {
                                 CellConstrainedTiles.Add(neighbours[i].tileUsed);
                             }
@@ -143,7 +147,7 @@ namespace WFC
                             //Checking against the neighbours' possible tiles
                             for(int k = 0; k < neighbours[i].possibleTiles.Count; ++k)
                             {
-                                if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].possibleTiles[k]) && !CellConstrainedTiles.Contains(neighbours[i].possibleTiles[k]))
+                                if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].possibleTiles[k], difference) && !CellConstrainedTiles.Contains(neighbours[i].possibleTiles[k]))
                                 {
                                     CellConstrainedTiles.Add(neighbours[i].possibleTiles[k]);
                                 }
@@ -167,7 +171,10 @@ namespace WFC
 
         public bool ApplyConstraintsBasedOnPotential(Grid gridCellisIn)
         {
-            List<Cell> neighbours = gridCellisIn.GetNeighbours(CellX, CellY);
+            Tuple<List<Cell>, List<Vector2>> neighbourhood = gridCellisIn.GetNeighbours(CellX, CellY);
+            List<Cell> neighbours = neighbourhood.Item1;
+            List<Vector2> localDirections = neighbourhood.Item2;
+
             List<Tile> impossibleTiles = new List<Tile>();
 
             bool tileRemoved = false;            
@@ -183,7 +190,8 @@ namespace WFC
                     {
                         if(neighbours[i].tileUsed)
                         {
-                            if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed))
+                            Vector2 difference = localDirections[i];
+                            if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed, difference))
                             {
                                 impossibleTiles.Add(possibleTiles[j]);
                                 tileRemoved = true;
@@ -229,11 +237,14 @@ namespace WFC
         }
 
         //Checking the tiles to see if they are within eachothers' adjacency rules
-        public static bool IsAdjacentAllowed(Tile possibleTile, Tile otherTile)
+        public static bool IsAdjacentAllowed(Tile possibleTile, Tile otherTile, Vector2 direction)
         {
             bool bCanPlace = false;
 
-            if(possibleTile.CanGoNextTo.Contains(otherTile) && otherTile.CanGoNextTo.Contains(possibleTile))
+            AdjacencyRule ruleToCheck = new AdjacencyRule(otherTile, direction);
+            AdjacencyRule inverseruleToCheck = new AdjacencyRule(possibleTile, -direction);
+
+            if(possibleTile.CanGoNextTo.Contains(ruleToCheck) && otherTile.CanGoNextTo.Contains(inverseruleToCheck))
             {
                 bCanPlace = true;
             }

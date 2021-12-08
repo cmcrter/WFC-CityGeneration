@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d023ed0343adfc14fae9c195d36e0d45, type: 3}
-  m_Name: RiverTRCornorTile
+  m_Name: EmptyTile
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 9009977315230038646, guid: e903086d0ac2e5e4c8ac2c9edf46b310, type: 3}
+  Prefab: {fileID: 0}
   CanGoNextTo: []
   Frequency: 0

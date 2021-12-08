@@ -17,7 +17,8 @@ namespace WFC.Editor
     {
         #region Public Fields
 
-        private List<Cell> tiles;
+        [SerializeField]
+        private List<ModelCell> cellsInModel = new List<ModelCell>();
 
         //The width and height for these will be the same
         [SerializeField]
@@ -26,10 +27,6 @@ namespace WFC.Editor
         public InputModel modelGenerated;
         public Grid lastGeneratedGrid;
 
-        [Header("Customization Variables")]
-        [SerializeField]
-        private bool patternFlipping = false;
-
         #endregion
 
         #region Public Methods
@@ -37,8 +34,8 @@ namespace WFC.Editor
         [ContextMenu("Refresh Cells")]
         public void GetTiles()
         {
-            tiles = new List<Cell>();
-            
+            cellsInModel.Clear();
+
             //Making sure the size is set correctly if not set in the inspector
             if(size == 0)
             {
@@ -51,7 +48,7 @@ namespace WFC.Editor
                 //All of these children should have the cell component on them
                 if(transform.GetChild(i).TryGetComponent(out ModelCell cell))
                 {
-                    tiles.Add(cell.modelTile);
+                    cellsInModel.Add(cell);
                 }
             }
         }
@@ -71,12 +68,15 @@ namespace WFC.Editor
             {
                 for(int y = 0; y < size; ++y) 
                 {
-                    newGrid.GridCells[x, y] = tiles[(x * size) + y];
+                    cellsInModel[(y * size) + x].modelTile.CellX = x;
+                    cellsInModel[(y * size) + x].modelTile.CellY = y;
+
+                    newGrid.GridCells[x, y] = cellsInModel[(y * size) + x].modelTile;
                 }
             }
 
             //Formulating the input model based on the grid
-            modelGenerated = new InputModel(newGrid, patternFlipping);
+            modelGenerated = new InputModel(newGrid);
             modelGenerated.GenerateListOfPotentialTiles();
             modelGenerated.CalculateRelativeFrequency();
             modelGenerated.GenerateAdjacencyRules();
