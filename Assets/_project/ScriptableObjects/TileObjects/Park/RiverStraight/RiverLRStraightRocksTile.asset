@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d023ed0343adfc14fae9c195d36e0d45, type: 3}
   m_Name: RiverLRStraightRocksTile
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 0}
-  CanGoNextTo: []
-  Frequency: 0
+  Prefab: {fileID: 5387932272190317003, guid: a0368266d798c7b498306201c3ba3154, type: 3}
+  CanGoNextTo:
+  - {fileID: 11400000, guid: 28462185f41f5f142af208aa1889c912, type: 2}
+  - {fileID: 11400000, guid: 659eb70e42b521543b615f9e7c9894c7, type: 2}
+  - {fileID: 11400000, guid: 896df44e54be44e4abdb7358404dc6cb, type: 2}
+  Frequency: 1
