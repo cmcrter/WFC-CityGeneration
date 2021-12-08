@@ -62,13 +62,16 @@ namespace WFC
 
         private void UpdateEntropyText()
         {
-            if(thisCell.currentEntropy > 0)
+            if(EntropyText != null)
             {
-                EntropyText.text = thisCell.currentEntropy.ToString("F2");
-            }
-            else
-            {
-                EntropyText.text = "0";
+                if(thisCell.currentEntropy > 0)
+                {
+                    EntropyText.text = thisCell.currentEntropy.ToString("F2");
+                }
+                else
+                {
+                    EntropyText.text = "0";
+                }
             }
         }
 

@@ -38,8 +38,9 @@ namespace WFC
         //Storing some states for backtracking
         [SerializeField]
         private List<Grid> GridStates;
+        //These are the tiles last selected from the previous cell, which can be multiple due to backtracking to try multiple
         [SerializeField]
-        private Tile LastSelectedTile;
+        private List<Tile> LastSelectedTiles;
 
         [Header("Algorithm Generation Customization")]
         //The seed which generates each choice the algorithm will pick
@@ -53,6 +54,8 @@ namespace WFC
         private bool incremental = false;
         [SerializeField]
         private float generationSpeed = 0.1f;
+        [SerializeField]
+        private int currentIterationCount = 0;
 
         [SerializeField]
         private Transform gridParent;
@@ -111,7 +114,9 @@ namespace WFC
                 StopCoroutine(CoGenerating);
             }
 
-            MTNumberGenerator = new Mersenne_Twister(seed);
+            GridStates.Clear();
+            MTNumberGenerator = new Mersenne_Twister(seed + (currentIterationCount * 127));
+
             CoGenerating = StartCoroutine(Co_GenerateGrid());
         }
 
@@ -206,7 +211,6 @@ namespace WFC
         private IEnumerator Co_GridPropagation()
         {
             //Updating from the first collapsed cell
-            int currentIterationCount = 0;
 
             if(bBruteForce)
             {
@@ -220,6 +224,13 @@ namespace WFC
             //While not all cells are collapsed
             while(!isGridFullyCollapsed())
             {
+                //Can the current grid work? If yes, continue, if no, backtrack
+                if(!isMapPossible())
+                {
+                    Backtrack();
+                    continue;
+                }
+
                 yield return Co_UpdatingAllVisuals();
 
                 //Pick new cell to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
@@ -227,7 +238,12 @@ namespace WFC
                 yield return Co_SearchForCellToCollapse();
 
                 //Collapse them
-                CollapsingNextCell(mostRecentlyCollapsed);
+                if(!CollapsingNextCell(mostRecentlyCollapsed))
+                {
+                    Backtrack();
+                }
+
+                GridStates.Add(OutputGrid);
 
                 //Update the constraints (this is the actual propagation step)
                 if(bBruteForce)
@@ -239,20 +255,7 @@ namespace WFC
                     yield return Co_EfficientUpdateGridConstraints();
                 }
 
-                //Does this work? If yes, repeat, if no, backtrack
-                if(!isMapPossible())
-                {
-                    if(currentIterationCount <= iterationLimit)
-                    {
-                        Backtrack();
-                        currentIterationCount++;
-                    }
-                    else
-                    {
-                        //Start again completely?
-                        yield return false;
-                    }
-                }
+                LastSelectedTiles.Clear();
 
                 //Waiting for a specific amount of time (may help with the visualisation aspect)
                 if(incremental)
@@ -429,18 +432,22 @@ namespace WFC
             yield return true;
         }
 
-        private void CollapsingNextCell(Cell givenCell)
+        private bool CollapsingNextCell(Cell givenCell)
         {
             if(givenCell == null)
             {
-                return;
+                return false;
             }
 
             //Collapse given cell
             if(givenCell.CollapseCell(MTNumberGenerator))
             {
+                LastSelectedTiles.Add(givenCell.tileUsed);
                 Instantiate(givenCell.tileUsed.Prefab, cellTransforms[(givenCell.CellY * width) + givenCell.CellX]);
+                return true;
             }
+
+            return false;
         }
 
         private bool isMapPossible()
@@ -475,7 +482,50 @@ namespace WFC
 
         private void Backtrack()
         {
-            //Going through the history (previous times of searching for a cell to collapse?)
+            ClearGrid();
+        }
+
+        private void ClearGrid()
+        {
+            for(int i = 0; i < cellTransforms.Count; ++i)
+            {
+                Destroy(cellTransforms[i].gameObject);
+            }
+
+            cellTransforms.Clear();
+            cellVisualisers.Clear();
+
+            RunAlgorithm();
+        }
+
+        private void ReimplementGrid()
+        {
+            for(int i = 0; i < cellTransforms.Count; ++i)
+            {
+                Destroy(cellTransforms[i].gameObject);
+            }
+
+            for(int y = 0; y < height; y++)
+            {
+                for(int x = 0; x < width; x++)
+                {
+                    //Setting up the cells' objects in the Unity scene
+                    GameObject cellGo = Instantiate(cellPrefab, new Vector3(x, 1, -y), Quaternion.identity, gridParent);
+                    Transform cellT = cellGo.transform;
+                    cellTransforms.Add(cellT);
+
+                    if(cellT.TryGetComponent(out CellVisualiser cVis))
+                    {
+                        cellVisualisers.Add(cVis);
+                        cVis.thisCell = OutputGrid.GridCells[x, y];
+                    }
+
+                    if(OutputGrid.GridCells[x, y].tileUsed)
+                    {
+                        Instantiate(OutputGrid.GridCells[x, y].tileUsed.Prefab, cellTransforms[(OutputGrid.GridCells[x, y].CellY * width) + OutputGrid.GridCells[x, y].CellX]);
+                    }
+                }
+            }
         }
 
         #endregion

@@ -229,11 +229,6 @@ namespace WFC
                     possibleTiles.Remove(tile);
                 }
             }
-
-            if(tilesToRemove.Count > 2)
-            {
-                Debug.Log("More than 2 tiles being removed");
-            }
         }
 
         //Checking the tiles to see if they are within eachothers' adjacency rules
