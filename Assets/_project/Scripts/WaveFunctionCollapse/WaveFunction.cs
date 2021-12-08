@@ -55,7 +55,7 @@ namespace WFC
         [SerializeField]
         private float generationSpeed = 0.1f;
         [SerializeField]
-        private int currentIterationCount = 0;
+        private int currentIterationCount;
 
         [SerializeField]
         private Transform gridParent;
@@ -115,7 +115,10 @@ namespace WFC
             }
 
             GridStates.Clear();
-            MTNumberGenerator = new Mersenne_Twister(seed + (currentIterationCount * 127));
+
+            //Updating the seed depending on how many backtracks done so far
+            seed += (currentIterationCount * 127);
+            MTNumberGenerator = new Mersenne_Twister(seed);
 
             CoGenerating = StartCoroutine(Co_GenerateGrid());
         }
@@ -228,7 +231,7 @@ namespace WFC
                 if(!isMapPossible())
                 {
                     Backtrack();
-                    continue;
+                    yield return null;
                 }
 
                 yield return Co_UpdatingAllVisuals();
@@ -482,6 +485,7 @@ namespace WFC
 
         private void Backtrack()
         {
+            currentIterationCount++;
             ClearGrid();
         }
 

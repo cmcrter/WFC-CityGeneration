@@ -9308,7 +9308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelTile:
-    tileUsed: {fileID: 11400000, guid: 6ad8e2d690081084183a1b09fae259f0, type: 2}
+    tileUsed: {fileID: 11400000, guid: 03a4c409367c4bf4b9a564a8538c6dd2, type: 2}
     possibleTiles: []
     currentEntropy: 1
     CellX: 0
