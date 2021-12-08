@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 03/12/21
+// Date Last Edited: 08/12/21
 // Brief: The script which holds information about the input model and can generate the patterns
 //////////////////////////////////////////////////////////// 
 
