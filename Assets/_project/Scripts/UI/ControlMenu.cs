@@ -52,11 +52,6 @@ namespace WFC.UI
 
         }
 
-        private void Update()
-        {
-
-        }
-
         #endregion
 
         #region Public Methods
@@ -107,6 +102,14 @@ namespace WFC.UI
             if(waveFunction)
             {
                 waveFunction.SetBruteForce(isOn);
+            }
+        }
+
+        public void EntropyShownChanged(bool isOn)
+        {
+            if(waveFunction)
+            {
+                waveFunction.SetEntropyShown(isOn);
             }
         }
 

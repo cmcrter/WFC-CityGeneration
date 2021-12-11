@@ -153,6 +153,19 @@ namespace WFC
             bBruteForce = !isFast;
         }
 
+        public void SetEntropyShown(bool isShown)
+        {
+            if(cellVisualisers == null || cellVisualisers.Count == 0 || CoGenerating == null)
+            {
+                return;
+            }
+
+            for(int i = 0; i < cellVisualisers.Count; ++i)
+            {
+                cellVisualisers[i].EntropyText.gameObject.SetActive(isShown);
+            }
+        }
+
         #endregion
 
         #region Private Methods
