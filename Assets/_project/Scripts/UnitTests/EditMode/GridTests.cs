@@ -43,7 +43,7 @@ namespace WFC.Tests
         #region Test Methods
 
         //Making a reference grid
-        Grid ExampleGridCreation()
+        private Grid ExampleGridCreation()
         {
             Grid gridToReturn = new Grid(3, 3);
             return gridToReturn;

@@ -79,6 +79,8 @@ namespace WFC
         private bool bBruteForce = false;
         [SerializeField]
         private bool bPauseEditorOnFailure = false;
+        [SerializeField]
+        private bool bPaused = false;
 
         //The random number generator
         private Mersenne_Twister MTNumberGenerator;
@@ -90,11 +92,12 @@ namespace WFC
         private void Awake()
         {
             gridParent = gridParent ?? transform;
+            ModelCompiler = ModelCompiler ?? FindObjectOfType<InputModelCompiler>();
         }
 
         private void Start()
         {
-            ModelCompiler = InputModelCompiler.instance;
+            MTNumberGenerator = new Mersenne_Twister(seed);
         }
 
         #endregion
@@ -108,6 +111,21 @@ namespace WFC
         //    InputModelEditor.GeneratedInputModelGrid();
         //}
 
+        [ContextMenu("Pause WFC")]
+        public void PauseAlgorithm()
+        {
+            bPaused = !bPaused;
+        }
+
+        [ContextMenu("Restart WFC with next seed")]
+        public void RestartAlgorithm()
+        {
+            ClearGrid();
+            seed++;
+            MTNumberGenerator = new Mersenne_Twister(seed);
+            RunAlgorithm();
+        }
+
         [ContextMenu("Run WFC")]
         public void RunAlgorithm()
         {
@@ -117,10 +135,6 @@ namespace WFC
             }
 
             GridStates.Clear();
-
-            //Updating the seed depending on how many backtracks done so far
-            seed += 1;
-            MTNumberGenerator = new Mersenne_Twister(seed);
 
             CoGenerating = StartCoroutine(Co_GenerateGrid());
         }
@@ -243,6 +257,11 @@ namespace WFC
                     }
 
                     Backtrack();
+                }
+
+                while(bPaused)
+                {
+                    yield return null;
                 }
 
                 yield return Co_UpdatingAllVisuals();
@@ -508,7 +527,7 @@ namespace WFC
         private void Backtrack()
         {
             currentIterationCount++;
-            ClearGrid();
+            RestartAlgorithm();
         }
 
         private void ClearGrid()

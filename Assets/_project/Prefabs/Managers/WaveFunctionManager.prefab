@@ -50,11 +50,12 @@ MonoBehaviour:
   width: 15
   height: 15
   GridStates: []
-  LastSelectedTile: {fileID: 0}
+  LastSelectedTiles: []
   seed: 7919
   iterationLimit: 10
   incremental: 0
   generationSpeed: 0.1
+  currentIterationCount: 0
   gridParent: {fileID: 0}
   cellPrefab: {fileID: 950913539107304215, guid: 171dd54153ea1d742a57489fa697a777, type: 3}
   cellVisualisers:
@@ -516,3 +517,5 @@ MonoBehaviour:
     CellX: 14
     CellY: 2
   bBruteForce: 0
+  bPauseEditorOnFailure: 0
+  bPaused: 0

@@ -18,9 +18,6 @@ namespace WFC.Editor
     {
         #region Variables
 
-        //There only needs to be one of these in the scene
-        public static InputModelCompiler instance;
-
         //The algorithm script that will use the compliler
         [SerializeField]
         private WaveFunction waveFunction;
@@ -37,15 +34,6 @@ namespace WFC.Editor
 
         void Awake()
         {
-            if(instance)
-            {
-                Destroy(this);
-            }
-            else
-            {
-                instance = this;
-            }
-
             //Going through and preparing the input models
             for(int i = 0; i < editorsUsed.Count; ++i)
             {
