@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WFC.Editor;
 using WFC.Rand;
+using WFC.UI;
 
 namespace WFC
 {

@@ -9,14 +9,14 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
-namespace WFC
+namespace WFC.UI
 {
     public class CellVisualiser : MonoBehaviour
     {
         #region Variables
 
+        [Header("Necessary Variables")]
         public Cell thisCell;
         public TextMesh EntropyText;
 
@@ -36,16 +36,6 @@ namespace WFC
         private bool bShowPotentialTiles = true;
 
         #endregion
-
-        private void OnEnable()
-        {
-            
-        }
-
-        public void SetPositions()
-        {
-            
-        }
 
         public void UpdateVisuals()
         {
