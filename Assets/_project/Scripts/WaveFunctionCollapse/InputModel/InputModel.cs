@@ -22,14 +22,23 @@ namespace WFC
         public List<Tile> tilesUsed;
 
         //Linked Dictionaries for the adjacency rule and the frenquencies of tiles in the input model
-        public Dictionary<Tile, int> FrequenciesOfTiles;
-        public Dictionary<Tile, List<AdjacencyRule>> AllAdjacencyRules;
+        public Dictionary<Tile, int> FrequenciesOfTiles
+        {
+            get;
+            private set;
+        }
 
-        #endregion
+        public Dictionary<Tile, List<AdjacencyRule>> AllAdjacencyRules
+        {
+            get;
+            private set;
+        }
 
-        #region Public Methods
+    #endregion
 
-        public InputModel(Grid modelGrid)
+    #region Public Methods
+
+    public InputModel(Grid modelGrid)
         {
             Model = modelGrid;
         }

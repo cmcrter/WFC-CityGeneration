@@ -117,7 +117,7 @@ namespace WFC
             GridStates.Clear();
 
             //Updating the seed depending on how many backtracks done so far
-            seed += (currentIterationCount * 127);
+            seed += currentIterationCount;
             MTNumberGenerator = new Mersenne_Twister(seed);
 
             CoGenerating = StartCoroutine(Co_GenerateGrid());
