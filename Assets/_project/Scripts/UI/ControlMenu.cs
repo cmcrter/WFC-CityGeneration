@@ -56,6 +56,9 @@ namespace WFC.UI
 
         #region Public Methods
 
+        /// <summary>
+        /// The functions that are ran from the User Interface
+        /// </summary>
         public void RunProgram()
         {
             PlayButton.interactable = false;
