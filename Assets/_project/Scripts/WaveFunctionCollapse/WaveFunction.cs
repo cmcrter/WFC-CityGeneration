@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 08/12/21
+// Date Last Edited: 11/12/21
 // Brief: A script to run through the wave function collapse algorithm
 //////////////////////////////////////////////////////////// 
 
@@ -77,6 +77,8 @@ namespace WFC
         //An option for propagation through a less efficient method
         [SerializeField]
         private bool bBruteForce = false;
+        [SerializeField]
+        private bool bPauseEditorOnFailure = false;
 
         //The random number generator
         private Mersenne_Twister MTNumberGenerator;
@@ -117,7 +119,7 @@ namespace WFC
             GridStates.Clear();
 
             //Updating the seed depending on how many backtracks done so far
-            seed += currentIterationCount;
+            seed += 1;
             MTNumberGenerator = new Mersenne_Twister(seed);
 
             CoGenerating = StartCoroutine(Co_GenerateGrid());
@@ -148,7 +150,6 @@ namespace WFC
             Debug.Log("Algorithm Finished");
 
             CoGenerating = null;
-            yield return true;
         }
 
         private IEnumerator Co_CreateGrid()
@@ -207,14 +208,7 @@ namespace WFC
 
             mostRecentlyCollapsed = OutputGrid.GridCells[mostRecentX, mostRecentY];
 
-            yield return true;
-        }
-
-        //This is the bulk of the algorithm since it's the iteration loop it goes through
-        private IEnumerator Co_GridPropagation()
-        {
             //Updating from the first collapsed cell
-
             if(bBruteForce)
             {
                 yield return Co_BruteForceUpdateGridConstraints();
@@ -224,14 +218,31 @@ namespace WFC
                 yield return Co_EfficientUpdateGridConstraints();
             }
 
+            yield return true;
+        }
+
+        //This is the bulk of the algorithm since it's the iteration loop it goes through
+        private IEnumerator Co_GridPropagation()
+        {
             //While not all cells are collapsed
             while(!isGridFullyCollapsed())
             {
                 //Can the current grid work? If yes, continue, if no, backtrack
                 if(!isMapPossible())
                 {
+                    //Visually catching everything up
+                    CalculateAllEntropys();
+                    yield return Co_UpdatingAllVisuals();
+
+                    Debug.Log("Grid not possible anymore", this);
+
+                    if(bPauseEditorOnFailure && Debug.isDebugBuild)
+                    {
+                        Debug.Break();
+                        yield return null;
+                    }
+
                     Backtrack();
-                    yield return null;
                 }
 
                 yield return Co_UpdatingAllVisuals();
@@ -243,6 +254,14 @@ namespace WFC
                 //Collapse them
                 if(!CollapsingNextCell(mostRecentlyCollapsed))
                 {
+                    Debug.Log("Grid not possible anymore", this);
+
+                    if(bPauseEditorOnFailure && Debug.isDebugBuild)
+                    {
+                        Debug.Break();
+                        yield return null;
+                    }
+
                     Backtrack();
                 }
 
@@ -413,6 +432,14 @@ namespace WFC
                     //There's no tile selected here
                     if(!OutputGrid.GridCells[x, y].isCollapsed()) 
                     {
+                        if(OutputGrid.GridCells[x, y].currentEntropy == 0)
+                        {
+                            mostRecentX = OutputGrid.GridCells[x, y].CellX;
+                            mostRecentY = OutputGrid.GridCells[x, y].CellY;
+                            mostRecentlyCollapsed = OutputGrid.GridCells[x, y];
+                            yield return true;
+                        }
+
                         if(currentCellWithLowestEntropy == null)
                         {
                             currentCellWithLowestEntropy = OutputGrid.GridCells[x, y];
@@ -437,11 +464,6 @@ namespace WFC
 
         private bool CollapsingNextCell(Cell givenCell)
         {
-            if(givenCell == null)
-            {
-                return false;
-            }
-
             //Collapse given cell
             if(givenCell.CollapseCell(MTNumberGenerator))
             {
@@ -461,7 +483,7 @@ namespace WFC
                 for(int x = 0; x < width; x++)
                 {
                     //Even if a tile is selected, the possible tiles will be 1 or above
-                    if(OutputGrid.GridCells[x, y].possibleTiles.Count == 0)
+                    if(OutputGrid.GridCells[x, y].possibleTiles.Count == 0 && !OutputGrid.GridCells[x, y].isCollapsed())
                     {
                         return false;
                     }
@@ -500,6 +522,17 @@ namespace WFC
             cellVisualisers.Clear();
 
             RunAlgorithm();
+        }
+
+        private void CalculateAllEntropys()
+        {
+            for(int y = 0; y < height; y++)
+            {
+                for(int x = 0; x < width; x++)
+                {
+                    OutputGrid.GridCells[x, y].calculateEntropyValue();
+                }
+            }
         }
 
         private void ReimplementGrid()

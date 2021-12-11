@@ -50,7 +50,7 @@ namespace WFC
         public float calculateEntropyValue()
         {
             //If the tile is selected, there's no chance of it changing in the program, so it's entropy is 0
-            if(tileUsed)
+            if(tileUsed || possibleTiles.Count == 0)
             {
                 return 0f;
             }

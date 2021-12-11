@@ -71,6 +71,18 @@ namespace WFC.Tests
             Assert.AreEqual(BottomRightNeighbourhood.Item1.Count, 2);
         }
 
+        [Test]
+        public void CoordinatesTest()
+        {
+            Grid gridToUse = ExampleGridCreation();
+
+            Assert.AreEqual(gridToUse.GridCells[0, 0].CellX, 0);
+            Assert.AreEqual(gridToUse.GridCells[0, 0].CellY, 0);
+
+            Assert.AreEqual(gridToUse.GridCells[2, 2].CellX, 2);
+            Assert.AreEqual(gridToUse.GridCells[2, 2].CellY, 2);
+        }
+
         #endregion
     }
 }

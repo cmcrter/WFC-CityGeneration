@@ -67,8 +67,6 @@ namespace WFC
                         continue;
                     }
 
-                    Debug.Log(GridCells.Length + " " + CellX + CellY);
-
                     neighbours.Add(GridCells[i + CellX, j + CellY]);
                     localDir.Add(new Vector2(i, j));
                 }
