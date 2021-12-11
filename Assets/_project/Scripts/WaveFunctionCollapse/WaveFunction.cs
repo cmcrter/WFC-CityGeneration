@@ -44,6 +44,7 @@ namespace WFC
 
         [Header("Algorithm Generation Customization")]
         //The seed which generates each choice the algorithm will pick
+        private int initialSeed;
         [SerializeField]
         private int seed;
         //How many times the algorithm will try
@@ -117,19 +118,22 @@ namespace WFC
             bPaused = !bPaused;
         }
 
-        [ContextMenu("Restart WFC with next seed")]
+        [ContextMenu("Restart WFC")]
         public void RestartAlgorithm()
         {
-            ClearGrid();
-            seed++;
+            seed = initialSeed;
             MTNumberGenerator = new Mersenne_Twister(seed);
+
+            ClearGrid();
             RunAlgorithm();
         }
 
         [ContextMenu("Run WFC")]
         public void RunAlgorithm()
         {
-            if (CoGenerating != null)
+            initialSeed = seed;
+
+            if(CoGenerating != null)
             {
                 StopCoroutine(CoGenerating);
             }
@@ -137,6 +141,16 @@ namespace WFC
             GridStates.Clear();
 
             CoGenerating = StartCoroutine(Co_GenerateGrid());
+        }
+
+        public void SetSeed(int newSeed)
+        {
+            seed = newSeed;
+        }
+
+        public void SetBruteForce(bool isFast)
+        {
+            bBruteForce = !isFast;
         }
 
         #endregion
@@ -524,23 +538,27 @@ namespace WFC
             }
         }
 
+        //Incrementing the seed and counter, and restarting the algorithm
         private void Backtrack()
         {
             currentIterationCount++;
+            seed++;
             RestartAlgorithm();
         }
 
         private void ClearGrid()
         {
-            for(int i = 0; i < cellTransforms.Count; ++i)
+            //Only clearing the grid if it needs to be cleared
+            if(cellTransforms != null)
             {
-                Destroy(cellTransforms[i].gameObject);
+                for(int i = 0; i < cellTransforms.Count; ++i)
+                {
+                    Destroy(cellTransforms[i].gameObject);
+                }
+
+                cellTransforms.Clear();
+                cellVisualisers.Clear();
             }
-
-            cellTransforms.Clear();
-            cellVisualisers.Clear();
-
-            RunAlgorithm();
         }
 
         private void CalculateAllEntropys()

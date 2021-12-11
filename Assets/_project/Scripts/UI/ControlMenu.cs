@@ -15,17 +15,28 @@ namespace WFC.UI
 {
     public class ControlMenu : MonoBehaviour
     {
-        #region Public Fields
+        #region Variables
 
+        [Header("The main part of the functionality")]
         [SerializeField]
         private WaveFunction waveFunction;
+        [SerializeField]
+        private SoundManager soundManager;
 
+        //Main Functionality
         [SerializeField]
         private Button PlayButton;
         [SerializeField]
-        private Toggle PauseButton;
+        private Toggle PauseToggle;
         [SerializeField]
         private Button RestartButton;
+
+        [Header("Customization Variables")]
+        //The customization aspects
+        [SerializeField]
+        private TMPro.TMP_InputField seedInput;
+        [SerializeField]
+        private Toggle PropagationToggle;
 
         #endregion
 
@@ -53,18 +64,32 @@ namespace WFC.UI
         public void RunProgram()
         {
             PlayButton.interactable = false;
-            PauseButton.interactable = true;
+            PauseToggle.interactable = true;
 
             if(waveFunction)
             {
+                if(seedInput.text != "")
+                {
+                    int.TryParse(seedInput.text, out int newSeed);
+                    waveFunction.SetSeed(newSeed);
+                }
+
                 waveFunction.RunAlgorithm();
             }
         }
 
         public void Restart()
         {
+            PauseToggle.isOn = false;
+
             if(waveFunction)
             {
+                if(seedInput.text != "")
+                {
+                    int.TryParse(seedInput.text, out int newSeed);
+                    waveFunction.SetSeed(newSeed);
+                }
+
                 waveFunction.RestartAlgorithm();
             }
         }
@@ -74,6 +99,14 @@ namespace WFC.UI
             if(waveFunction)
             {
                 waveFunction.PauseAlgorithm();
+            }
+        }
+
+        public void BruteForceChanged(bool isOn)
+        {
+            if(waveFunction)
+            {
+                waveFunction.SetBruteForce(isOn);
             }
         }
 
