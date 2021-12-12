@@ -35,6 +35,9 @@ namespace WFC.UI
         private bool bShowEntropy = true;
         private bool bShowPotentialTiles = true;
 
+        [SerializeField]
+        private List<Color> sectionColours;
+
         #endregion
 
         public void UpdateVisuals()
@@ -47,6 +50,17 @@ namespace WFC.UI
             if(bShowPotentialTiles)
             {
                 UpdatePotentialTiles();
+            }
+        }
+
+        public void SetTextColour(int colourIndex)
+        {
+            if(EntropyText != null)
+            {
+                if(colourIndex < sectionColours.Count)
+                {
+                    EntropyText.color = sectionColours[colourIndex];
+                }
             }
         }
 

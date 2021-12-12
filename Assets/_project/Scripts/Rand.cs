@@ -63,6 +63,16 @@ namespace WFC.Rand
             return Noise() % MaxNumber;
         }
 
+        /// <summary>
+        /// Gets a random number within a given minimum and maximum
+        /// </summary>
+        public int ReturnRandom(int MinNumber, int MaxNumber)
+        {
+            int difference = MaxNumber - MinNumber;
+            
+            return Noise()%difference + MinNumber;
+        }
+
         #endregion
 
         #region Protected Methods

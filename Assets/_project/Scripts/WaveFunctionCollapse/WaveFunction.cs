@@ -84,7 +84,12 @@ namespace WFC
         [SerializeField]
         private bool bPaused = false;
 
-        //The random number generator
+        //Whether the grid needs to be sectioned or not based on the preset
+        [SerializeField]
+        private bool bSectioned = false;
+        //Should always be park, residential, business
+        private List<TilePreset> sectionPresets;
+        //The random number generator used
         private Mersenne_Twister MTNumberGenerator;
 
         #endregion
@@ -99,6 +104,7 @@ namespace WFC
 
         private void Start()
         {
+            initialSeed = seed;
             MTNumberGenerator = new Mersenne_Twister(seed);
         }
 
@@ -129,11 +135,22 @@ namespace WFC
             RunAlgorithm();
         }
 
+        [ContextMenu("Run WFC with next seed")]
+        public void RerunAlgorithm()
+        {
+            //This is the current form of backtracking
+            currentIterationCount++;
+            seed++;
+
+            MTNumberGenerator = new Mersenne_Twister(seed);
+
+            ClearGrid();
+            RunAlgorithm();
+        }
+
         [ContextMenu("Run WFC")]
         public void RunAlgorithm()
         {
-            initialSeed = seed;
-
             if(CoGenerating != null)
             {
                 StopCoroutine(CoGenerating);
@@ -165,6 +182,24 @@ namespace WFC
             {
                 cellVisualisers[i].EntropyText.gameObject.SetActive(isShown);
             }
+        }
+
+        public void SetPreset(InputModelCompiler newCompiler)
+        {
+            ModelCompiler = newCompiler;
+            bSectioned = false;
+        }
+
+        public void SetPreset(List<TilePreset> newCompilers)
+        {
+            sectionPresets = new List<TilePreset>();
+
+            foreach(TilePreset preset in newCompilers)
+            {
+                sectionPresets.Add(preset);
+            }
+
+            bSectioned = true;
         }
 
         #endregion
@@ -201,16 +236,35 @@ namespace WFC
             cellTransforms = new List<Transform>();
             cellVisualisers = new List<CellVisualiser>();
 
+            GridPartitioner partitioner = new GridPartitioner();
+
+            if(bSectioned)
+            {
+                partitioner = new GridPartitioner(OutputGrid, sectionPresets, MTNumberGenerator);
+                Grid partionedGrid = partitioner.RunPartition();
+
+                if(partionedGrid != null)
+                {
+                    OutputGrid = partionedGrid;
+                }
+                else
+                {
+                    bSectioned = false;
+                }
+            }
+
             for(int y = 0; y < height; y++)
             {
                 for(int x = 0; x < width; x++)
                 {
                     //Debug.Log("Cell: " + x + "," + y + " being set");
-
-                    foreach (Tile tile in ModelCompiler.allPossibleTiles)
+                    if(!bSectioned)
                     {
-                        OutputGrid.GridCells[x, y].possibleTiles.Add(tile);
-                    }                    
+                        foreach(Tile tile in ModelCompiler.allPossibleTiles)
+                        {
+                            OutputGrid.GridCells[x, y].possibleTiles.Add(tile);
+                        }
+                    }               
 
                     //Setting up the cells' objects in the Unity scene
                     GameObject cellGo = Instantiate(cellPrefab, new Vector3(x, 1, -y), Quaternion.identity, gridParent);
@@ -221,6 +275,11 @@ namespace WFC
                     {
                         cellVisualisers.Add(cVis);
                         cVis.thisCell = OutputGrid.GridCells[x, y];
+
+                        if(bSectioned)
+                        {
+                            cVis.SetTextColour(partitioner.SectionIndex(OutputGrid.GridCells[x, y]));
+                        }
                     }
                 }
             }
@@ -284,7 +343,7 @@ namespace WFC
                         yield return null;
                     }
 
-                    Backtrack();
+                    RerunAlgorithm();
                 }
 
                 while(bPaused)
@@ -309,7 +368,7 @@ namespace WFC
                         yield return null;
                     }
 
-                    Backtrack();
+                    RerunAlgorithm();
                 }
 
                 GridStates.Add(OutputGrid);
@@ -481,6 +540,7 @@ namespace WFC
                     {
                         if(OutputGrid.GridCells[x, y].currentEntropy == 0)
                         {
+                            currentCellWithLowestEntropy = OutputGrid.GridCells[x, y];
                             mostRecentX = OutputGrid.GridCells[x, y].CellX;
                             mostRecentY = OutputGrid.GridCells[x, y].CellY;
                             mostRecentlyCollapsed = OutputGrid.GridCells[x, y];
@@ -499,6 +559,11 @@ namespace WFC
                         }
                     }
                 }
+            }
+
+            if(currentCellWithLowestEntropy == null)
+            {
+                yield return false;
             }
 
             mostRecentX = currentCellWithLowestEntropy.CellX;
@@ -550,14 +615,6 @@ namespace WFC
                     Instantiate(OutputGrid.GridCells[x, y].tileUsed.Prefab, cellTransforms[(x * width) + y]);
                 }
             }
-        }
-
-        //Incrementing the seed and counter, and restarting the algorithm
-        private void Backtrack()
-        {
-            currentIterationCount++;
-            seed++;
-            RestartAlgorithm();
         }
 
         private void ClearGrid()
