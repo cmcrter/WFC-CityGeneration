@@ -128,7 +128,6 @@ namespace WFC
         [ContextMenu("Restart WFC")]
         public void RestartAlgorithm()
         {
-            seed = initialSeed;
             MTNumberGenerator = new Mersenne_Twister(seed);
 
             ClearGrid();
@@ -284,14 +283,7 @@ namespace WFC
                 }
             }
 
-            //Now all the cells are set up, calculate the based entropy value
-            for(int y = 0; y < height; y++)
-            {
-                for(int x = 0; x < width; x++)
-                {
-                    OutputGrid.GridCells[x, y].currentEntropy = OutputGrid.GridCells[x, y].calculateEntropyValue();
-                }
-            }
+            CalculateAllEntropys();
 
             yield return Co_UpdatingAllVisuals();
 
