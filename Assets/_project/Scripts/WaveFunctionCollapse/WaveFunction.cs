@@ -128,6 +128,7 @@ namespace WFC
         [ContextMenu("Restart WFC")]
         public void RestartAlgorithm()
         {
+            seed = initialSeed;
             MTNumberGenerator = new Mersenne_Twister(seed);
 
             ClearGrid();
@@ -213,7 +214,7 @@ namespace WFC
             //Creating the grid
             yield return StartCoroutine(Co_CreateGrid());
 
-            //Split it into city sections and set possible tiles from it
+            //Could split it into city sections and set possible tiles from it
             yield return true;
 
             //Choosing the initial cells' tiles (per section?)
@@ -222,8 +223,10 @@ namespace WFC
             //Propagation through the grid (return when it's a success)
             yield return StartCoroutine(Co_GridPropagation());
 
-            //InstantiateGrid();
-            Debug.Log("Algorithm Finished");
+            if(Debug.isDebugBuild)
+            {
+                Debug.Log("Algorithm Finished");
+            }
 
             CoGenerating = null;
         }
@@ -237,6 +240,7 @@ namespace WFC
 
             GridPartitioner partitioner = new GridPartitioner();
 
+            //The grid needs to be put into sections
             if(bSectioned)
             {
                 partitioner = new GridPartitioner(OutputGrid, sectionPresets, MTNumberGenerator);
@@ -270,6 +274,7 @@ namespace WFC
                     Transform cellT = cellGo.transform;
                     cellTransforms.Add(cellT);
 
+                    //Getting the cells' visualiser and setting it
                     if(cellT.TryGetComponent(out CellVisualiser cVis))
                     {
                         cellVisualisers.Add(cVis);
@@ -283,13 +288,23 @@ namespace WFC
                 }
             }
 
-            CalculateAllEntropys();
+            //Now all the cells are set up, calculate the based entropy value
+            for(int y = 0; y < height; y++)
+            {
+                for(int x = 0; x < width; x++)
+                {
+                    OutputGrid.GridCells[x, y].currentEntropy = OutputGrid.GridCells[x, y].calculateEntropyValue();
+                }
+            }
 
             yield return Co_UpdatingAllVisuals();
 
             yield return true;
         }
 
+        /// <summary>
+        /// Collapsing a random cell in the grid
+        /// </summary>
         private IEnumerator Co_CollapseRandom()
         {
             //Getting a random cell
@@ -298,7 +313,6 @@ namespace WFC
 
             //Collapsing it
             CollapsingNextCell(OutputGrid.GridCells[mostRecentX, mostRecentY]);
-
             mostRecentlyCollapsed = OutputGrid.GridCells[mostRecentX, mostRecentY];
 
             //Updating from the first collapsed cell
@@ -327,7 +341,10 @@ namespace WFC
                     CalculateAllEntropys();
                     yield return Co_UpdatingAllVisuals();
 
-                    Debug.Log("Grid not possible anymore", this);
+                    if(Debug.isDebugBuild)
+                    {
+                        Debug.Log("Grid not possible anymore", this);
+                    }
 
                     if(bPauseEditorOnFailure && Debug.isDebugBuild)
                     {
@@ -352,7 +369,10 @@ namespace WFC
                 //Collapse them
                 if(!CollapsingNextCell(mostRecentlyCollapsed))
                 {
-                    Debug.Log("Grid not possible anymore", this);
+                    if(Debug.isDebugBuild)
+                    {
+                        Debug.Log("Grid not possible anymore", this);
+                    }
 
                     if(bPauseEditorOnFailure && Debug.isDebugBuild)
                     {
@@ -624,6 +644,9 @@ namespace WFC
             }
         }
 
+        /// <summary>
+        /// Going through the grid and recalculating all their entropies
+        /// </summary>
         private void CalculateAllEntropys()
         {
             for(int y = 0; y < height; y++)

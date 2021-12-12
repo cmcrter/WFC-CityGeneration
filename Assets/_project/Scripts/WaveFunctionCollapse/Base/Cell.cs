@@ -78,9 +78,13 @@ namespace WFC
             //Some of options appear more than other, so increasing the amount of choices for the random to hit those options by the frequency 
             currentEntropy = 0;
 
-            if(possibleTiles.Count == 0)
+            if(possibleTiles.Count == 0 )
             {
-                Debug.Log("No possible tiles when collapsing");
+                if(Debug.isDebugBuild)
+                {
+                    Debug.Log("No possible tiles when collapsing");
+                }
+
                 return false;
             }
 

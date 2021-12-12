@@ -3,11 +3,10 @@
 // Author: Charles Carter
 // Date Created: 07/12/2021
 // Last Edited By: Charles Carter
-// Date Last Edited: 07/12/2021
+// Date Last Edited: 12/12/2021
 // Brief: A script to combine multiple InputModelEditors' input models into 1 generated input model
 //////////////////////////////////////////////////////////// 
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -76,6 +75,7 @@ namespace WFC.Editor
                 //Go through the editors
                 for(int i = 0; i < editorsUsed.Count; ++i)
                 {
+                    //The union function means there'll be no duplicates
                     if(editorsUsed[i].modelGenerated.AllAdjacencyRules.ContainsKey(allPossibleTiles[j]))
                     {
                         allPossibleTiles[j].CanGoNextTo = allPossibleTiles[j].CanGoNextTo.Union(editorsUsed[i].modelGenerated.AllAdjacencyRules[allPossibleTiles[j]]).ToList();

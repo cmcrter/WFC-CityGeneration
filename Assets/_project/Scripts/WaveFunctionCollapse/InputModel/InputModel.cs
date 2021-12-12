@@ -62,7 +62,11 @@ namespace WFC
 
                         if(direction.x != 0 && direction.y != 0)
                         {
-                            Debug.Log("Incorrect Rule");
+                            if(Debug.isDebugBuild)
+                            {
+                                Debug.Log("Incorrect Rule");
+                            }
+
                             continue;
                         }
 
