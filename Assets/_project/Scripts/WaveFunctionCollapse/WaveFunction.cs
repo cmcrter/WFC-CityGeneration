@@ -35,13 +35,13 @@ namespace WFC
         [SerializeField]
         private int height;
 
-        [Header("Backtracking Variables")]
-        //Storing some states for backtracking
-        [SerializeField]
-        private List<Grid> GridStates;
-        //These are the tiles last selected from the previous cell, which can be multiple due to backtracking to try multiple
-        [SerializeField]
-        private List<Tile> LastSelectedTiles;
+        //[Header("Backtracking Variables")]
+        ////Storing some states for backtracking
+        //[SerializeField]
+        //private List<Grid> GridStates;
+        ////These are the tiles last selected from the previous cell, which can be multiple due to backtracking to try multiple
+        //[SerializeField]
+        //private List<Tile> LastSelectedTiles;
 
         //The seed which generates each choice the algorithm will pick
         private int initialSeed;
@@ -64,12 +64,13 @@ namespace WFC
         [SerializeField]
         private GameObject cellPrefab;
         [SerializeField]
-        private List<CellVisualiser> cellVisualisers;
+        private List<CellVisualiser> cellVisualisers = new List<CellVisualiser>();
         [SerializeField]
-        private List<Transform> cellTransforms;
+        private List<Transform> cellTransforms = new List<Transform>();
 
         //The overarching coroutine the algorithm will be running in
         private Coroutine CoGenerating;
+
         //Keeping a reference of the cell to most recently collapse
         [SerializeField]
         private Cell mostRecentlyCollapsed;
@@ -132,7 +133,6 @@ namespace WFC
             seed = initialSeed;
             MTNumberGenerator = new Mersenne_Twister(seed);
 
-            ClearGrid();
             RunAlgorithm();
         }
 
@@ -145,7 +145,6 @@ namespace WFC
 
             MTNumberGenerator = new Mersenne_Twister(seed);
 
-            ClearGrid();
             RunAlgorithm();
         }
 
@@ -154,10 +153,11 @@ namespace WFC
         {
             if(CoGenerating != null)
             {
-                StopCoroutine(CoGenerating);
+                //Due to the way nested coroutines work, stopping all the coroutines here make sure there's no overlap
+                StopAllCoroutines();
+                CoGenerating = null;
             }
 
-            GridStates.Clear();
             CoGenerating = StartCoroutine(Co_GenerateGrid());
         }
 
@@ -215,10 +215,12 @@ namespace WFC
             yield return StartCoroutine(Co_CreateGrid());
 
             //Could split it into city sections and set possible tiles from it
-            yield return true;
+            yield return new WaitForSeconds(generationSpeed);
 
             //Choosing the initial cells' tiles (per section?)
             yield return StartCoroutine(Co_CollapseRandom());
+
+            yield return new WaitForSeconds(generationSpeed);
 
             //Propagation through the grid (return when it's a success)
             yield return StartCoroutine(Co_GridPropagation());
@@ -233,72 +235,13 @@ namespace WFC
 
         private IEnumerator Co_CreateGrid()
         {
-            //Instancing the new grid and relevant lists
-            OutputGrid = new Grid(width, height);
-            cellTransforms = new List<Transform>();
-            cellVisualisers = new List<CellVisualiser>();
-
-            GridPartitioner partitioner = new GridPartitioner(OutputGrid, sectionPresets, MTNumberGenerator);
-
-            //The grid needs to be put into sections
-            if(bSectioned)
-            {
-                Grid partionedGrid = partitioner.RunPartition();
-
-                if(partionedGrid != null)
-                {
-                    OutputGrid = partionedGrid;
-                }
-                else
-                {
-                    bSectioned = false;
-                }
-            }
-
-            for(int y = 0; y < height; y++)
-            {
-                for(int x = 0; x < width; x++)
-                {
-                    //Debug.Log("Cell: " + x + "," + y + " being set");
-                    if(!bSectioned)
-                    {
-                        foreach(Tile tile in ModelCompiler.allPossibleTiles)
-                        {
-                            OutputGrid.GridCells[x, y].possibleTiles.Add(tile);
-                        }
-                    }               
-
-                    //Setting up the cells' objects in the Unity scene
-                    GameObject cellGo = Instantiate(cellPrefab, new Vector3(x, 1, -y), Quaternion.identity, gridParent);
-                    Transform cellT = cellGo.transform;
-                    cellTransforms.Add(cellT);
-
-                    //Getting the cells' visualiser and setting it
-                    if(cellT.TryGetComponent(out CellVisualiser cVis))
-                    {
-                        cellVisualisers.Add(cVis);
-                        cVis.thisCell = OutputGrid.GridCells[x, y];
-
-                        if(bSectioned)
-                        {
-                            cVis.SetTextColour(partitioner.SectionIndex(OutputGrid.GridCells[x, y]));
-                        }
-                    }
-                }
-            }
-
-            //Now all the cells are set up, calculate the based entropy value
-            for(int y = 0; y < height; y++)
-            {
-                for(int x = 0; x < width; x++)
-                {
-                    OutputGrid.GridCells[x, y].currentEntropy = OutputGrid.GridCells[x, y].calculateEntropyValue();
-                }
-            }
-
+            //Clearing any previous grid and creating the new one
+            yield return StartCoroutine(Co_ClearGrid());
+            yield return StartCoroutine(Co_CreateGridObjects());
+            
+            //Showing the possible entropys
+            yield return StartCoroutine(Co_CalculateAllEntropys());
             yield return StartCoroutine(Co_UpdatingAllVisuals());
-
-            yield return true;
         }
 
         /// <summary>
@@ -337,7 +280,7 @@ namespace WFC
                 if(!isMapPossible())
                 {
                     //Visually catching everything up
-                    CalculateAllEntropys();
+                    yield return StartCoroutine(Co_CalculateAllEntropys());
                     yield return StartCoroutine(Co_UpdatingAllVisuals());
 
                     if(Debug.isDebugBuild)
@@ -368,7 +311,7 @@ namespace WFC
                 //Collapse them
                 yield return StartCoroutine(Co_CollapsingNextCell(mostRecentlyCollapsed));
 
-                GridStates.Add(OutputGrid);
+                yield return new WaitForSeconds(generationSpeed);
 
                 //Update the constraints (this is the actual propagation step)
                 if(bBruteForce)
@@ -380,7 +323,7 @@ namespace WFC
                     yield return StartCoroutine(Co_EfficientUpdateGridConstraints());
                 }
 
-                LastSelectedTiles.Clear();
+                //LastSelectedTiles.Clear();
 
                 //Waiting for a specific amount of time (may help with the visualisation aspect)
                 if(incremental)
@@ -392,7 +335,7 @@ namespace WFC
             }
 
             cellVisualisers[(mostRecentX * width) + mostRecentY].UpdateVisuals();
-            GridStates.Add(OutputGrid);
+            //GridStates.Add(OutputGrid);
             yield return true;
         }
 
@@ -417,6 +360,7 @@ namespace WFC
 
         private IEnumerator Co_UpdatingAllVisuals()
         {
+            //Loop through the visualisers and update them (quicker than looping through based on the grid)
             for(int i = 0; i < cellVisualisers.Count; ++i)
             {
                 cellVisualisers[i].UpdateVisuals();
@@ -534,16 +478,7 @@ namespace WFC
                 {
                     //There's no tile selected here
                     if(!OutputGrid.GridCells[x, y].isCollapsed()) 
-                    {
-                        if(OutputGrid.GridCells[x, y].currentEntropy == 0)
-                        {
-                            currentCellWithLowestEntropy = OutputGrid.GridCells[x, y];
-                            mostRecentX = OutputGrid.GridCells[x, y].CellX;
-                            mostRecentY = OutputGrid.GridCells[x, y].CellY;
-                            mostRecentlyCollapsed = OutputGrid.GridCells[x, y];
-                            yield return true;
-                        }
-
+                    {                        
                         if(currentCellWithLowestEntropy == null)
                         {
                             currentCellWithLowestEntropy = OutputGrid.GridCells[x, y];
@@ -573,10 +508,12 @@ namespace WFC
 
         private IEnumerator Co_CollapsingNextCell(Cell givenCell)
         {
+            yield return new WaitForSeconds(generationSpeed);
+
             //Collapse given cell
-            if(givenCell.CollapseCell(MTNumberGenerator))
+            if(givenCell.CollapseCell(MTNumberGenerator) && (givenCell.CellY * width) + givenCell.CellX <  cellTransforms.Count)
             {
-                LastSelectedTiles.Add(givenCell.tileUsed);
+                //LastSelectedTiles.Add(givenCell.tileUsed);
                 Instantiate(givenCell.tileUsed.Prefab, cellTransforms[(givenCell.CellY * width) + givenCell.CellX]);
                 yield return true;
             }
@@ -603,36 +540,90 @@ namespace WFC
             return true;
         }
 
-        private void InstantiateGrid()
+        private IEnumerator Co_CreateGridObjects()
         {
+            //Instancing the new grid and relevant lists
+            OutputGrid = new Grid(width, height);
+            cellTransforms = new List<Transform>();
+            cellVisualisers = new List<CellVisualiser>();
+
+            GridPartitioner partitioner = new GridPartitioner(OutputGrid, sectionPresets, MTNumberGenerator);
+
+            //The grid needs to be put into sections
+            if(bSectioned)
+            {
+                Grid partionedGrid = partitioner.RunPartition();
+
+                if(partionedGrid != null)
+                {
+                    OutputGrid = partionedGrid;
+                }
+                else
+                {
+                    //There's still time to use any other compiler
+                    bSectioned = false;
+                }
+            }
+
             for(int y = 0; y < height; y++)
             {
                 for(int x = 0; x < width; x++)
                 {
-                    Instantiate(OutputGrid.GridCells[x, y].tileUsed.Prefab, cellTransforms[(x * width) + y]);
+                    //Debug.Log("Cell: " + x + "," + y + " being set");
+                    if(!bSectioned)
+                    {
+                        foreach(Tile tile in ModelCompiler.allPossibleTiles)
+                        {
+                            OutputGrid.GridCells[x, y].possibleTiles.Add(tile);
+                        }
+                    }
+
+                    //Setting up the cells' objects in the Unity scene
+                    GameObject cellGo = Instantiate(cellPrefab, new Vector3(x, 1, -y), Quaternion.identity, gridParent);
+                    Transform cellT = cellGo.transform;
+                    cellTransforms.Add(cellT);
+
+                    //Getting the cells' visualiser and setting it
+                    if(cellT.TryGetComponent(out CellVisualiser cVis))
+                    {
+                        cellVisualisers.Add(cVis);
+                        cVis.thisCell = OutputGrid.GridCells[x, y];
+
+                        if(bSectioned)
+                        {
+                            cVis.SetTextColour(partitioner.SectionIndex(OutputGrid.GridCells[x, y]));
+                        }
+                    }
                 }
             }
+
+            yield return true;
         }
 
-        private void ClearGrid()
+        private IEnumerator Co_ClearGrid()
         {
             //Only clearing the grid if it needs to be cleared
             if(cellTransforms != null)
             {
                 for(int i = 0; i < cellTransforms.Count; ++i)
                 {
-                    Destroy(cellTransforms[i].gameObject);
+                    if(cellTransforms[i] != null)
+                    {
+                        Destroy(cellTransforms[i].gameObject);
+                    }
                 }
 
                 cellTransforms.Clear();
                 cellVisualisers.Clear();
             }
+
+            yield return true;
         }
 
         /// <summary>
         /// Going through the grid and recalculating all their entropies
         /// </summary>
-        private void CalculateAllEntropys()
+        private IEnumerator Co_CalculateAllEntropys()
         {
             for(int y = 0; y < height; y++)
             {
@@ -641,37 +632,52 @@ namespace WFC
                     OutputGrid.GridCells[x, y].calculateEntropyValue();
                 }
             }
+
+            yield return true;
         }
 
-        private void ReimplementGrid()
-        {
-            for(int i = 0; i < cellTransforms.Count; ++i)
-            {
-                Destroy(cellTransforms[i].gameObject);
-            }
+        //This was back when I wanted to calculate all the values first, then spawn the grid at the end
+        //private void InstantiateGrid()
+        //{
+        //    for(int y = 0; y < height; y++)
+        //    {
+        //        for(int x = 0; x < width; x++)
+        //        {
+        //            Instantiate(OutputGrid.GridCells[x, y].tileUsed.Prefab, cellTransforms[(x * width) + y]);
+        //        }
+        //    }
+        //}
 
-            for(int y = 0; y < height; y++)
-            {
-                for(int x = 0; x < width; x++)
-                {
-                    //Setting up the cells' objects in the Unity scene
-                    GameObject cellGo = Instantiate(cellPrefab, new Vector3(x, 1, -y), Quaternion.identity, gridParent);
-                    Transform cellT = cellGo.transform;
-                    cellTransforms.Add(cellT);
+        //Thought this might be needed for backtracking
+        //private void ReimplementGrid()
+        //{
+        //    for(int i = 0; i < cellTransforms.Count; ++i)
+        //    {
+        //        Destroy(cellTransforms[i].gameObject);
+        //    }
 
-                    if(cellT.TryGetComponent(out CellVisualiser cVis))
-                    {
-                        cellVisualisers.Add(cVis);
-                        cVis.thisCell = OutputGrid.GridCells[x, y];
-                    }
+        //    for(int y = 0; y < height; y++)
+        //    {
+        //        for(int x = 0; x < width; x++)
+        //        {
+        //            //Setting up the cells' objects in the Unity scene
+        //            GameObject cellGo = Instantiate(cellPrefab, new Vector3(x, 1, -y), Quaternion.identity, gridParent);
+        //            Transform cellT = cellGo.transform;
+        //            cellTransforms.Add(cellT);
 
-                    if(OutputGrid.GridCells[x, y].tileUsed)
-                    {
-                        Instantiate(OutputGrid.GridCells[x, y].tileUsed.Prefab, cellTransforms[(OutputGrid.GridCells[x, y].CellY * width) + OutputGrid.GridCells[x, y].CellX]);
-                    }
-                }
-            }
-        }
+        //            if(cellT.TryGetComponent(out CellVisualiser cVis))
+        //            {
+        //                cellVisualisers.Add(cVis);
+        //                cVis.thisCell = OutputGrid.GridCells[x, y];
+        //            }
+
+        //            if(OutputGrid.GridCells[x, y].tileUsed)
+        //            {
+        //                Instantiate(OutputGrid.GridCells[x, y].tileUsed.Prefab, cellTransforms[(OutputGrid.GridCells[x, y].CellY * width) + OutputGrid.GridCells[x, y].CellX]);
+        //            }
+        //        }
+        //    }
+        //}
 
         #endregion
     }
