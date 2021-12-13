@@ -239,7 +239,7 @@ namespace WFC
             yield return StartCoroutine(Co_ClearGrid());
             yield return StartCoroutine(Co_CreateGridObjects());
             
-            //Showing the possible entropys
+            //Showing the possible base entropies
             yield return StartCoroutine(Co_CalculateAllEntropys());
             yield return StartCoroutine(Co_UpdatingAllVisuals());
         }
@@ -267,7 +267,7 @@ namespace WFC
                 yield return StartCoroutine(Co_EfficientUpdateGridConstraints());
             }
 
-            yield return true;
+            yield return StartCoroutine(Co_UpdatingAllVisuals());
         }
 
         //This is the bulk of the algorithm since it's the iteration loop it goes through
@@ -279,7 +279,7 @@ namespace WFC
                 //Can the current grid work? If yes, continue, if no, backtrack
                 if(!isMapPossible())
                 {
-                    //Visually catching everything up
+                    //Visually catching everything up to be able to potentially see where it went wrong
                     yield return StartCoroutine(Co_CalculateAllEntropys());
                     yield return StartCoroutine(Co_UpdatingAllVisuals());
 
@@ -302,7 +302,7 @@ namespace WFC
                     yield return null;
                 }
 
-                yield return StartCoroutine(Co_UpdatingAllVisuals());
+                //yield return StartCoroutine(Co_UpdatingAllVisuals());
 
                 //Pick new cell to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
                 //Also known as the observe step
@@ -334,7 +334,6 @@ namespace WFC
                 yield return null;
             }
 
-            cellVisualisers[(mostRecentX * width) + mostRecentY].UpdateVisuals();
             //GridStates.Add(OutputGrid);
             yield return true;
         }
@@ -432,10 +431,13 @@ namespace WFC
                         //Applying constraints to this cell
                         if(currentCell.ApplyConstraintsBasedOnPotential(OutputGrid))
                         {
+                            //Updating current cell's values
+                            cellVisualisers[(currentCell.CellX * width) + currentCell.CellY].UpdateVisuals();
+                            propagatedCells[currentCell.CellX, currentCell.CellY] = true;
+
                             //Getting the neighbours of the cell just constrained
                             List<Cell> currentNeighbours = OutputGrid.GetNeighbours(currentCell.CellX, currentCell.CellY).Item1;
                             Neighbours.Pop();
-                            propagatedCells[currentCell.CellX, currentCell.CellY] = true;
 
                             //Going through these neighbours and seeing if they needed to be added to the list
                             foreach(Cell neighbour in currentNeighbours)
@@ -514,6 +516,7 @@ namespace WFC
             if(givenCell.CollapseCell(MTNumberGenerator) && (givenCell.CellY * width) + givenCell.CellX <  cellTransforms.Count)
             {
                 //LastSelectedTiles.Add(givenCell.tileUsed);
+                cellVisualisers[(givenCell.CellY * width) + givenCell.CellX].UpdateVisuals();
                 Instantiate(givenCell.tileUsed.Prefab, cellTransforms[(givenCell.CellY * width) + givenCell.CellX]);
                 yield return true;
             }
@@ -625,6 +628,7 @@ namespace WFC
         /// </summary>
         private IEnumerator Co_CalculateAllEntropys()
         {
+            //Using it sparingly
             for(int y = 0; y < height; y++)
             {
                 for(int x = 0; x < width; x++)

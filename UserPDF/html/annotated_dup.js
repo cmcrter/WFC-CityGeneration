@@ -17,17 +17,18 @@ var annotated_dup =
         [ "GridTests", "class_w_f_c_1_1_tests_1_1_grid_tests.html", null ]
       ] ],
       [ "UI", "namespace_w_f_c_1_1_u_i.html", [
-        [ "ControlMenu", "class_w_f_c_1_1_u_i_1_1_control_menu.html", "class_w_f_c_1_1_u_i_1_1_control_menu" ]
+        [ "CellVisualiser", "class_w_f_c_1_1_u_i_1_1_cell_visualiser.html", null ],
+        [ "ControlMenu", "class_w_f_c_1_1_u_i_1_1_control_menu.html", "class_w_f_c_1_1_u_i_1_1_control_menu" ],
+        [ "TilePreset", "class_w_f_c_1_1_u_i_1_1_tile_preset.html", null ]
       ] ],
       [ "AdjacencyRule", "struct_w_f_c_1_1_adjacency_rule.html", null ],
       [ "Cell", "class_w_f_c_1_1_cell.html", null ],
-      [ "CellVisualiser", "class_w_f_c_1_1_cell_visualiser.html", null ],
       [ "Grid", "class_w_f_c_1_1_grid.html", null ],
+      [ "GridPartitioner", "class_w_f_c_1_1_grid_partitioner.html", "class_w_f_c_1_1_grid_partitioner" ],
       [ "InputModel", "class_w_f_c_1_1_input_model.html", null ],
       [ "SoundManager", "class_w_f_c_1_1_sound_manager.html", null ],
       [ "Tile", "class_w_f_c_1_1_tile.html", null ],
       [ "WaveFunction", "class_w_f_c_1_1_wave_function.html", null ]
     ] ],
-    [ "MainMenu", "class_main_menu.html", null ],
     [ "WaveFunctionEditorWindow", "class_wave_function_editor_window.html", null ]
 ];
