@@ -127,53 +127,6 @@ namespace WFC
             return false;
         }
 
-        public void UpdateConstraints(Cell[] neighbours, InputModel model)
-        {
-            List<Tile> CellConstrainedTiles = new List<Tile>();
-
-            //Go through the neighbours (this array doesn't include the current cell)
-            for(int i = 0; i < neighbours.Length; ++i)
-            {
-                if(i == 0 || i == 2 || i == 5 || i == 7)
-                {
-                    continue;
-                }
-
-                //If a certain tile of the possible tiles never appears next to them in the pattern
-                //Remove that possible tile from possible tiles
-                if(neighbours[i] != null)
-                {
-                    Vector2 difference = new Vector2(CellX - neighbours[i].CellX, CellY - neighbours[i].CellY);
-
-                    for(int j = 0; j < possibleTiles.Count; ++j)
-                    {
-                        if(neighbours[i].tileUsed)
-                        {
-                            if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].tileUsed, difference) && !CellConstrainedTiles.Contains(neighbours[i].tileUsed))
-                            {
-                                CellConstrainedTiles.Add(neighbours[i].tileUsed);
-                            }
-                        }
-                        else
-                        {
-                            //Checking against the neighbours' possible tiles
-                            for(int k = 0; k < neighbours[i].possibleTiles.Count; ++k)
-                            {
-                                if(!IsAdjacentAllowed(possibleTiles[j], neighbours[i].possibleTiles[k], difference) && !CellConstrainedTiles.Contains(neighbours[i].possibleTiles[k]))
-                                {
-                                    CellConstrainedTiles.Add(neighbours[i].possibleTiles[k]);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            UpdatePossibleTiles(CellConstrainedTiles);
-
-            currentEntropy = calculateEntropyValue();
-        }
-
         public bool ApplyConstraintsBasedOnPotential(Grid gridCellisIn)
         {
             Tuple<List<Cell>, List<Vector2>> neighbourhood = gridCellisIn.GetNeighbours(CellX, CellY);
@@ -208,9 +161,6 @@ namespace WFC
 
             UpdatePossibleTiles(impossibleTiles);
 
-            //Calculating the entropy again if needed
-            currentEntropy = calculateEntropyValue();
-
             return tileRemoved;
         }
 
@@ -227,6 +177,9 @@ namespace WFC
                     possibleTiles.Remove(tile);
                 }
             }
+
+            //Calculating the entropy again
+            currentEntropy = calculateEntropyValue();
         }
 
         //Checking the tiles to see if they are within eachothers' adjacency rules

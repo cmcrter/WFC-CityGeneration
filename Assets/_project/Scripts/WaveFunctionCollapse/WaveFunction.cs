@@ -214,9 +214,6 @@ namespace WFC
             //Creating the grid
             yield return StartCoroutine(Co_CreateGrid());
 
-            //Could split it into city sections and set possible tiles from it
-            yield return new WaitForSeconds(generationSpeed);
-
             //Choosing the initial cells' tiles (per section?)
             yield return StartCoroutine(Co_CollapseRandom());
 
@@ -238,8 +235,6 @@ namespace WFC
             //Clearing any previous grid and creating the new one
             yield return StartCoroutine(Co_ClearGrid());
             yield return StartCoroutine(Co_CreateGridObjects());
-            
-            //Showing the possible base entropies
             yield return StartCoroutine(Co_CalculateAllEntropys());
             yield return StartCoroutine(Co_UpdatingAllVisuals());
         }
@@ -266,8 +261,6 @@ namespace WFC
             {
                 yield return StartCoroutine(Co_EfficientUpdateGridConstraints());
             }
-
-            yield return StartCoroutine(Co_UpdatingAllVisuals());
         }
 
         //This is the bulk of the algorithm since it's the iteration loop it goes through
@@ -302,7 +295,8 @@ namespace WFC
                     yield return null;
                 }
 
-                //yield return StartCoroutine(Co_UpdatingAllVisuals());
+                yield return StartCoroutine(Co_CalculateAllEntropys());
+                yield return StartCoroutine(Co_UpdatingAllVisuals());
 
                 //Pick new cell to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
                 //Also known as the observe step
@@ -322,8 +316,6 @@ namespace WFC
                 {
                     yield return StartCoroutine(Co_EfficientUpdateGridConstraints());
                 }
-
-                //LastSelectedTiles.Clear();
 
                 //Waiting for a specific amount of time (may help with the visualisation aspect)
                 if(incremental)
@@ -432,7 +424,6 @@ namespace WFC
                         if(currentCell.ApplyConstraintsBasedOnPotential(OutputGrid))
                         {
                             //Updating current cell's values
-                            cellVisualisers[(currentCell.CellX * width) + currentCell.CellY].UpdateVisuals();
                             propagatedCells[currentCell.CellX, currentCell.CellY] = true;
 
                             //Getting the neighbours of the cell just constrained
@@ -505,6 +496,7 @@ namespace WFC
 
             //Returning out of the coroutine with the cell to use
             mostRecentlyCollapsed = currentCellWithLowestEntropy;
+
             yield return true;
         }
 
@@ -516,7 +508,6 @@ namespace WFC
             if(givenCell.CollapseCell(MTNumberGenerator) && (givenCell.CellY * width) + givenCell.CellX <  cellTransforms.Count)
             {
                 //LastSelectedTiles.Add(givenCell.tileUsed);
-                cellVisualisers[(givenCell.CellY * width) + givenCell.CellX].UpdateVisuals();
                 Instantiate(givenCell.tileUsed.Prefab, cellTransforms[(givenCell.CellY * width) + givenCell.CellX]);
                 yield return true;
             }
