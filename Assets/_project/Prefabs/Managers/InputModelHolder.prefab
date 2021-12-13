@@ -46,4 +46,20 @@ MonoBehaviour:
   waveFunction: {fileID: 0}
   editorsUsed:
   - {fileID: 0}
-  allPossibleTiles: []
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  allPossibleTiles:
+  - {fileID: 11400000, guid: d97e3cc2845e4824fa31f5fb83e0f763, type: 2}
+  - {fileID: 11400000, guid: 982271bcb1617224e990a0f3d9db9c70, type: 2}
+  - {fileID: 11400000, guid: 280ac4227d9621d4d9e946ff6b351525, type: 2}
+  - {fileID: 11400000, guid: 897696b7d01c2a840a6800eb472e27dc, type: 2}
+  - {fileID: 11400000, guid: 4a09be23ec0a926478a40f7a695f0b70, type: 2}
+  - {fileID: 11400000, guid: 998b1966c5d633644843d455b7efe2f5, type: 2}
+  - {fileID: 11400000, guid: a2a9e7db79745514f9997567f7323e35, type: 2}
+  - {fileID: 11400000, guid: 10566e4517fb4294aa2973210f7665ee, type: 2}
+  - {fileID: 11400000, guid: 966a1eb4d5349ed4ea6ebb76b6608579, type: 2}

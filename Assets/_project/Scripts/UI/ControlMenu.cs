@@ -100,14 +100,20 @@ namespace WFC.UI
                         bMissingCompiler = true;
                     }
                 }
-                else if (!bToggleOn)
+                else if(!bToggleOn)
                 {
+                    PresetOptions[i].presetTiles.LoadComp();
+
                     if(bMissingCompiler && PresetOptions[i].presetToggle != null)
                     {
                         PresetOptions[i].presetToggle.isOn = true;
                         ForcePreset(i);
                         bToggleOn = true;
                     }
+                }
+                else
+                {
+                    PresetOptions[i].presetTiles.LoadComp();
                 }
             }
 

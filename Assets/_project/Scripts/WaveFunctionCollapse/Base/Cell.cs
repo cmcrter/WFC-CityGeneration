@@ -62,7 +62,13 @@ namespace WFC
             //Going through this cells' possible tiles and calculating the possibilities' weight values
             for(int i = 0; i < possibleTiles.Count; ++i)
             {
+                if(possibleTiles[i].Frequency == 0)
+                {
+                    continue;
+                }
+
                 float weight = possibleTiles[i].Frequency / weightSum;
+
 
                 sum_of_weights += weight;
                 sum_of_weight_log_weights += weight * Mathf.Log(weight);
@@ -76,7 +82,6 @@ namespace WFC
         {
             //Using relative frequencies to get number to random from and what to do with random number
             //Some of options appear more than other, so increasing the amount of choices for the random to hit those options by the frequency 
-            currentEntropy = 0;
 
             if(possibleTiles.Count == 0 )
             {
@@ -112,6 +117,9 @@ namespace WFC
 
                     possibleTiles.Clear();
                     possibleTiles.Add(tileUsed);
+
+                    currentEntropy = 0;
+
                     return true;
                 }
             }
@@ -163,14 +171,7 @@ namespace WFC
 
             UpdatePossibleTiles(CellConstrainedTiles);
 
-            if(possibleTiles.Count > 0)
-            {
-                currentEntropy = calculateEntropyValue();
-            }
-            else
-            {
-                currentEntropy = 0;
-            }
+            currentEntropy = calculateEntropyValue();
         }
 
         public bool ApplyConstraintsBasedOnPotential(Grid gridCellisIn)
@@ -208,14 +209,7 @@ namespace WFC
             UpdatePossibleTiles(impossibleTiles);
 
             //Calculating the entropy again if needed
-            if(possibleTiles.Count > 0)
-            {
-                currentEntropy = calculateEntropyValue();
-            }
-            else
-            {
-                currentEntropy = 0;
-            }
+            currentEntropy = calculateEntropyValue();
 
             return tileRemoved;
         }

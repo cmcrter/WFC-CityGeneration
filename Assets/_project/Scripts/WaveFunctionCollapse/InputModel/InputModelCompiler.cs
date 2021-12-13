@@ -31,7 +31,7 @@ namespace WFC.Editor
 
         #region Unity Methods
 
-        void Awake()
+        private void Awake()
         {
             //Going through and preparing the input models
             for(int i = 0; i < editorsUsed.Count; ++i)
@@ -39,11 +39,15 @@ namespace WFC.Editor
                 editorsUsed[i].GetTiles();
                 editorsUsed[i].GeneratedInputModelGrid();
             }
-        }
 
-        void Start()
-        {
             GetAllPossibleTiles();
+
+            for(int j =0 ; j < allPossibleTiles.Count; ++j)
+            {
+                allPossibleTiles[j].CanGoNextTo = new List<AdjacencyRule>();
+                allPossibleTiles[j].Frequency = 0;
+            }
+
             GetRulesAndFrequencies();
         }
 
@@ -68,13 +72,6 @@ namespace WFC.Editor
                     allPossibleTiles = allPossibleTiles.Union(editorsUsed[i].modelGenerated.tilesUsed).ToList();
                 }
             }
-
-            //Clearing the rules it may have already
-            for(int i = 0; i < allPossibleTiles.Count; ++i)
-            {
-                allPossibleTiles[i].Frequency = 0;
-                allPossibleTiles[i].CanGoNextTo = new List<AdjacencyRule>();
-            }
         }
 
         public void GetRulesAndFrequencies()
@@ -82,7 +79,7 @@ namespace WFC.Editor
             //Add their rules onto the tiles
             for(int j = 0; j < allPossibleTiles.Count; ++j)
             {
-                //Go through the editors
+               //Go through the editors
                 for(int i = 0; i < editorsUsed.Count; ++i)
                 {
                     if(editorsUsed[i].modelGenerated.AllAdjacencyRules != null)

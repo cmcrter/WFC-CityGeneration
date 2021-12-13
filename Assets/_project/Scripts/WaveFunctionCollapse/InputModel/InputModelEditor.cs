@@ -94,20 +94,9 @@ namespace WFC.Editor
             modelGenerated = new InputModel(newGrid);
 
             //Different input models have different intents, not all will want to add to different variables
-            if(bAddToTiles)
-            {
-                modelGenerated.GenerateListOfPotentialTiles();
-            }
-
-            if(bAddToFreq)
-            {
-                modelGenerated.CalculateRelativeFrequency();
-            }
-
-            if(bAddToRules)
-            {
-                modelGenerated.GenerateAdjacencyRules();
-            }
+            modelGenerated.GenerateListOfPotentialTiles();
+            modelGenerated.CalculateRelativeFrequency();
+            modelGenerated.GenerateAdjacencyRules();
 
             lastGeneratedGrid = modelGenerated.Model;
         }
