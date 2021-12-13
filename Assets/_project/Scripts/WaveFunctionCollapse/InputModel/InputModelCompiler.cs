@@ -51,12 +51,22 @@ namespace WFC.Editor
 
         #region Public Methods
 
+        [ContextMenu("Load Compiler")]
+        public void LoadComp()
+        {
+            GetAllPossibleTiles();
+            GetRulesAndFrequencies();
+        }
+
         public void GetAllPossibleTiles()
         {
             //Go through the editors
             for(int i = 0; i < editorsUsed.Count; ++i)
             {
-                allPossibleTiles = allPossibleTiles.Union(editorsUsed[i].modelGenerated.tilesUsed).ToList();
+                if(editorsUsed[i].modelGenerated.tilesUsed != null)
+                {
+                    allPossibleTiles = allPossibleTiles.Union(editorsUsed[i].modelGenerated.tilesUsed).ToList();
+                }
             }
 
             //Clearing the rules it may have already
@@ -75,15 +85,21 @@ namespace WFC.Editor
                 //Go through the editors
                 for(int i = 0; i < editorsUsed.Count; ++i)
                 {
-                    //The union function means there'll be no duplicates
-                    if(editorsUsed[i].modelGenerated.AllAdjacencyRules.ContainsKey(allPossibleTiles[j]))
+                    if(editorsUsed[i].modelGenerated.AllAdjacencyRules != null)
                     {
-                        allPossibleTiles[j].CanGoNextTo = allPossibleTiles[j].CanGoNextTo.Union(editorsUsed[i].modelGenerated.AllAdjacencyRules[allPossibleTiles[j]]).ToList();
+                        //The union function means there'll be no duplicates
+                        if(editorsUsed[i].modelGenerated.AllAdjacencyRules.ContainsKey(allPossibleTiles[j]))
+                        {
+                            allPossibleTiles[j].CanGoNextTo = allPossibleTiles[j].CanGoNextTo.Union(editorsUsed[i].modelGenerated.AllAdjacencyRules[allPossibleTiles[j]]).ToList();
+                        }
                     }
 
-                    if(editorsUsed[i].modelGenerated.FrequenciesOfTiles.ContainsKey(allPossibleTiles[j]))
+                    if(editorsUsed[i].modelGenerated.FrequenciesOfTiles != null)
                     {
-                        allPossibleTiles[j].Frequency += editorsUsed[i].modelGenerated.FrequenciesOfTiles[allPossibleTiles[j]];
+                        if(editorsUsed[i].modelGenerated.FrequenciesOfTiles.ContainsKey(allPossibleTiles[j]))
+                        {
+                            allPossibleTiles[j].Frequency += editorsUsed[i].modelGenerated.FrequenciesOfTiles[allPossibleTiles[j]];
+                        }
                     }
                 }
             }

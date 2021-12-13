@@ -43,9 +43,9 @@ namespace WFC
         [SerializeField]
         private List<Tile> LastSelectedTiles;
 
-        [Header("Algorithm Generation Customization")]
         //The seed which generates each choice the algorithm will pick
         private int initialSeed;
+        [Header("Algorithm Generation Customization")]
         [SerializeField]
         private int seed;
         //How many times the algorithm will try
@@ -88,6 +88,7 @@ namespace WFC
         [SerializeField]
         private bool bSectioned = false;
         //Should always be park, residential, business
+        [SerializeField]
         private List<TilePreset> sectionPresets;
         //The random number generator used
         private Mersenne_Twister MTNumberGenerator;
@@ -157,7 +158,6 @@ namespace WFC
             }
 
             GridStates.Clear();
-
             CoGenerating = StartCoroutine(Co_GenerateGrid());
         }
 
@@ -238,12 +238,11 @@ namespace WFC
             cellTransforms = new List<Transform>();
             cellVisualisers = new List<CellVisualiser>();
 
-            GridPartitioner partitioner = new GridPartitioner();
+            GridPartitioner partitioner = new GridPartitioner(OutputGrid, sectionPresets, MTNumberGenerator);
 
             //The grid needs to be put into sections
             if(bSectioned)
             {
-                partitioner = new GridPartitioner(OutputGrid, sectionPresets, MTNumberGenerator);
                 Grid partionedGrid = partitioner.RunPartition();
 
                 if(partionedGrid != null)
@@ -297,7 +296,7 @@ namespace WFC
                 }
             }
 
-            yield return Co_UpdatingAllVisuals();
+            yield return StartCoroutine(Co_UpdatingAllVisuals());
 
             yield return true;
         }
@@ -312,17 +311,17 @@ namespace WFC
             mostRecentY = Mathf.Abs(MTNumberGenerator.ReturnRandom(height));
 
             //Collapsing it
-            CollapsingNextCell(OutputGrid.GridCells[mostRecentX, mostRecentY]);
+            yield return StartCoroutine(Co_CollapsingNextCell(OutputGrid.GridCells[mostRecentX, mostRecentY]));
             mostRecentlyCollapsed = OutputGrid.GridCells[mostRecentX, mostRecentY];
 
             //Updating from the first collapsed cell
             if(bBruteForce)
             {
-                yield return Co_BruteForceUpdateGridConstraints();
+                yield return StartCoroutine(Co_BruteForceUpdateGridConstraints());
             }
             else
             {
-                yield return Co_EfficientUpdateGridConstraints();
+                yield return StartCoroutine(Co_EfficientUpdateGridConstraints());
             }
 
             yield return true;
@@ -339,7 +338,7 @@ namespace WFC
                 {
                     //Visually catching everything up
                     CalculateAllEntropys();
-                    yield return Co_UpdatingAllVisuals();
+                    yield return StartCoroutine(Co_UpdatingAllVisuals());
 
                     if(Debug.isDebugBuild)
                     {
@@ -360,39 +359,25 @@ namespace WFC
                     yield return null;
                 }
 
-                yield return Co_UpdatingAllVisuals();
+                yield return StartCoroutine(Co_UpdatingAllVisuals());
 
                 //Pick new cell to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
                 //Also known as the observe step
-                yield return Co_SearchForCellToCollapse();
+                yield return StartCoroutine(Co_SearchForCellToCollapse());
 
                 //Collapse them
-                if(!CollapsingNextCell(mostRecentlyCollapsed))
-                {
-                    if(Debug.isDebugBuild)
-                    {
-                        Debug.Log("Grid not possible anymore", this);
-                    }
-
-                    if(bPauseEditorOnFailure && Debug.isDebugBuild)
-                    {
-                        Debug.Break();
-                        yield return null;
-                    }
-
-                    RerunAlgorithm();
-                }
+                yield return StartCoroutine(Co_CollapsingNextCell(mostRecentlyCollapsed));
 
                 GridStates.Add(OutputGrid);
 
                 //Update the constraints (this is the actual propagation step)
                 if(bBruteForce)
                 {
-                    yield return Co_BruteForceUpdateGridConstraints();
+                    yield return StartCoroutine(Co_BruteForceUpdateGridConstraints());
                 }
                 else
                 {
-                    yield return Co_EfficientUpdateGridConstraints();
+                    yield return StartCoroutine(Co_EfficientUpdateGridConstraints());
                 }
 
                 LastSelectedTiles.Clear();
@@ -586,17 +571,17 @@ namespace WFC
             yield return true;
         }
 
-        private bool CollapsingNextCell(Cell givenCell)
+        private IEnumerator Co_CollapsingNextCell(Cell givenCell)
         {
             //Collapse given cell
             if(givenCell.CollapseCell(MTNumberGenerator))
             {
                 LastSelectedTiles.Add(givenCell.tileUsed);
                 Instantiate(givenCell.tileUsed.Prefab, cellTransforms[(givenCell.CellY * width) + givenCell.CellX]);
-                return true;
+                yield return true;
             }
 
-            return false;
+            yield return false;
         }
 
         private bool isMapPossible()

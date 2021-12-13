@@ -179,7 +179,10 @@ namespace WFC
             SectionsFromBiggestToSmallest.Add(SecondSection);
             SectionsFromBiggestToSmallest.Add(ThirdSection);
 
+            //Gets the list from smallest to biggest
             SectionsFromBiggestToSmallest = SectionsFromBiggestToSmallest.OrderBy(x => x.Count).ToList();
+
+            //Reversing it
             SectionsFromBiggestToSmallest.Reverse();
         }
 

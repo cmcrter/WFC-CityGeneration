@@ -29,6 +29,13 @@ namespace WFC.Editor
         public InputModel modelGenerated;
         public Grid lastGeneratedGrid;
 
+        [SerializeField]
+        private bool bAddToTiles = false;
+        [SerializeField]
+        private bool bAddToRules = false;
+        [SerializeField]
+        private bool bAddToFreq = false;
+
         #endregion
 
         #region Public Methods
@@ -85,9 +92,22 @@ namespace WFC.Editor
 
             //Formulating the input model based on the grid
             modelGenerated = new InputModel(newGrid);
-            modelGenerated.GenerateListOfPotentialTiles();
-            modelGenerated.CalculateRelativeFrequency();
-            modelGenerated.GenerateAdjacencyRules();
+
+            //Different input models have different intents, not all will want to add to different variables
+            if(bAddToTiles)
+            {
+                modelGenerated.GenerateListOfPotentialTiles();
+            }
+
+            if(bAddToFreq)
+            {
+                modelGenerated.CalculateRelativeFrequency();
+            }
+
+            if(bAddToRules)
+            {
+                modelGenerated.GenerateAdjacencyRules();
+            }
 
             lastGeneratedGrid = modelGenerated.Model;
         }

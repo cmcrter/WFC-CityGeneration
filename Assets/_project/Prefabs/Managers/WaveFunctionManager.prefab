@@ -53,7 +53,7 @@ MonoBehaviour:
   LastSelectedTiles: []
   seed: 7919
   iterationLimit: 10
-  incremental: 0
+  incremental: 1
   generationSpeed: 0.1
   currentIterationCount: 0
   gridParent: {fileID: 0}
@@ -519,3 +519,4 @@ MonoBehaviour:
   bBruteForce: 0
   bPauseEditorOnFailure: 0
   bPaused: 0
+  bSectioned: 0

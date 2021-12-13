@@ -86,6 +86,7 @@ namespace WFC.UI
             //Making sure there's one compiler active if others turn off (when possible)
             bool bMissingCompiler = false;
             bool bToggleOn = false;
+            int iPresetFailCounter = 0;
 
             //Going through and automatically setting up the toggles if the compiler isn't set
             for(int i = 0; i < PresetOptions.Count; ++i)
@@ -94,6 +95,7 @@ namespace WFC.UI
                 {
                     if(PresetOptions[i].presetToggle != null)
                     {
+                        iPresetFailCounter++;
                         PresetOptions[i].presetToggle.interactable = false;
                         bMissingCompiler = true;
                     }
@@ -109,11 +111,21 @@ namespace WFC.UI
                 }
             }
 
-            if(bToggleOn)
+            //Checking if the city toggle is fine to be on
+            if(iPresetFailCounter < 1)
             {
                 cityToggle.isOn = true;
                 CityPreset(true);
             }
+            else
+            {
+                cityToggle.interactable = false;
+            }
+        }
+
+        private void Start()
+        {
+            
         }
 
         #endregion
