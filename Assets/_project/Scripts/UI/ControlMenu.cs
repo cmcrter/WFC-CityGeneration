@@ -78,6 +78,7 @@ namespace WFC.UI
         private List<TilePreset> PresetOptions;
 
         //The compiler which fills in the adjacency rules between the sections
+        //To improve this, have more tiles that can transition the areas, specifically to go between difficult tiles (This would require a designer)
         [SerializeField]
         private InputModelCompiler seamsCompiler;
 
@@ -148,18 +149,33 @@ namespace WFC.UI
         /// </summary>
         public void RunProgram()
         {
-            PlayButton.interactable = false;
             PauseToggle.interactable = true;
 
             if(waveFunction)
             {
                 if(seedInput.text != "")
                 {
-                    int.TryParse(seedInput.text, out int newSeed);
+                    int.TryParse(seedInput.text, out int newSeed);                    
                     waveFunction.SetSeed(newSeed);
+
+                    if(Debug.isDebugBuild)
+                    {
+                        Debug.Log("Ran with seed: " + newSeed);
+                    }
                 }
 
                 waveFunction.RunAlgorithm();
+            }
+        }
+
+        //Rerun is from the next seed, restart is from the first seed used, and restart with seed is from what is currently set as the seed
+        public void Rerun()
+        {
+            PauseToggle.isOn = false;
+
+            if(waveFunction)
+            {
+                waveFunction.RerunAlgorithm();
             }
         }
 
@@ -169,13 +185,17 @@ namespace WFC.UI
 
             if(waveFunction)
             {
-                if(seedInput.text != "")
-                {
-                    int.TryParse(seedInput.text, out int newSeed);
-                    waveFunction.SetSeed(newSeed);
-                }
-
                 waveFunction.RestartAlgorithm();
+            }
+        }
+
+        public void RestartSeed()
+        {
+            PauseToggle.isOn = false;
+
+            if(waveFunction)
+            {
+                waveFunction.RunAlgorithm();
             }
         }
 

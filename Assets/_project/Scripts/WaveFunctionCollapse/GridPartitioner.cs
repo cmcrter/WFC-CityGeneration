@@ -115,11 +115,11 @@ namespace WFC
             Vector2 point = new Vector2();
 
             //Step, get intial point of split (the bottom right of the first section)
-            int lowerBoundX = Mathf.FloorToInt(gridChanging.width * 0.33f);
+            int lowerBoundX = Mathf.FloorToInt(gridChanging.width * 0.4f);
             int lowerBoundY = Mathf.FloorToInt(gridChanging.height * 0.33f);
 
-            int upperBoundX = Mathf.RoundToInt(gridChanging.width * 0.45f);
-            int upperBoundY = Mathf.RoundToInt(gridChanging.height * 0.45f);
+            int upperBoundX = Mathf.RoundToInt(gridChanging.width * 0.65f);
+            int upperBoundY = Mathf.RoundToInt(gridChanging.height * 0.65f);
 
             point.x = twister.ReturnRandom(lowerBoundX, upperBoundX);
             point.y = twister.ReturnRandom(lowerBoundY, upperBoundY);     

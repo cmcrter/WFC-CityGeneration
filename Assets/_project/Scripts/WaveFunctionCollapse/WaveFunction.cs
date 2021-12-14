@@ -107,7 +107,6 @@ namespace WFC
         private void Start()
         {
             initialSeed = seed;
-            MTNumberGenerator = new Mersenne_Twister(seed);
         }
 
         #endregion
@@ -131,8 +130,6 @@ namespace WFC
         public void RestartAlgorithm()
         {
             seed = initialSeed;
-            MTNumberGenerator = new Mersenne_Twister(seed);
-
             RunAlgorithm();
         }
 
@@ -142,8 +139,6 @@ namespace WFC
             //This is the current form of backtracking
             currentIterationCount++;
             seed++;
-
-            MTNumberGenerator = new Mersenne_Twister(seed);
 
             RunAlgorithm();
         }
@@ -158,6 +153,7 @@ namespace WFC
                 CoGenerating = null;
             }
 
+            MTNumberGenerator = new Mersenne_Twister(seed);
             CoGenerating = StartCoroutine(Co_GenerateGrid());
         }
 
@@ -224,7 +220,7 @@ namespace WFC
 
             if(Debug.isDebugBuild)
             {
-                Debug.Log("Algorithm Finished");
+                Debug.Log("Algorithm Finished on seed: " + seed);
             }
 
             CoGenerating = null;
