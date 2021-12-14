@@ -103,9 +103,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>calculateEntropyValu
 <tr class="memitem:a60b3a1b27cd8e1875025b43fa27b897b"><td class="memItemLeft" align="right" valign="top"><a id="a60b3a1b27cd8e1875025b43fa27b897b" name="a60b3a1b27cd8e1875025b43fa27b897b"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>CollapseCell</b> (<a class="el" href="class_w_f_c_1_1_rand_1_1_mersenne___twister.html">Mersenne_Twister</a> twister)</td></tr>
 <tr class="separator:a60b3a1b27cd8e1875025b43fa27b897b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63f0b5fbbe4e4da9309c9a278d66b8f7"><td class="memItemLeft" align="right" valign="top"><a id="a63f0b5fbbe4e4da9309c9a278d66b8f7" name="a63f0b5fbbe4e4da9309c9a278d66b8f7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>UpdateConstraints</b> (<a class="el" href="class_w_f_c_1_1_cell.html">Cell</a>[] neighbours, <a class="el" href="class_w_f_c_1_1_input_model.html">InputModel</a> model)</td></tr>
-<tr class="separator:a63f0b5fbbe4e4da9309c9a278d66b8f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbc0b3c5c97e503c561e69a5a7301eb2"><td class="memItemLeft" align="right" valign="top"><a id="acbc0b3c5c97e503c561e69a5a7301eb2" name="acbc0b3c5c97e503c561e69a5a7301eb2"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>ApplyConstraintsBasedOnPotential</b> (<a class="el" href="class_w_f_c_1_1_grid.html">Grid</a> gridCellisIn)</td></tr>
 <tr class="separator:acbc0b3c5c97e503c561e69a5a7301eb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,7 +122,7 @@ Public Attributes</h2></td></tr>
 <a class="el" href="class_w_f_c_1_1_tile.html">Tile</a>&#160;</td><td class="memItemRight" valign="bottom"><b>tileUsed</b></td></tr>
 <tr class="separator:aca8ca20387d5a631d85ed2d9f66e395e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a983011023957564fd949abd5b48b9c7d"><td class="memItemLeft" align="right" valign="top"><a id="a983011023957564fd949abd5b48b9c7d" name="a983011023957564fd949abd5b48b9c7d"></a>
-List&lt; <a class="el" href="class_w_f_c_1_1_tile.html">Tile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>possibleTiles</b> = new List&lt;<a class="el" href="class_w_f_c_1_1_tile.html">Tile</a>&gt;()</td></tr>
+List&lt; <a class="el" href="class_w_f_c_1_1_tile.html">Tile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>possibleTiles</b></td></tr>
 <tr class="separator:a983011023957564fd949abd5b48b9c7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a76dc925d383e154fc3aaf4889ba6b4"><td class="memItemLeft" align="right" valign="top"><a id="a3a76dc925d383e154fc3aaf4889ba6b4" name="a3a76dc925d383e154fc3aaf4889ba6b4"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>currentEntropy</b> = 1f</td></tr>
@@ -136,6 +133,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CellX</b></td></tr>
 <tr class="memitem:a40c375712039a56daf44b36a44cb8281"><td class="memItemLeft" align="right" valign="top"><a id="a40c375712039a56daf44b36a44cb8281" name="a40c375712039a56daf44b36a44cb8281"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>CellY</b></td></tr>
 <tr class="separator:a40c375712039a56daf44b36a44cb8281"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fc1d377f82c09a7b8863d7cacc8aabb"><td class="memItemLeft" align="right" valign="top"><a id="a0fc1d377f82c09a7b8863d7cacc8aabb" name="a0fc1d377f82c09a7b8863d7cacc8aabb"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>sectionIndex</b> = 0</td></tr>
+<tr class="separator:a0fc1d377f82c09a7b8863d7cacc8aabb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>Assets/_project/Scripts/WaveFunctionCollapse/Base/Cell.cs</li>
@@ -146,7 +146,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>CellY</b></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_w_f_c.html">WFC</a></li><li class="navelem"><a class="el" href="class_w_f_c_1_1_cell.html">Cell</a></li>
-    <li class="footer">Generated on Mon Dec 13 2021 20:17:04 for Wave Function Collapse User manual by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
+    <li class="footer">Generated on Tue Dec 14 2021 20:00:11 for Wave Function Collapse User manual by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2 </li>
   </ul>
 </div>
 </body>
