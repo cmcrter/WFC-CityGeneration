@@ -22,8 +22,8 @@ namespace WFC.UI
     public enum PresetIDs
     {
         ParkPreset = 0,
-        BusinessPreset = 1,
-        ResidentialPreset = 2
+        ResidentialPreset = 1,
+        BusinessPreset = 2,
     }
 
     //A class to more easily compact the presets
@@ -77,6 +77,10 @@ namespace WFC.UI
         [SerializeField]
         private List<TilePreset> PresetOptions;
 
+        //The compiler which fills in the adjacency rules between the sections
+        [SerializeField]
+        private InputModelCompiler seamsCompiler;
+
         #endregion
 
         #region Unity Methods
@@ -127,11 +131,12 @@ namespace WFC.UI
             {
                 cityToggle.interactable = false;
             }
-        }
 
-        private void Start()
-        {
-            
+            //Preparing for potential city
+            if(seamsCompiler != null)
+            {
+                seamsCompiler.LoadComp();
+            }
         }
 
         #endregion
@@ -237,6 +242,7 @@ namespace WFC.UI
             {
                 if(PresetOptions[(int)PresetIDs.ParkPreset].presetTiles != null)
                 {
+                    PresetOptions[(int)PresetIDs.ParkPreset].presetTiles.LoadComp();
                     waveFunction.SetPreset(PresetOptions[(int)PresetIDs.ParkPreset].presetTiles);
                 }
             }
@@ -248,6 +254,7 @@ namespace WFC.UI
             {
                 if(PresetOptions[(int)PresetIDs.BusinessPreset].presetTiles != null)
                 {
+                    PresetOptions[(int)PresetIDs.BusinessPreset].presetTiles.LoadComp();
                     waveFunction.SetPreset(PresetOptions[(int)PresetIDs.BusinessPreset].presetTiles);
                 }
             }
@@ -259,6 +266,7 @@ namespace WFC.UI
             {
                 if(PresetOptions[(int)PresetIDs.ResidentialPreset].presetTiles != null)
                 {
+                    PresetOptions[(int)PresetIDs.ResidentialPreset].presetTiles.LoadComp();
                     waveFunction.SetPreset(PresetOptions[(int)PresetIDs.ResidentialPreset].presetTiles);
                 }
             }

@@ -24,11 +24,14 @@ namespace WFC
         public Tile tileUsed;
 
         //Each cell will know the possible tiles that could be instantiated there
-        public List<Tile> possibleTiles = new List<Tile>();
+        public List<Tile> possibleTiles;
 
         public float currentEntropy = 1f;
         public int CellX;
         public int CellY;
+
+        //Keeping track of the section this cell considers itself a part of
+        public int sectionIndex = 0;
 
         #endregion
 
@@ -39,6 +42,7 @@ namespace WFC
 
         public Cell()
         {
+
         }
 
         public bool isCollapsed()
@@ -64,17 +68,24 @@ namespace WFC
             {
                 if(possibleTiles[i].Frequency == 0)
                 {
+                    Debug.Log(possibleTiles[i].name + " has a frequency of 0");
                     continue;
                 }
 
                 float weight = possibleTiles[i].Frequency / weightSum;
-
-
                 sum_of_weights += weight;
                 sum_of_weight_log_weights += weight * Mathf.Log(weight);
             }
 
-            return (Mathf.Log(sum_of_weights) - (sum_of_weight_log_weights / sum_of_weights));
+            float result = (Mathf.Log(sum_of_weights) - (sum_of_weight_log_weights / sum_of_weights));
+
+            if(Debug.isDebugBuild && float.IsNaN(result))
+            {
+                Debug.Log(sum_of_weights + " " + possibleTiles.Count);
+                Debug.Break();
+            }
+
+            return result;
         }
 
         //Collapsing the cell by selecting a random tile out of the options to use (passing through the number generator so there's more randomness)

@@ -235,8 +235,6 @@ namespace WFC
             //Clearing any previous grid and creating the new one
             yield return StartCoroutine(Co_ClearGrid());
             yield return StartCoroutine(Co_CreateGridObjects());
-            yield return StartCoroutine(Co_CalculateAllEntropys());
-            yield return StartCoroutine(Co_UpdatingAllVisuals());
         }
 
         /// <summary>
@@ -295,8 +293,6 @@ namespace WFC
                     yield return null;
                 }
 
-                yield return StartCoroutine(Co_CalculateAllEntropys());
-                yield return StartCoroutine(Co_UpdatingAllVisuals());
 
                 //Pick new cell to collapse (based on cells with lowest possibilities left, guess and record which parts it guessed in this step) 
                 //Also known as the observe step
@@ -425,6 +421,7 @@ namespace WFC
                         {
                             //Updating current cell's values
                             propagatedCells[currentCell.CellX, currentCell.CellY] = true;
+                            cellVisualisers[(currentCell.CellY * width) + currentCell.CellX].UpdateVisuals();
 
                             //Getting the neighbours of the cell just constrained
                             List<Cell> currentNeighbours = OutputGrid.GetNeighbours(currentCell.CellX, currentCell.CellY).Item1;
@@ -509,6 +506,7 @@ namespace WFC
             {
                 //LastSelectedTiles.Add(givenCell.tileUsed);
                 Instantiate(givenCell.tileUsed.Prefab, cellTransforms[(givenCell.CellY * width) + givenCell.CellX]);
+                cellVisualisers[(givenCell.CellY * width) + givenCell.CellX].UpdateVisuals();
                 yield return true;
             }
 
@@ -546,25 +544,27 @@ namespace WFC
             //The grid needs to be put into sections
             if(bSectioned)
             {
-                Grid partionedGrid = partitioner.RunPartition();
-
-                if(partionedGrid != null)
-                {
-                    OutputGrid = partionedGrid;
-                }
-                else
-                {
-                    //There's still time to use any other compiler
-                    bSectioned = false;
-                }
+               partitioner.RunPartition();
             }
 
             for(int y = 0; y < height; y++)
             {
                 for(int x = 0; x < width; x++)
                 {
+                    OutputGrid.GridCells[x, y].possibleTiles = new List<Tile>();
+
                     //Debug.Log("Cell: " + x + "," + y + " being set");
-                    if(!bSectioned)
+                    if(bSectioned)
+                    {
+                        List<Tile> thesePossibleTiles = partitioner.GetTilesBasedOnCoord(x, y);
+                        OutputGrid.GridCells[x, y].sectionIndex = partitioner.SectionIndex(OutputGrid.GridCells[x, y]);
+
+                        foreach(Tile tile in thesePossibleTiles)
+                        {
+                            OutputGrid.GridCells[x, y].possibleTiles.Add(tile);
+                        }
+                    }
+                    else
                     {
                         foreach(Tile tile in ModelCompiler.allPossibleTiles)
                         {
@@ -587,6 +587,9 @@ namespace WFC
                         {
                             cVis.SetTextColour(partitioner.SectionIndex(OutputGrid.GridCells[x, y]));
                         }
+
+                        cVis.thisCell.currentEntropy = cVis.thisCell.calculateEntropyValue();
+                        cVis.UpdateVisuals();
                     }
                 }
             }
@@ -624,7 +627,7 @@ namespace WFC
             {
                 for(int x = 0; x < width; x++)
                 {
-                    OutputGrid.GridCells[x, y].calculateEntropyValue();
+                    OutputGrid.GridCells[x, y].currentEntropy = OutputGrid.GridCells[x, y].calculateEntropyValue();
                 }
             }
 

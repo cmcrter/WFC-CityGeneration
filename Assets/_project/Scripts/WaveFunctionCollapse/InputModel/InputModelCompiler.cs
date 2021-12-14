@@ -33,6 +33,8 @@ namespace WFC.Editor
 
         private void Awake()
         {
+            allPossibleTiles = new List<Tile>();
+
             //Going through and preparing the input models
             for(int i = 0; i < editorsUsed.Count; ++i)
             {
@@ -41,14 +43,17 @@ namespace WFC.Editor
             }
 
             GetAllPossibleTiles();
+            GetRulesAndFrequencies();
+        }
 
-            for(int j =0 ; j < allPossibleTiles.Count; ++j)
+        private void OnDisable()
+        {
+            //Clearing up the tiles for the next time it's run (doing it this way means that it works, but does make the adjacency search less efficient) 
+            for(int j = 0; j < allPossibleTiles.Count; ++j)
             {
                 allPossibleTiles[j].CanGoNextTo = new List<AdjacencyRule>();
                 allPossibleTiles[j].Frequency = 0;
             }
-
-            GetRulesAndFrequencies();
         }
 
         #endregion
@@ -69,6 +74,7 @@ namespace WFC.Editor
             {
                 if(editorsUsed[i].modelGenerated.tilesUsed != null)
                 {
+                    //Union function adds the non-duplicate values to the list as an enumerable which I'm then casting to a list 
                     allPossibleTiles = allPossibleTiles.Union(editorsUsed[i].modelGenerated.tilesUsed).ToList();
                 }
             }

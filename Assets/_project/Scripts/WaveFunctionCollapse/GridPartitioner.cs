@@ -30,7 +30,7 @@ namespace WFC
         private List<Cell> FirstSection = new List<Cell>();
         private List<Cell> SecondSection = new List<Cell>();
         private List<Cell> ThirdSection = new List<Cell>();
-        private List<List<Cell>> SectionsFromBiggestToSmallest = new List<List<Cell>>();
+        private Dictionary<List<Cell>, int> sectionIndexes;
 
         #endregion
 
@@ -60,14 +60,15 @@ namespace WFC
             if(gridChanging == null || presets.Count == 0)
                 return null;
 
+            sectionIndexes = new Dictionary<List<Cell>, int>();
+
             if(presets.Count == 3)
             {
                 Vector2 InitialPoint = GetFirstBounds();
                 Vector2 SplitDir = GetSplitDirection();
 
                 GetSections(InitialPoint, SplitDir);
-                OrderSectionsBySize();
-                AssignTilesToSections();
+                ApplyIndexesToSections();
             }
 
             //Return the final result
@@ -78,30 +79,47 @@ namespace WFC
         {
             if(FirstSection.Contains(cellToCheck))
             {
-                return 0;
+                return sectionIndexes[FirstSection];
             }
             else if(SecondSection.Contains(cellToCheck)) 
             {
-                return 1;
+                return sectionIndexes[SecondSection];
             }
 
-            return 2;
+            return sectionIndexes[ThirdSection];
         }
 
-        #endregion
+        //Retrieving a tile list from a compiler given a x and y for the current grid
+        public List<Tile> GetTilesBasedOnCoord(int CellX, int CellY)
+        {
+            int listToCheck = SectionIndex(gridChanging.GridCells[CellX, CellY]);
+            List<Tile> returnList = new List<Tile>();
 
-        #region Private Methods
+            for(int i = 0; i < presets[listToCheck].presetTiles.allPossibleTiles.Count; ++i) 
+            {
+                if(presets[listToCheck].presetTiles.allPossibleTiles[i] != null)
+                {
+                    returnList.Add(presets[listToCheck].presetTiles.allPossibleTiles[i]);
+                }
+            }
 
-        private Vector2 GetFirstBounds()
+            return returnList;
+        }
+
+            #endregion
+
+            #region Private Methods
+
+            private Vector2 GetFirstBounds()
         {
             Vector2 point = new Vector2();
 
             //Step, get intial point of split (the bottom right of the first section)
-            int lowerBoundX = Mathf.FloorToInt(gridChanging.width * 0.25f);
-            int lowerBoundY = Mathf.FloorToInt(gridChanging.height * 0.25f);
+            int lowerBoundX = Mathf.FloorToInt(gridChanging.width * 0.33f);
+            int lowerBoundY = Mathf.FloorToInt(gridChanging.height * 0.33f);
 
-            int upperBoundX = Mathf.RoundToInt(gridChanging.width * 0.33f);
-            int upperBoundY = Mathf.RoundToInt(gridChanging.height * 0.33f);
+            int upperBoundX = Mathf.RoundToInt(gridChanging.width * 0.45f);
+            int upperBoundY = Mathf.RoundToInt(gridChanging.height * 0.45f);
 
             point.x = twister.ReturnRandom(lowerBoundX, upperBoundX);
             point.y = twister.ReturnRandom(lowerBoundY, upperBoundY);     
@@ -171,31 +189,23 @@ namespace WFC
             }
         }
 
-        private void OrderSectionsBySize()
+        private void ApplyIndexesToSections()
         {
+            List<List<Cell>> allSections = new List<List<Cell>>();
+
             //Step, order the sections from biggest to smallest
             //If the first section is bigger than second section
-            SectionsFromBiggestToSmallest.Add(FirstSection);
-            SectionsFromBiggestToSmallest.Add(SecondSection);
-            SectionsFromBiggestToSmallest.Add(ThirdSection);
+            allSections.Add(FirstSection);
+            allSections.Add(SecondSection);
+            allSections.Add(ThirdSection);
 
             //Gets the list from smallest to biggest
-            SectionsFromBiggestToSmallest = SectionsFromBiggestToSmallest.OrderBy(x => x.Count).ToList();
+            allSections = allSections.OrderBy(x => x.Count).ToList();
+            allSections.Reverse();
 
-            //Reversing it
-            SectionsFromBiggestToSmallest.Reverse();
-        }
-
-        private void AssignTilesToSections()
-        {
-            //Step, assign the cells in the biggest area to park, the next biggest to residential and the smallest to business
-            for(int i = 0; i < SectionsFromBiggestToSmallest.Count; ++i)
+            for(int i = 0; i < allSections.Count; ++i)
             {
-                for(int j = 0; j < SectionsFromBiggestToSmallest[i].Count; ++j)
-                {
-                    //The order the presets are put through should be the order we want (park being first etc)
-                    SectionsFromBiggestToSmallest[i][j].possibleTiles = presets[i].presetTiles.allPossibleTiles;
-                }
+                sectionIndexes.Add(allSections[i], i);
             }
         }
 
