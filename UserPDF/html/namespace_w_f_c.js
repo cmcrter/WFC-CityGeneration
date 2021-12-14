@@ -11,5 +11,5 @@ var namespace_w_f_c =
     [ "InputModel", "class_w_f_c_1_1_input_model.html", null ],
     [ "SoundManager", "class_w_f_c_1_1_sound_manager.html", null ],
     [ "Tile", "class_w_f_c_1_1_tile.html", null ],
-    [ "WaveFunction", "class_w_f_c_1_1_wave_function.html", null ]
+    [ "WaveFunction", "class_w_f_c_1_1_wave_function.html", "class_w_f_c_1_1_wave_function" ]
 ];
