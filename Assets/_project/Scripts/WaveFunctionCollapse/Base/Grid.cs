@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 08/12/21
+// Date Last Edited: 14/12/21
 // Brief: A representation of a grid of values
 //////////////////////////////////////////////////////////// 
 
@@ -28,6 +28,7 @@ namespace WFC
 
         #region Public Methods
 
+        //The constructor for the grid (which will construct it's own cells to use)
         public Grid(int newWidth, int newHeight)
         {
             width = newWidth;
@@ -75,9 +76,6 @@ namespace WFC
             return new Tuple<List<Cell>, List<Vector2>>(neighbours, localDir);
         }
 
-        #endregion
-
-        #region Private Methods
         #endregion
     }
 }

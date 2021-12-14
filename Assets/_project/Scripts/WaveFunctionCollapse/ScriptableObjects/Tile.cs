@@ -16,6 +16,7 @@ namespace WFC
     [Serializable]
     public struct AdjacencyRule
     {
+        //Adjacency rules just need to know the other tile and where they can be placed
         public AdjacencyRule(Tile newTile, Vector2 newDir)
         {
             tile = newTile;

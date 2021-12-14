@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 07/12/2021
 // Last Edited By: Charles Carter
-// Date Last Edited: 12/12/2021
+// Date Last Edited: 14/12/2021
 // Brief: A script to combine multiple InputModelEditors' input models into 1 generated input model
 //////////////////////////////////////////////////////////// 
 
@@ -108,9 +108,6 @@ namespace WFC.Editor
             }
         }
 
-        #endregion
-
-        #region Private Methods
         #endregion
     }
 }

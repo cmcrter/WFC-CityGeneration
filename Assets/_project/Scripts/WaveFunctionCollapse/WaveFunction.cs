@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 11/12/21
+// Date Last Edited: 14/12/21
 // Brief: A script to run through the wave function collapse algorithm
 //////////////////////////////////////////////////////////// 
 
@@ -91,7 +91,7 @@ namespace WFC
         //Should always be park, residential, business
         [SerializeField]
         private List<TilePreset> sectionPresets;
-        //The random number generator used
+        //The random number generator used (potential for UI to change which type used)
         private Mersenne_Twister MTNumberGenerator;
 
         #endregion
@@ -113,6 +113,7 @@ namespace WFC
 
         #region Public Methods
 
+        //Originally was going to have the wave function be able to pick input model compilers/editors
         //[ContextMenu("ReSetup WFC")]
         //public void UseInputModel()
         //{
@@ -157,9 +158,17 @@ namespace WFC
             CoGenerating = StartCoroutine(Co_GenerateGrid());
         }
 
+        /// <summary>
+        /// Utility functions for other scripts to customize visuals / parts of the algorithm
+        /// </summary>
         public void SetSeed(int newSeed)
         {
             seed = newSeed;
+        }
+
+        public int GetSeed()
+        {
+            return seed;
         }
 
         public void SetBruteForce(bool isFast)
@@ -180,6 +189,7 @@ namespace WFC
             }
         }
 
+        //Setting the preset to use, which will have a knock on effect if multiple are used
         public void SetPreset(InputModelCompiler newCompiler)
         {
             ModelCompiler = newCompiler;

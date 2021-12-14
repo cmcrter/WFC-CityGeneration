@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 14/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 07/12/21
+// Date Last Edited: 14/12/21
 // Brief: A representation of one spot on the 2D Grid
 //////////////////////////////////////////////////////////// 
 
@@ -224,5 +224,4 @@ namespace WFC
 
         #endregion
     }
-
 }

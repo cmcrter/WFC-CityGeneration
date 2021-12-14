@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 21/10/21   
 // Last Edited By: Charles Carter
-// Date Last Edited: 07/12/21
+// Date Last Edited: 14/12/21
 // Brief: The script to show a cell on a GameObject
 //////////////////////////////////////////////////////////// 
 
@@ -40,6 +40,9 @@ namespace WFC.UI
 
         #endregion
 
+        /// <summary>
+        /// The general functionality of showing a cells' details visually
+        /// </summary>
         public void UpdateVisuals()
         {
             if(bShowEntropy)

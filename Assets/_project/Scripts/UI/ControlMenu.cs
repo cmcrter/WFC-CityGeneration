@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 10/11/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 11/12/21
+// Date Last Edited: 14/12/21
 // Brief: The user interface for running the program
 //////////////////////////////////////////////////////////// 
 
@@ -63,6 +63,9 @@ namespace WFC.UI
         private Toggle PauseToggle;
         [SerializeField]
         private Button RestartButton;
+
+        //Keeping track if it's ran before
+        private bool bRan;
 
         [Header("Customization Variables")]
         //The customization aspects
@@ -138,6 +141,13 @@ namespace WFC.UI
             {
                 seamsCompiler.LoadComp();
             }
+
+            //Setting the text of the input field
+            if(waveFunction)
+            {
+                seedInput.text = waveFunction.GetSeed().ToString();
+            }
+            
         }
 
         #endregion
@@ -148,14 +158,15 @@ namespace WFC.UI
         /// The functions that are ran from the User Interface
         /// </summary>
         public void RunProgram()
-        {
+        {           
             PauseToggle.interactable = true;
 
             if(waveFunction)
             {
-                if(seedInput.text != "")
+                int.TryParse(seedInput.text, out int newSeed);
+
+                if(waveFunction.GetSeed() != newSeed || !bRan)
                 {
-                    int.TryParse(seedInput.text, out int newSeed);                    
                     waveFunction.SetSeed(newSeed);
 
                     if(Debug.isDebugBuild)
@@ -163,8 +174,13 @@ namespace WFC.UI
                         Debug.Log("Ran with seed: " + newSeed);
                     }
                 }
+                else
+                {
+                    return;
+                }
 
                 waveFunction.RunAlgorithm();
+                bRan = true;
             }
         }
 
