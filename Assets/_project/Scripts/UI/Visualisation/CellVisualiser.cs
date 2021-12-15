@@ -17,7 +17,7 @@ namespace WFC.UI
         #region Variables
 
         [Header("Necessary Variables")]
-        public Cell thisCell;
+        public Cell cellToVisualise;
         public TextMesh EntropyText;
 
         //The children of this script will always be the possible tiles, in a miniature form
@@ -71,9 +71,9 @@ namespace WFC.UI
         {
             if(EntropyText != null)
             {
-                if(thisCell.currentEntropy > 0)
+                if(cellToVisualise.currentEntropy > 0)
                 {
-                    EntropyText.text = thisCell.currentEntropy.ToString("F2");
+                    EntropyText.text = cellToVisualise.currentEntropy.ToString("F2");
                 }
                 else
                 {

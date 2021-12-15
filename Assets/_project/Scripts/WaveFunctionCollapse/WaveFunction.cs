@@ -594,14 +594,14 @@ namespace WFC
                     if(cellT.TryGetComponent(out CellVisualiser cVis))
                     {
                         cellVisualisers.Add(cVis);
-                        cVis.thisCell = OutputGrid.GridCells[x, y];
+                        cVis.cellToVisualise = OutputGrid.GridCells[x, y];
 
                         if(bSectioned)
                         {
                             cVis.SetTextColour(partitioner.SectionIndex(OutputGrid.GridCells[x, y]));
                         }
 
-                        cVis.thisCell.currentEntropy = cVis.thisCell.calculateEntropyValue();
+                        cVis.cellToVisualise.currentEntropy = cVis.cellToVisualise.calculateEntropyValue();
                         cVis.EntropyText.gameObject.SetActive(bEntropyShown);
                         cVis.UpdateVisuals();
                     }
