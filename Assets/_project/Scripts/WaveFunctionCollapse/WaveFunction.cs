@@ -84,6 +84,7 @@ namespace WFC
         private bool bPauseEditorOnFailure = false;
         [SerializeField]
         private bool bPaused = false;
+        private bool bEntropyShown = true;
 
         //Whether the grid needs to be sectioned or not based on the preset
         [SerializeField]
@@ -182,6 +183,8 @@ namespace WFC
             {
                 return;
             }
+
+            bEntropyShown = isShown;
 
             for(int i = 0; i < cellVisualisers.Count; ++i)
             {
@@ -384,6 +387,7 @@ namespace WFC
                 {
                     if(OutputGrid.GridCells[x, y].ApplyConstraintsBasedOnPotential(OutputGrid))
                     {
+                        cellVisualisers[(y * width) + x].UpdateVisuals();
                         return;
                     }
                 }
@@ -595,6 +599,7 @@ namespace WFC
                         }
 
                         cVis.thisCell.currentEntropy = cVis.thisCell.calculateEntropyValue();
+                        cVis.EntropyText.gameObject.SetActive(bEntropyShown);
                         cVis.UpdateVisuals();
                     }
                 }

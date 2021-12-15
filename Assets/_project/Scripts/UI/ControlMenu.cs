@@ -179,6 +179,7 @@ namespace WFC.UI
                     return;
                 }
 
+                EntropyShownChanged(true);
                 waveFunction.RunAlgorithm();
                 bRan = true;
             }
@@ -191,6 +192,7 @@ namespace WFC.UI
 
             if(waveFunction)
             {
+                EntropyShownChanged(false);
                 waveFunction.RerunAlgorithm();
             }
         }
@@ -201,6 +203,7 @@ namespace WFC.UI
 
             if(waveFunction)
             {
+                EntropyShownChanged(true);
                 waveFunction.RestartAlgorithm();
             }
         }
@@ -211,6 +214,7 @@ namespace WFC.UI
 
             if(waveFunction)
             {
+                EntropyShownChanged(true);
                 waveFunction.RunAlgorithm();
             }
         }
