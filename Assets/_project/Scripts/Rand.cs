@@ -3,7 +3,7 @@
 // Author: Charles Carter
 // Date Created: 13/10/21
 // Last Edited By: Charles Carter
-// Date Last Edited: 13/10/21
+// Date Last Edited: 15/12/21
 // Brief: A class to contain all the necessary random number generators
 //////////////////////////////////////////////////////////// 
 
@@ -150,8 +150,10 @@ namespace WFC.Rand
 
             return (int)x;
         }
-
-        //Computing the states again
+        
+        /// <summary>
+        /// Mersenne Twister cycles through numbers, and the twist starts the next cycle
+        /// </summary>
         private void Twist()
         {
             int i = 0;

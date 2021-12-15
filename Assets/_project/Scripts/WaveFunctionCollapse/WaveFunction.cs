@@ -396,6 +396,9 @@ namespace WFC
             bConstraining = false;
         }
 
+        /// <summary>
+        /// This is the more efficient way of propagating, is only finished once all the needed cells apply their constraints
+        /// </summary>
         private IEnumerator Co_EfficientUpdateGridConstraints()
         {
             //Looking at neighbours (using the von Neumann neighbourhood) of most recently collapsed cell, removing the impossible tiles from their list, this is the actual "propagation" in the propagation function
