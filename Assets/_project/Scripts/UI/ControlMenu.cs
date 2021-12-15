@@ -192,7 +192,7 @@ namespace WFC.UI
 
             if(waveFunction)
             {
-                EntropyShownChanged(false);
+                EntropyShownChanged(true);
                 waveFunction.RerunAlgorithm();
             }
         }
